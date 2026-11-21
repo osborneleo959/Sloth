@@ -1,48 +1,55 @@
-
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Name It! Multiplayer</title>
+<title>ReviseRush – GCSE revision party game</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f9d6b'/%3E%3Cpath d='M20 34l9 9 16-19' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap">
 <style>
-:root{--bg:#e6f1ee;--card:#fff;--ink:#15324b;--mut:#5a7285;--ok:#1b8f63;--hi:#d99a12;--bad:#e5533a;--line:#c5dad3}
-@media (prefers-color-scheme:dark){:root{--bg:#0f2230;--card:#17324a;--ink:#e6f1ee;--mut:#9db5c4;--ok:#4cd39b;--hi:#f2c04d;--bad:#ff7a60;--line:#2b4a63}}
+:root{--bg:#e9f6ef;--card:#fff;--ink:#14324a;--mut:#58717f;--g:#1f9d6b;--on:#fff;--blue:#3a7bd5;--pur:#7c5cd6;--sun:#e8a712;--bad:#e8573f;--line:#cfe3da}
+@media (prefers-color-scheme:dark){:root{--bg:#0e2230;--card:#163247;--ink:#e8f3ee;--mut:#9fb8c6;--g:#34c58a;--on:#08301f;--blue:#6aa3f0;--pur:#a58cf2;--sun:#f4c04d;--bad:#ff7a60;--line:#2a4a60}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Figtree,system-ui,sans-serif;min-height:100vh}
-main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
-h1,h2,.big,.pts,.turn{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;margin:0}
-h1{font-size:2.6rem;line-height:1.05}h2{font-size:1.5rem}p{margin:.4em 0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Figtree,system-ui,sans-serif;min-height:100vh;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+main{max-width:660px;margin:0 auto;padding:20px 16px 48px}
+h1,h2,.big,.pts,.turn,.brand{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;margin:0}
+h1{font-size:2.3rem;line-height:1.1}h2{font-size:1.35rem}p{margin:.4em 0}
 .mut{color:var(--mut)}.bad{color:var(--bad)}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:6px}.brand{font-size:2.4rem}.brand span{color:var(--g)}
 .card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
-button{font:600 1rem Figtree,system-ui,sans-serif;border:0;border-radius:12px;padding:12px 18px;background:var(--ink);color:var(--bg);cursor:pointer}
+button{font:600 1rem Figtree,system-ui,sans-serif;border:0;border-radius:12px;padding:12px 18px;background:var(--g);color:var(--on);cursor:pointer}
 button:disabled{opacity:.4;cursor:default}
-button:focus-visible,input:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
-input[type=text],input:not([type]){font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+button.ghost,.back,.lnk{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.back{border:0;padding:6px 0;margin-bottom:8px}.lnk{padding:4px 10px;font-size:.9rem;color:var(--mut)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+input:not([type=checkbox]){font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.menu{display:grid;gap:12px;margin:18px 0}
+.mb{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:16px 18px;font:800 1.3rem "Bricolage Grotesque",Figtree,sans-serif;background:var(--card);color:var(--ink);border:2px solid var(--line);border-left:10px solid var(--g);border-radius:16px;width:100%}
+.mb span{font:400 1rem Figtree,system-ui,sans-serif;color:var(--mut)}
+.mb.b{border-left-color:var(--blue)}.mb.p{border-left-color:var(--pur)}
+.sets{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sets label{display:flex;flex-direction:column;font-size:.9rem;color:var(--mut)}.sets select{margin-top:4px;color:var(--ink)}
+.sub{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.tps{padding:0 0 8px 8px;display:grid;gap:2px}label.c{display:block;padding:2px 0}
 .row{display:flex;gap:10px;align-items:center}.row>input{flex:1}
 .scores{display:flex;gap:8px;overflow-x:auto;padding:2px}
 .pl{flex:1 0 110px;border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:var(--card)}
-.pl.on{border-color:var(--ink);transform:translateY(-3px)}.pl.out{opacity:.4}
+.pl.on{border-color:var(--g);transform:translateY(-3px)}.pl.out{opacity:.4}
 .pl b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pts{font-size:1.4rem}.heart{color:var(--bad)}.heart.lost{opacity:.2}
 .bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0}
-.bar i{display:block;height:100%;background:var(--ink);width:100%}#tb i{background:var(--bad)}
-.q{font-size:1.9rem;margin:6px 0 10px}.turn{font-size:1.2rem}
-#msg{min-height:1.6em;font-weight:600}
-.code{font:800 3rem "Bricolage Grotesque",sans-serif;letter-spacing:.15em}
-.chip{display:inline-block;border:2px solid var(--ok);color:var(--ok);border-radius:20px;padding:2px 12px;margin:3px 4px 3px 0;font-weight:600}
-.chip.hi{border-color:var(--hi);color:var(--hi)}.chip.miss{border-style:dashed;opacity:.8}
-label{display:block;padding:4px 0}
-.menu{display:grid;gap:12px;margin:18px 0}
-.mb{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:18px;border-radius:18px;font-size:1.3rem;background:var(--card);color:var(--ink);border:2px solid var(--line);font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;font-weight:800;width:100%}
-.mb span{font:400 1rem Figtree,system-ui,sans-serif;color:var(--mut)}.mb:hover{border-color:var(--ink)}
-.back{background:transparent;color:var(--ink);padding:6px 0;margin-bottom:8px}
+.bar i{display:block;height:100%;background:var(--g);width:100%}#tb i{background:var(--bad)}
+.q{font-size:1.8rem;margin:6px 0 10px}.turn{font-size:1.2rem}#msg{min-height:1.6em;font-weight:600}
+.code{font:800 3rem "Bricolage Grotesque",sans-serif;letter-spacing:.15em;color:var(--g)}
+.chip{display:inline-block;border:2px solid var(--g);color:var(--g);border-radius:20px;padding:2px 12px;margin:3px 4px 3px 0;font-weight:600}
+.chip.hi{border-color:var(--sun);color:var(--sun)}.chip.miss{border-style:dashed;opacity:.85}
 @media (prefers-reduced-motion:reduce){.pl.on{transform:none}}
 </style></head><body><main id="app"></main>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let ws=null,s=null,off=0,err='',sel=null,mt=null,view='menu';
+const LOGO='<svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="ReviseRush logo"><rect width="64" height="64" rx="16" fill="var(--g)"/><rect x="9" y="13" width="46" height="31" rx="9" fill="#fff"/><path d="M19 43v11l12-11z" fill="#fff"/><path d="M21 29l8 8 14-17" fill="none" stroke="var(--g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="12" r="8" fill="var(--sun)"/></svg>';
+let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,open=new Set(),cfg={lives:3,turn:20,round:60,rounds:5,skips:2};
 const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
+const isHost=()=>s.host===s.you;
 
 function connect(first){
   ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host);
@@ -53,15 +60,17 @@ function connect(first){
     else if(m.t==='err'){err=m.text;if(!s)home()}};
   ws.onclose=()=>{if(s)app.insertAdjacentHTML('afterbegin','<p class="bad">Connection lost. Refresh the page to rejoin.</p>')};
 }
+function leave(){const w=ws;s=null;sel=null;ws=null;view='menu';err='';if(w)w.close();home()}
+
 function home(){
   if(view==='menu'){
-    app.innerHTML=`<h1>Name it!</h1><p class="mut">The GCSE revision party game. Name answers before the clock runs out. Higher-level answers score more.</p>
+    app.innerHTML=`<div class="logo">${LOGO}<div class="brand">Revise<span>Rush</span></div></div>
+    <p class="mut">The GCSE revision party game. Name answers before the clock runs out. Higher-level answers score more.</p>
     <div class="menu"><button class="mb" id="m1">Play solo<span>Practise on your own</span></button>
-    <button class="mb" id="m2">Host a game<span>Create a room for friends or your class</span></button>
-    <button class="mb" id="m3">Join a game<span>Enter a room code</span></button></div>
-    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. You get 20 seconds per turn and 3 lives. Run out of time and you lose one.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50.</p><p class="mut">Covers AQA Combined Science Trilogy, AQA Geography and Edexcel History.</p></div>`;
-    [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});
-    return;
+    <button class="mb b" id="m2">Host a game<span>Create a room for friends or your class</span></button>
+    <button class="mb p" id="m3">Join a game<span>Enter a room code</span></button></div>
+    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. You can skip a turn a limited number of times, for −10 points.</p><p class="mut">Covers AQA Combined Science: Trilogy, AQA Geography and Edexcel History.</p></div>`;
+    [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});return;
   }
   const j=view==='join',title={solo:'Play solo',host:'Host a game',join:'Join a game'}[view];
   app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${title}</h1>
@@ -69,52 +78,62 @@ function home(){
   <button id="go" style="width:100%;margin-top:10px">${j?'Join':'Continue'}</button></div><p class="bad">${esc(err)}</p>`;
   $('bk').onclick=()=>{view='menu';err='';home()};
   const go=()=>{err='';connect({t:j?'join':'create',name:$('nm').value,code:j?$('cd').value:undefined,solo:view==='solo'})};
-  $('go').onclick=go;app.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')go()});
-  $('nm').focus();
+  $('go').onclick=go;app.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')go()});$('nm').focus();
 }
-function leave(){const w=ws;s=null;sel=null;ws=null;view='menu';err='';if(w)w.close();home()}
-function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${[0,1,2].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
-const isHost=()=>s.host===s.you;
+
+function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${[...Array(s.set.lives).keys()].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
+
+function lobby(){
+  if(!sel)sel=new Set(s.bank.flatMap(b=>b.topics));
+  const opt=(k,vals,lab)=>`<label>${lab}<select data-k="${k}">${vals.map(v=>`<option ${cfg[k]===v?'selected':''}>${v}</option>`).join('')}</select></label>`;
+  const picker=s.bank.map(b=>`<div class="sub"><label class="c"><input type="checkbox" data-sub="${esc(b.subject)}" ${b.topics.every(n=>sel.has(n))?'checked':''}> <b>${esc(b.subject)}</b></label><button class="lnk" data-op="${esc(b.subject)}">${open.has(b.subject)?'Hide topics':'Choose topics'}</button></div>${open.has(b.subject)?`<div class="tps">${b.topics.map(n=>`<label class="c"><input type="checkbox" data-t="${esc(n)}" ${sel.has(n)?'checked':''}> ${esc(n)}</label>`).join('')}</div>`:''}`).join('');
+  app.innerHTML=`<button class="back" id="lv">← Leave</button><h1>${s.solo?'Solo practice':'Lobby'}</h1>
+  ${s.solo?'':`<div class="card"><p class="mut">Share this code:</p><div class="code">${s.code}</div></div><div class="card"><h2>Players (${s.players.length}/8)</h2>${s.players.map(p=>`<p>${esc(p.name)}${p.id===s.host?' (host)':''}</p>`).join('')}</div>`}
+  ${isHost()?`<div class="card"><h2>Settings</h2><div class="sets">${opt('lives',[1,2,3,4,5],'Lives')}${opt('turn',[10,15,20,30,45],'Seconds per turn')}${opt('round',[30,60,90,120],'Seconds per round')}${opt('rounds',[3,5,8,10,15],'Rounds')}${opt('skips',[0,1,2,3],'Skips each')}</div></div>
+  <div class="card"><h2>Topics</h2><div class="row" style="margin-bottom:6px"><button class="lnk" id="all">Select all</button><button class="lnk" id="none">Clear</button></div>${picker}</div>
+  <button id="st" style="width:100%;font-size:1.2rem" ${sel.size?'':'disabled'}>Start game</button>`:'<p class="mut">Waiting for the host to start…</p>'}`;
+  $('lv').onclick=leave;if(!isHost())return;
+  app.querySelectorAll('select').forEach(e=>e.onchange=()=>{cfg[e.dataset.k]=+e.value});
+  app.querySelectorAll('[data-sub]').forEach(c=>c.onchange=()=>{s.bank.find(b=>b.subject===c.dataset.sub).topics.forEach(n=>c.checked?sel.add(n):sel.delete(n));lobby()});
+  app.querySelectorAll('[data-t]').forEach(c=>c.onchange=()=>{c.checked?sel.add(c.dataset.t):sel.delete(c.dataset.t);lobby()});
+  app.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{open.has(b.dataset.op)?open.delete(b.dataset.op):open.add(b.dataset.op);lobby()});
+  $('all').onclick=()=>{s.bank.forEach(b=>b.topics.forEach(n=>sel.add(n)));lobby()};$('none').onclick=()=>{sel.clear();lobby()};
+  $('st').onclick=()=>send({t:'start',topics:[...sel],set:cfg});
+}
+
 function render(){
-  const v=$('ans')?$('ans').value:'',foc=document.activeElement&&document.activeElement.id==='ans';
-  if(s.phase==='lobby'){
-    if(!sel)sel=new Set(s.subjects);
-    app.innerHTML=`<button class="back" id="lv">← Leave</button><h1>${s.solo?'Solo practice':'Lobby'}</h1>${s.solo?'':`<div class="card"><p class="mut">Share this code:</p><div class="code">${s.code}</div></div>
-    <div class="card"><h2>Players (${s.players.length}/8)</h2>${s.players.map(p=>`<p>${esc(p.name)}${p.id===s.host?' (host)':''}</p>`).join('')}</div>`}
-    ${isHost()?`<div class="card"><h2>Subjects</h2>${s.subjects.map(t=>`<label><input type="checkbox" value="${esc(t)}" ${sel.has(t)?'checked':''}> ${esc(t)}</label>`).join('')}<p class="mut">One round per subject.</p></div>
-    <button id="st" style="width:100%;font-size:1.2rem">Start game</button>`:'<p class="mut">Waiting for the host to start…</p>'}`;
-    $('lv').onclick=leave;
-    if(isHost()){document.querySelectorAll('input[type=checkbox]').forEach(c=>c.onchange=()=>{c.checked?sel.add(c.value):sel.delete(c.value);$('st').disabled=!sel.size});
-      $('st').onclick=()=>send({t:'start',subjects:[...sel]})}
-  }else if(s.phase==='play'){
-    const mine=s.turn===s.you,who=s.players.find(p=>p.id===s.turn);
-    app.innerHTML=`${scores()}<div class="card"><p class="mut">Round ${s.ri+1} of ${s.n}: ${esc(s.topic)}</p><div class="q big">${esc(s.q)}</div>
+  const v=$('ans')?$('ans').value:'';
+  if(s.phase==='lobby')return lobby();
+  const top=s.players.slice().sort((a,b)=>b.pts-a.pts);
+  if(s.phase==='play'){
+    const mine=s.turn===s.you,who=s.players.find(p=>p.id===s.turn),me=s.players.find(p=>p.id===s.you);
+    app.innerHTML=`${scores()}<div class="card"><p class="mut">Round ${s.ri+1} of ${s.n} · ${esc(s.topic)}</p><div class="q big">${esc(s.q)}</div>
     <div class="bar" id="rb"><i></i></div><p class="mut" id="rt"></p>
     <div class="turn">${mine?'Your turn!':esc(who.name)+'’s turn'}</div><div class="bar" id="tb"><i></i></div>
     <div class="row"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${mine?'Type your answer':'Wait for your turn'}" aria-label="Your answer" ${mine?'':'disabled'}><button id="sub" ${mine?'':'disabled'}>Answer</button></div>
+    ${s.set.skips?`<button class="ghost" id="sk" style="margin-top:8px" ${mine&&me.skips>0?'':'disabled'}>Skip (${me.skips} left, −10 points)</button>`:''}
     <p id="msg"></p><div>${s.log.map(l=>`<span class="chip ${l.tier===50?'hi':''}">${esc(l.text)} (${esc(l.by)})</span>`).join('')}</div></div>`;
     const go=()=>{const a=$('ans');if(a.value.trim()){send({t:'answer',text:a.value});a.value=''}};
-    $('sub').onclick=go;$('ans').onkeydown=e=>{if(e.key==='Enter')go()};
+    $('sub').onclick=go;$('ans').onkeydown=e=>{if(e.key==='Enter')go()};if($('sk'))$('sk').onclick=()=>send({t:'skip'});
     if(mine){$('ans').value=v;$('ans').focus()}
   }else if(s.phase==='between'){
-    const top=s.players.slice().sort((a,b)=>b.pts-a.pts);
-    app.innerHTML=`<div class="card"><h2>${s.last&&s.ri<s.n-1?'Game over':'Round over'}</h2><p class="mut">${esc(s.q)}</p><p><b>Answers nobody found</b> (gold = grade 7–9):</p>
+    app.innerHTML=`<div class="card"><h2>Round over</h2><p class="mut">${esc(s.q)}</p><p><b>Answers nobody found</b> (gold = grade 7–9):</p>
     <div>${s.missed.map(m=>`<span class="chip miss ${m.tier===50?'hi':''}">${esc(m.text)}</span>`).join('')||'You found every answer!'}</div></div>
     <div class="card">${top.map(p=>`<p><b>${esc(p.name)}</b>: ${p.pts} points ${p.lives>0?'':'(out)'}${s.rpts[p.name]?' · +'+s.rpts[p.name]+' this round':''}</p>`).join('')}</div>
     ${isHost()?`<button id="nx" style="width:100%">${s.last?'See results':'Next round'}</button>`:'<p class="mut">Waiting for the host…</p>'}`;
     if(isHost())$('nx').onclick=()=>send({t:'next'});
   }else{
-    const top=s.players.slice().sort((a,b)=>b.pts-a.pts);
     app.innerHTML=`<h1>${s.solo?'Game over!':esc(top[0].name)+' wins!'}</h1><div class="card">${top.map((p,i)=>`<p>${i+1}. <b>${esc(p.name)}</b>: ${p.pts} points</p>`).join('')}</div>
+    <h2 style="margin-top:22px">Revision summary</h2><p class="mut">Every answer from your game. <span class="chip">✓ You said it</span> <span class="chip miss">You missed it</span> <span class="chip hi">Grade 7–9</span></p>
+    ${(s.review||[]).map(r=>`<div class="card"><p class="mut">${esc(r.topic)}</p><p><b>${esc(r.q)}</b></p>${r.answers.map(a=>`<span class="chip ${a.tier===50?'hi':''} ${a.by===s.you?'':'miss'}">${a.by===s.you?'✓ ':''}${esc(a.text)}</span>`).join('')}</div>`).join('')}
     ${isHost()?`<button id="ag" style="width:100%">${s.solo?'Play again':'Back to lobby'}</button>`:'<p class="mut">Waiting for the host…</p>'}<button class="back" id="hm" style="margin-top:10px">Back to home</button>`;
-    if(isHost())$('ag').onclick=()=>send({t:'again'});
-    $('hm').onclick=leave;
+    if(isHost())$('ag').onclick=()=>send({t:'again'});$('hm').onclick=leave;
   }
 }
-function toast(m){const e=$('msg');if(!e)return;e.textContent=m.text;e.style.color=m.kind==='bad'?'var(--bad)':m.kind==='hi'?'var(--hi)':'var(--ok)';clearTimeout(mt);mt=setTimeout(()=>{if($('msg'))$('msg').textContent=''},2500)}
+function toast(m){const e=$('msg');if(!e)return;e.textContent=m.text;e.style.color=m.kind==='bad'?'var(--bad)':m.kind==='hi'?'var(--sun)':'var(--g)';clearTimeout(mt);mt=setTimeout(()=>{if($('msg'))$('msg').textContent=''},2500)}
 setInterval(()=>{if(!s||s.phase!=='play'||!$('tb'))return;const now=Date.now()+off;
-  $('tb').firstChild.style.width=Math.max(0,(s.turnEnd-now)/200)+'%';
-  $('rb').firstChild.style.width=Math.max(0,(s.roundEnd-now)/600)+'%';
+  $('tb').firstChild.style.width=Math.max(0,(s.turnEnd-now)/(s.set.turn*10))+'%';
+  $('rb').firstChild.style.width=Math.max(0,(s.roundEnd-now)/(s.set.round*10))+'%';
   $('rt').textContent='Round time left: '+Math.max(0,Math.ceil((s.roundEnd-now)/1000))+'s'},150);
 home();
 </script></body></html>
