@@ -93,7 +93,7 @@ function answer(r, p, text) {
 function skip(r, p) {
   if (r.phase !== 'play' || r.players[r.turn] !== p || (p.skipsUsed || 0) >= r.set.skips) return;
   p.skipsUsed = (p.skipsUsed || 0) + 1; p.pts = Math.max(0, p.pts - 10);
-  toast(r, p.name + ' skipped (−10 points)', 'bad'); nextTurn(r);
+  toast(r, p.name + ' skipped the question (−10 points)', 'bad'); endRound(r, false);
 }
 function tick(r) {
   const now = Date.now();
