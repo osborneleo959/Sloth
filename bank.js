@@ -167,7 +167,8 @@ module.exports=[
          "vaccination|vaccine",
          "washing hands|hygiene",
          "isolation|quarantine",
-         "antibiotics"
+         "antibiotics",
+         "stay clean|keep clean|clean surfaces|cover your mouth|wear masks|masks|social distancing"
         ],
         "h": [
          "killing vectors|mosquito nets",
@@ -359,7 +360,8 @@ module.exports=[
          "pollution",
          "global warming|climate change",
          "habitat destruction|habitat loss",
-         "overfishing"
+         "overfishing",
+         "cutting down trees|hunting|farming|urbanisation|invasive species"
         ],
         "h": [
          "destroying peat bogs|peat bogs",
@@ -922,7 +924,8 @@ module.exports=[
          "insulation|thermal insulation",
          "lubrication|lubricant|oil",
          "double glazing",
-         "loft insulation|cavity wall insulation"
+         "loft insulation|cavity wall insulation",
+         "reduce heat loss|stop heat escaping|keep heat in"
         ],
         "h": [
          "streamlining",
@@ -1302,7 +1305,8 @@ module.exports=[
          "cycle lanes|cycling",
          "recycling",
          "green spaces|parks",
-         "energy efficient buildings"
+         "energy efficient buildings",
+         "reduce pollution|reduce emissions|reduce waste|renewable energy|walking|electric vehicles|electric cars"
         ],
         "h": [
          "congestion charge",
@@ -1387,7 +1391,8 @@ module.exports=[
          "aid",
          "microfinance|microloans",
          "debt relief",
-         "tourism"
+         "tourism",
+         "education|improve education|healthcare|clean water|jobs"
         ],
         "h": [
          "investment|foreign direct investment|fdi",
@@ -1451,7 +1456,8 @@ module.exports=[
          "fertilisers|fertiliser",
          "pesticides",
          "hydroponics",
-         "greenhouses"
+         "greenhouses",
+         "grow more food|better farming|farming technology|machinery|seeds"
         ],
         "h": [
          "genetically modified crops|gm crops",
@@ -1467,7 +1473,8 @@ module.exports=[
          "dams|dam",
          "water transfer",
          "desalination",
-         "water conservation"
+         "water conservation",
+         "save water|use less water|reduce water use|water meters"
         ],
         "h": [
          "groundwater abstraction|aquifers",
@@ -1482,7 +1489,8 @@ module.exports=[
          "insulation|loft insulation",
          "led bulbs|low energy bulbs",
          "solar panels",
-         "turning off appliances|switching off"
+         "turning off appliances|switching off",
+         "save energy|use less energy|reduce energy use|turn off lights"
         ],
         "h": [
          "smart meters",
@@ -1544,7 +1552,8 @@ module.exports=[
          "prediction",
          "protection",
          "planning",
-         "evacuation|evacuation drills"
+         "evacuation|evacuation drills",
+         "education|educate people|stronger buildings|early warning|emergency plans"
         ],
         "h": [
          "monitoring|seismometer|tiltmeter",
@@ -1727,7 +1736,9 @@ module.exports=[
          "renewable energy|alternative energy",
          "planting trees|afforestation",
          "carbon capture",
-         "international agreements|paris agreement"
+         "international agreements|paris agreement",
+         "reduce carbon emissions|reduce emissions|reduce greenhouse gases|reduce carbon footprint|reduce global warming",
+         "less fossil fuels|stop burning fossil fuels|burn less fossil fuels"
         ],
         "h": [
          "carbon tax",
@@ -1767,7 +1778,8 @@ module.exports=[
          "sea wall",
          "groyne",
          "rock armour|rock armor|riprap",
-         "beach nourishment"
+         "beach nourishment",
+         "sea defences|coastal defences|barriers"
         ],
         "h": [
          "gabion",
@@ -1805,7 +1817,8 @@ module.exports=[
          "dam",
          "flood wall|embankment|levee",
          "afforestation|planting trees",
-         "flood warning|flood warnings"
+         "flood warning|flood warnings",
+         "flood defences|build defences|barriers|drainage"
         ],
         "h": [
          "flood relief channel|relief channel",
@@ -1873,7 +1886,8 @@ module.exports=[
          "selective logging",
          "replanting|reforestation",
          "ecotourism|eco tourism",
-         "protected areas|national parks"
+         "protected areas|national parks",
+         "protect the rainforest|stop deforestation|plant trees|conservation|reduce logging"
         ],
         "h": [
          "debt reduction|debt for nature swap",
@@ -3106,7 +3120,8 @@ module.exports=[
          "firewall",
          "antivirus|anti malware",
          "strong passwords|passwords",
-         "encryption"
+         "encryption",
+         "software updates|updates|secure passwords|backups|backup"
         ],
         "h": [
          "penetration testing",
@@ -3472,7 +3487,8 @@ module.exports=[
          "firewall",
          "antivirus|anti malware",
          "strong passwords|passwords",
-         "encryption"
+         "encryption",
+         "software updates|updates|secure passwords|backups|backup"
         ],
         "h": [
          "penetration testing",
@@ -3891,7 +3907,8 @@ module.exports=[
          "quality control",
          "quality assurance",
          "training",
-         "inspection"
+         "inspection",
+         "checking products|better materials|train staff"
         ],
         "h": [
          "total quality management|tqm",
@@ -3912,7 +3929,8 @@ module.exports=[
          "bonus",
          "promotion",
          "training",
-         "job security"
+         "job security",
+         "pay rise|higher pay|rewards|incentives"
         ],
         "h": [
          "job enrichment|job rotation",
@@ -4219,7 +4237,8 @@ module.exports=[
          "quality control",
          "quality assurance",
          "training",
-         "inspection"
+         "inspection",
+         "checking products|better materials|train staff"
         ],
         "h": [
          "total quality management|tqm",
@@ -4240,7 +4259,8 @@ module.exports=[
          "bonus",
          "promotion",
          "training",
-         "job security"
+         "job security",
+         "pay rise|higher pay|rewards|incentives"
         ],
         "h": [
          "job enrichment|job rotation",
