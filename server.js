@@ -10,7 +10,7 @@ const server = http.createServer((req, res) => {
 });
 const wss = new WebSocketServer({ server });
 const rooms = new Map();
-const TURN = 20000, ROUND = 60000, MAXP = 8;
+const MAXP = 8;
 
 // ---- answer matching (server-side so answers are never sent to players) ----
 const norm = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\b(cells?|the|a|an|of)\b/g, ' ')
@@ -46,19 +46,19 @@ const toast = (r, text, kind) => r.players.forEach(p => send(p.ws, { t: 'toast',
 function broadcast(r) {
   for (const p of r.players) send(p.ws, {
     t: 'state', you: p.id, solo: r.solo, serverNow: Date.now(), phase: r.phase, code: r.code, host: r.hostId,
-    players: r.players.map(q => ({ id: q.id, name: q.name, pts: q.pts, lives: q.lives, on: q.ws.readyState === 1 })),
-    subjects: BANK.map(b => b.topic), topic: r.topic, q: r.q && r.q.q, ri: r.ri, n: r.rounds.length,
+    players: r.players.map(q => ({ id: q.id, name: q.name, pts: q.pts, lives: q.lives, skips: r.set.skips - (q.skipsUsed || 0), on: q.ws.readyState === 1 })),
+    bank: BANK.map(b => ({ subject: b.subject, topics: b.topics.map(t => t.name) })), set: r.set, review: r.phase === 'end' ? r.review : undefined, topic: r.topic, q: r.q && r.q.q, ri: r.ri, n: r.rounds.length,
     turn: r.phase === 'play' ? r.players[r.turn].id : null, turnEnd: r.turnEnd, roundEnd: r.roundEnd,
     log: r.log, missed: r.missed, rpts: r.rpts, last: r.last
   });
 }
 function skipDead(r) { let k = 0; while (r.players[r.turn].lives <= 0 && k++ < r.players.length) r.turn = (r.turn + 1) % r.players.length; }
-function newTurn(r) { r.turnEnd = Date.now() + TURN; broadcast(r); }
+function newTurn(r) { r.turnEnd = Date.now() + r.set.turn * 1000; broadcast(r); }
 function nextTurn(r) { r.turn = (r.turn + 1) % r.players.length; skipDead(r); newTurn(r); }
 function beginRound(r) {
   const spec = r.rounds[r.ri];
-  Object.assign(r, { topic: spec.topic, q: spec.q, entries: build(spec.q), used: new Set(), log: [], missed: [], rpts: {},
-    roundEnd: Date.now() + ROUND, turn: r.startAt % r.players.length, phase: 'play' });
+  Object.assign(r, { topic: spec.topic, q: spec.q, entries: build(spec.q), used: new Set(), usedBy: {}, log: [], missed: [], rpts: {},
+    roundEnd: Date.now() + r.set.round * 1000, turn: r.startAt % r.players.length, phase: 'play' });
   skipDead(r); newTurn(r);
 }
 function endRound(r, early) {
@@ -66,13 +66,18 @@ function endRound(r, early) {
   r.last = early || r.ri >= r.rounds.length - 1;
   r.startAt = r.turn + 1;
   r.missed = r.entries.map((e, i) => r.used.has(i) ? null : { text: e.al[0], tier: e.tier }).filter(Boolean);
+  r.review.push({ topic: r.topic, q: r.q.q, answers: r.entries.map((e, i) => ({ text: e.al[0], tier: e.tier, by: r.usedBy[i] || null })) });
   broadcast(r);
 }
-function startGame(r, subjects) {
-  const picked = BANK.filter(b => (subjects || []).includes(b.topic));
-  if (!picked.length) return;
-  r.rounds = shuffle(picked).map(b => ({ topic: b.topic, q: b.qs[Math.random() * b.qs.length | 0] }));
-  r.players.forEach(p => { p.pts = 0; p.lives = 3; });
+function startGame(r, m) {
+  const c = (v, lo, hi, d) => { v = Number(v); return Number.isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v))) : d; };
+  const o = m.set || {};
+  r.set = { lives: c(o.lives, 1, 5, 3), turn: c(o.turn, 5, 60, 20), round: c(o.round, 20, 180, 60), rounds: c(o.rounds, 1, 15, 5), skips: c(o.skips, 0, 5, 2) };
+  const want = new Set(Array.isArray(m.topics) ? m.topics : []), pool = [];
+  BANK.forEach(b => b.topics.forEach(t => { if (want.has(t.name)) t.qs.forEach(q => pool.push({ topic: b.subject + ': ' + t.name, q })); }));
+  if (!pool.length) return;
+  r.rounds = shuffle(pool).slice(0, r.set.rounds); r.review = [];
+  r.players.forEach(p => { p.pts = 0; p.lives = r.set.lives; p.skipsUsed = 0; });
   r.ri = 0; r.startAt = 0; beginRound(r);
 }
 function answer(r, p, text) {
@@ -80,10 +85,15 @@ function answer(r, p, text) {
   const i = match(r.entries, text);
   if (i < 0) return send(p.ws, { t: 'toast', text: 'Not accepted. Try a different answer.', kind: 'bad' });
   if (r.used.has(i)) return send(p.ws, { t: 'toast', text: 'Already said this round. Try another.', kind: 'bad' });
-  const e = r.entries[i]; r.used.add(i); p.pts += e.tier; r.rpts[p.name] = (r.rpts[p.name] || 0) + e.tier;
+  const e = r.entries[i]; r.used.add(i); r.usedBy[i] = p.id; p.pts += e.tier; r.rpts[p.name] = (r.rpts[p.name] || 0) + e.tier;
   r.log.unshift({ by: p.name, text: e.al[0], tier: e.tier });
   toast(r, e.tier === 50 ? `${p.name}: +50 Grade 7–9!` : `${p.name}: +10`, e.tier === 50 ? 'hi' : 'ok');
   nextTurn(r);
+}
+function skip(r, p) {
+  if (r.phase !== 'play' || r.players[r.turn] !== p || (p.skipsUsed || 0) >= r.set.skips) return;
+  p.skipsUsed = (p.skipsUsed || 0) + 1; p.pts = Math.max(0, p.pts - 10);
+  toast(r, p.name + ' skipped (−10 points)', 'bad'); nextTurn(r);
 }
 function tick(r) {
   const now = Date.now();
@@ -108,14 +118,15 @@ wss.on('connection', ws => {
       if (r && r.solo) return send(ws, { t: 'err', text: 'Room not found.' });
       if (r && r.phase !== 'lobby') return send(ws, { t: 'err', text: 'That game has already started.' });
       if (r && r.players.length >= MAXP) return send(ws, { t: 'err', text: 'Room is full.' });
-      if (!r) { r = { code: newCode(), solo: !!m.solo, hostId: null, players: [], phase: 'lobby', rounds: [], ri: 0, startAt: 0, turn: 0, log: [], missed: [], rpts: {} }; rooms.set(r.code, r); }
+      if (!r) { r = { code: newCode(), solo: !!m.solo, set: { lives: 3, turn: 20, round: 60, rounds: 5, skips: 2 }, review: [], hostId: null, players: [], phase: 'lobby', rounds: [], ri: 0, startAt: 0, turn: 0, log: [], missed: [], rpts: {} }; rooms.set(r.code, r); }
       me = { id: Math.random().toString(36).slice(2, 8), name, pts: 0, lives: 3, ws };
       r.players.push(me); if (!r.hostId) r.hostId = me.id; room = r; return broadcast(r);
     }
     if (!room) return;
     const host = me.id === room.hostId;
-    if (m.t === 'start' && host && room.phase === 'lobby') startGame(room, m.subjects);
+    if (m.t === 'start' && host && room.phase === 'lobby') startGame(room, m);
     else if (m.t === 'answer') answer(room, me, String(m.text || ''));
+    else if (m.t === 'skip') skip(room, me);
     else if (m.t === 'next' && host && room.phase === 'between') {
       if (room.last) { room.phase = 'end'; broadcast(room); } else { room.ri++; beginRound(room); }
     } else if (m.t === 'again' && host && room.phase === 'end') {
