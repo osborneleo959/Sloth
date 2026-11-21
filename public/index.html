@@ -2,9 +2,9 @@
 <html lang="en-GB"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ReviseRush – GCSE revision party game</title>
-<meta name="description" content="ReviseRush is a free GCSE revision party game. Play solo or with friends: name answers for AQA Science, AQA Geography, Edexcel History and OCR Music before the clock runs out.">
+<meta name="description" content="ReviseRush is a free GCSE revision party game. Play solo or with friends: name answers for GCSE Science, Geography, History, Music, Computer Science and Business Studies before the clock runs out.">
 <meta property="og:title" content="ReviseRush – GCSE revision party game">
-<meta property="og:description" content="Play solo or with friends. Name answers for GCSE Science, Geography, History and Music.">
+<meta property="og:description" content="Play solo or with friends. Name answers for GCSE Science, Geography, History, Music, Computer Science and Business Studies.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f9d6b'/%3E%3Cpath d='M20 34l9 9 16-19' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap">
@@ -31,6 +31,7 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 .mb span{font:400 1rem Figtree,system-ui,sans-serif;color:var(--mut)}
 .mb.b{border-left-color:var(--blue)}.mb.p{border-left-color:var(--pur)}
 .sets{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sets label{display:flex;flex-direction:column;font-size:.9rem;color:var(--mut)}.sets select{margin-top:4px;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chipb{background:var(--card);color:var(--ink);border:2px solid var(--line);padding:8px 14px;border-radius:20px}.chipb.on{border-color:var(--g);background:var(--g);color:var(--on)}.chipb:disabled{opacity:.45}
 .sub{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
 .tps{padding:0 0 8px 8px;display:grid;gap:2px}label.c{display:block;padding:2px 0}
 .row{display:flex;gap:10px;align-items:center}.row>input{flex:1}
@@ -51,7 +52,7 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const LOGO='<svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="ReviseRush logo"><rect width="64" height="64" rx="16" fill="var(--g)"/><rect x="9" y="13" width="46" height="31" rx="9" fill="#fff"/><path d="M19 43v11l12-11z" fill="#fff"/><path d="M21 29l8 8 14-17" fill="none" stroke="var(--g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="12" r="8" fill="var(--sun)"/></svg>';
-let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,open=new Set(),cfg={lives:3,turn:20,round:60,rounds:5,skips:2};
+let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},cfg={lives:3,turn:20,round:60,rounds:5,skips:2};
 const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
 const isHost=()=>s.host===s.you;
 
@@ -64,7 +65,7 @@ function connect(first){
     else if(m.t==='err'){err=m.text;if(!s)home()}};
   ws.onclose=()=>{if(s)app.insertAdjacentHTML('afterbegin','<p class="bad">Connection lost. Refresh the page to rejoin.</p>')};
 }
-function leave(){const w=ws;s=null;sel=null;ws=null;view='menu';err='';if(w)w.close();home()}
+function leave(){const w=ws;s=null;sel=null;act=null;board={};ws=null;view='menu';err='';if(w)w.close();home()}
 function leaveGame(){if(confirm('Leave this game and go back to the home page?'))leave()}
 
 function home(){
@@ -74,7 +75,7 @@ function home(){
     <div class="menu"><button class="mb" id="m1">Play solo<span>Practise on your own</span></button>
     <button class="mb b" id="m2">Host a game<span>Create a room for friends or your class</span></button>
     <button class="mb p" id="m3">Join a game<span>Enter a room code</span></button></div>
-    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. You can skip the current question a limited number of times, for −10 points.</p><p class="mut">Covers AQA Combined Science: Trilogy, AQA Geography, Edexcel History and OCR Music.</p></div>`;
+    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. You can skip the current question a limited number of times, for −10 points.</p><p class="mut">Covers GCSE Biology, Chemistry, Physics, Geography, History, Music, Computer Science and Business Studies. Choose your subject, exam board and topics.</p></div>`;
     [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});return;
   }
   const j=view==='join',title={solo:'Play solo',host:'Host a game',join:'Join a game'}[view];
@@ -89,21 +90,34 @@ function home(){
 function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${[...Array(s.set.lives).keys()].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
 
 function lobby(){
-  if(!sel)sel=new Set(s.bank.flatMap(b=>b.topics));
+  const y=window.scrollY;
+  if(!sel)sel=new Set();
+  if(!act)act=s.bank[0].subject;
   const opt=(k,vals,lab)=>`<label>${lab}<select data-k="${k}">${vals.map(v=>`<option ${cfg[k]===v?'selected':''}>${v}</option>`).join('')}</select></label>`;
-  const picker=s.bank.map(b=>`<div class="sub"><label class="c"><input type="checkbox" data-sub="${esc(b.subject)}" ${b.topics.every(n=>sel.has(n))?'checked':''}> <b>${esc(b.subject)}</b></label><button class="lnk" data-op="${esc(b.subject)}">${open.has(b.subject)?'Hide topics':'Choose topics'}</button></div>${open.has(b.subject)?`<div class="tps">${b.topics.map(n=>`<label class="c"><input type="checkbox" data-t="${esc(n)}" ${sel.has(n)?'checked':''}> ${esc(n)}</label>`).join('')}</div>`:''}`).join('');
+  const cnt=sb=>[...sel].filter(k=>k.startsWith(sb+'|')).length;
+  const S=s.bank.find(x=>x.subject===act);
+  const bd=board[act]||(S.boards.find(b=>b.topics.length)||S.boards[0]).board;
+  const B=S.boards.find(b=>b.board===bd);
+  const key=n=>act+'|'+bd+'|'+n;
+  const subs=s.bank.map(x=>`<button class="chipb ${x.subject===act?'on':''}" data-s="${esc(x.subject)}">${esc(x.subject)}${cnt(x.subject)?` (${cnt(x.subject)})`:''}</button>`).join('');
+  const boards=S.boards.map(b=>`<button class="chipb ${b.board===bd?'on':''}" data-b="${esc(b.board)}" ${b.topics.length?'':'disabled'}>${esc(b.board)}${b.topics.length?'':' (coming soon)'}</button>`).join('');
+  const tps=B.topics.length?B.topics.map(n=>`<label class="c"><input type="checkbox" data-t="${esc(n)}" ${sel.has(key(n))?'checked':''}> ${esc(n)}</label>`).join(''):'<p class="mut">No questions for this board yet.</p>';
   app.innerHTML=`<button class="back" id="lv">← Leave</button><h1>${s.solo?'Solo practice':'Lobby'}</h1>
   ${s.solo?'':`<div class="card"><p class="mut">Share this code:</p><div class="code">${s.code}</div></div><div class="card"><h2>Players (${s.players.length}/8)</h2>${s.players.map(p=>`<p>${esc(p.name)}${p.id===s.host?' (host)':''}</p>`).join('')}</div>`}
   ${isHost()?`<div class="card"><h2>Settings</h2><div class="sets">${opt('lives',[1,2,3,4,5],'Lives')}${opt('turn',[10,15,20,30,45],'Seconds per turn')}${opt('round',[30,60,90,120],'Seconds per round')}${opt('rounds',[3,5,8,10,15],'Rounds')}${opt('skips',[0,1,2,3],'Skips each')}</div></div>
-  <div class="card"><h2>Topics</h2><div class="row" style="margin-bottom:6px"><button class="lnk" id="all">Select all</button><button class="lnk" id="none">Clear</button></div>${picker}</div>
+  <div class="card"><h2>1. Subject</h2><div class="chips">${subs}</div>
+  <h2 style="margin-top:16px">2. Exam board</h2><div class="chips">${boards}</div>
+  <h2 style="margin-top:16px">3. Topics</h2><div class="row" style="margin-bottom:6px"><button class="lnk" id="all">Select all</button><button class="lnk" id="none">Clear</button></div><div class="tps">${tps}</div>
+  <p class="mut" style="margin-top:10px">${sel.size} topic${sel.size===1?'':'s'} selected. You can mix subjects: pick a subject, choose its topics, then pick another.</p></div>
   <button id="st" style="width:100%;font-size:1.2rem" ${sel.size?'':'disabled'}>Start game</button>`:'<p class="mut">Waiting for the host to start…</p>'}`;
   $('lv').onclick=leave;if(!isHost())return;
   app.querySelectorAll('select').forEach(e=>e.onchange=()=>{cfg[e.dataset.k]=+e.value});
-  app.querySelectorAll('[data-sub]').forEach(c=>c.onchange=()=>{s.bank.find(b=>b.subject===c.dataset.sub).topics.forEach(n=>c.checked?sel.add(n):sel.delete(n));lobby()});
-  app.querySelectorAll('[data-t]').forEach(c=>c.onchange=()=>{c.checked?sel.add(c.dataset.t):sel.delete(c.dataset.t);lobby()});
-  app.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{open.has(b.dataset.op)?open.delete(b.dataset.op):open.add(b.dataset.op);lobby()});
-  $('all').onclick=()=>{s.bank.forEach(b=>b.topics.forEach(n=>sel.add(n)));lobby()};$('none').onclick=()=>{sel.clear();lobby()};
+  app.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{act=b.dataset.s;lobby()});
+  app.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{const nb=b.dataset.b;[...sel].forEach(k=>{if(k.startsWith(act+'|')&&!k.startsWith(act+'|'+nb+'|'))sel.delete(k)});board[act]=nb;lobby()});
+  app.querySelectorAll('[data-t]').forEach(c=>c.onchange=()=>{c.checked?sel.add(key(c.dataset.t)):sel.delete(key(c.dataset.t));lobby()});
+  $('all').onclick=()=>{B.topics.forEach(n=>sel.add(key(n)));lobby()};$('none').onclick=()=>{B.topics.forEach(n=>sel.delete(key(n)));lobby()};
   $('st').onclick=()=>send({t:'start',topics:[...sel],set:cfg});
+  window.scrollTo(0,y);
 }
 
 function render(){
