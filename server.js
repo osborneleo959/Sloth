@@ -12,27 +12,7 @@ const wss = new WebSocketServer({ server });
 const rooms = new Map();
 const MAXP = 8;
 
-// ---- answer matching (server-side so answers are never sent to players) ----
-const norm = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\b(cells?|the|a|an|of)\b/g, ' ')
-  .split(/\s+/).filter(Boolean).map(w => w.length > 3 ? w.replace(/s$/, '') : w).join(' ');
-function lev(a, b) {
-  const d = [...Array(b.length + 1).keys()];
-  for (let i = 1; i <= a.length; i++) {
-    let p = d[0]; d[0] = i;
-    for (let j = 1; j <= b.length; j++) { const t = d[j]; d[j] = Math.min(d[j] + 1, d[j - 1] + 1, p + (a[i - 1] === b[j - 1] ? 0 : 1)); p = t; }
-  }
-  return d[b.length];
-}
-const build = q => [...q.h.map(x => ({ tier: 50, al: x.split('|') })), ...q.s.map(x => ({ tier: 10, al: x.split('|') }))];
-function match(entries, input) {
-  const n = norm(input); if (!n) return -1;
-  for (let i = 0; i < entries.length; i++) for (const al of entries[i].al) {
-    const a = norm(al);
-    if (n === a || (a.length >= 4 && (' ' + n + ' ').includes(' ' + a + ' ')) ||
-        (n.length >= 5 && a.length >= 5 && lev(n, a) <= (n.length > 8 ? 2 : 1))) return i;
-  }
-  return -1;
-}
+const { build, match } = require('./match');
 
 // ---- rooms ----
 const send = (ws, o) => ws.readyState === 1 && ws.send(JSON.stringify(o));
