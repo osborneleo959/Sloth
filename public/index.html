@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Name It! Multiplayer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap">
+<style>
+:root{--bg:#e6f1ee;--card:#fff;--ink:#15324b;--mut:#5a7285;--ok:#1b8f63;--hi:#d99a12;--bad:#e5533a;--line:#c5dad3}
+@media (prefers-color-scheme:dark){:root{--bg:#0f2230;--card:#17324a;--ink:#e6f1ee;--mut:#9db5c4;--ok:#4cd39b;--hi:#f2c04d;--bad:#ff7a60;--line:#2b4a63}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Figtree,system-ui,sans-serif;min-height:100vh}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1,h2,.big,.pts,.turn{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;margin:0}
+h1{font-size:2.6rem;line-height:1.05}h2{font-size:1.5rem}p{margin:.4em 0}
+.mut{color:var(--mut)}.bad{color:var(--bad)}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
+button{font:600 1rem Figtree,system-ui,sans-serif;border:0;border-radius:12px;padding:12px 18px;background:var(--ink);color:var(--bg);cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+input[type=text],input:not([type]){font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:10px;align-items:center}.row>input{flex:1}
+.scores{display:flex;gap:8px;overflow-x:auto;padding:2px}
+.pl{flex:1 0 110px;border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:var(--card)}
+.pl.on{border-color:var(--ink);transform:translateY(-3px)}.pl.out{opacity:.4}
+.pl b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pts{font-size:1.4rem}.heart{color:var(--bad)}.heart.lost{opacity:.2}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--ink);width:100%}#tb i{background:var(--bad)}
+.q{font-size:1.9rem;margin:6px 0 10px}.turn{font-size:1.2rem}
+#msg{min-height:1.6em;font-weight:600}
+.code{font:800 3rem "Bricolage Grotesque",sans-serif;letter-spacing:.15em}
+.chip{display:inline-block;border:2px solid var(--ok);color:var(--ok);border-radius:20px;padding:2px 12px;margin:3px 4px 3px 0;font-weight:600}
+.chip.hi{border-color:var(--hi);color:var(--hi)}.chip.miss{border-style:dashed;opacity:.8}
+label{display:block;padding:4px 0}
+@media (prefers-reduced-motion:reduce){.pl.on{transform:none}}
+</style></head><body><main id="app"></main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let ws=null,s=null,off=0,err='',sel=null,mt=null;
+const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
+
+function connect(first){
+  ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host);
+  ws.onopen=()=>send(first);
+  ws.onmessage=e=>{const m=JSON.parse(e.data);
+    if(m.t==='state'){s=m;off=m.serverNow-Date.now();render()}
+    else if(m.t==='toast')toast(m);
+    else if(m.t==='err'){err=m.text;if(!s)home()}};
+  ws.onclose=()=>{if(s)app.insertAdjacentHTML('afterbegin','<p class="bad">Connection lost. Refresh the page to rejoin.</p>')};
+}
+function home(){
+  app.innerHTML=`<h1>Name it!</h1><p class="mut">GCSE revision party game. Up to 8 players, each on their own device.</p>
+  <div class="card"><input id="nm" maxlength="16" placeholder="Your name" aria-label="Your name"><button id="cr" style="width:100%;margin-top:10px">Create room</button></div>
+  <div class="card"><div class="row"><input id="cd" maxlength="4" placeholder="Room code" aria-label="Room code" style="text-transform:uppercase"><button id="jn">Join</button></div></div>
+  <p class="bad">${esc(err)}</p>`;
+  $('cr').onclick=()=>{err='';connect({t:'create',name:$('nm').value})};
+  $('jn').onclick=()=>{err='';connect({t:'join',name:$('nm').value,code:$('cd').value})};
+}
+function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${[0,1,2].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
+const isHost=()=>s.host===s.you;
+function render(){
+  const v=$('ans')?$('ans').value:'',foc=document.activeElement&&document.activeElement.id==='ans';
+  if(s.phase==='lobby'){
+    if(!sel)sel=new Set(s.subjects);
+    app.innerHTML=`<h1>Lobby</h1><div class="card"><p class="mut">Share this code:</p><div class="code">${s.code}</div></div>
+    <div class="card"><h2>Players (${s.players.length}/8)</h2>${s.players.map(p=>`<p>${esc(p.name)}${p.id===s.host?' (host)':''}</p>`).join('')}</div>
+    ${isHost()?`<div class="card"><h2>Subjects</h2>${s.subjects.map(t=>`<label><input type="checkbox" value="${esc(t)}" ${sel.has(t)?'checked':''}> ${esc(t)}</label>`).join('')}<p class="mut">One round per subject.</p></div>
+    <button id="st" style="width:100%;font-size:1.2rem">Start game</button>`:'<p class="mut">Waiting for the host to start…</p>'}`;
+    if(isHost()){document.querySelectorAll('input[type=checkbox]').forEach(c=>c.onchange=()=>{c.checked?sel.add(c.value):sel.delete(c.value);$('st').disabled=!sel.size});
+      $('st').onclick=()=>send({t:'start',subjects:[...sel]})}
+  }else if(s.phase==='play'){
+    const mine=s.turn===s.you,who=s.players.find(p=>p.id===s.turn);
+    app.innerHTML=`${scores()}<div class="card"><p class="mut">Round ${s.ri+1} of ${s.n}: ${esc(s.topic)}</p><div class="q big">${esc(s.q)}</div>
+    <div class="bar" id="rb"><i></i></div><p class="mut" id="rt"></p>
+    <div class="turn">${mine?'Your turn!':esc(who.name)+'’s turn'}</div><div class="bar" id="tb"><i></i></div>
+    <div class="row"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${mine?'Type your answer':'Wait for your turn'}" aria-label="Your answer" ${mine?'':'disabled'}><button id="sub" ${mine?'':'disabled'}>Answer</button></div>
+    <p id="msg"></p><div>${s.log.map(l=>`<span class="chip ${l.tier===50?'hi':''}">${esc(l.text)} (${esc(l.by)})</span>`).join('')}</div></div>`;
+    const go=()=>{const a=$('ans');if(a.value.trim()){send({t:'answer',text:a.value});a.value=''}};
+    $('sub').onclick=go;$('ans').onkeydown=e=>{if(e.key==='Enter')go()};
+    if(mine){$('ans').value=v;$('ans').focus()}
+  }else if(s.phase==='between'){
+    const top=s.players.slice().sort((a,b)=>b.pts-a.pts);
+    app.innerHTML=`<div class="card"><h2>${s.last&&s.ri<s.n-1?'Game over':'Round over'}</h2><p class="mut">${esc(s.q)}</p><p><b>Answers nobody found</b> (gold = grade 7–9):</p>
+    <div>${s.missed.map(m=>`<span class="chip miss ${m.tier===50?'hi':''}">${esc(m.text)}</span>`).join('')||'You found every answer!'}</div></div>
+    <div class="card">${top.map(p=>`<p><b>${esc(p.name)}</b>: ${p.pts} points ${p.lives>0?'':'(out)'}${s.rpts[p.name]?' · +'+s.rpts[p.name]+' this round':''}</p>`).join('')}</div>
+    ${isHost()?`<button id="nx" style="width:100%">${s.last?'See results':'Next round'}</button>`:'<p class="mut">Waiting for the host…</p>'}`;
+    if(isHost())$('nx').onclick=()=>send({t:'next'});
+  }else{
+    const top=s.players.slice().sort((a,b)=>b.pts-a.pts);
+    app.innerHTML=`<h1>${esc(top[0].name)} wins!</h1><div class="card">${top.map((p,i)=>`<p>${i+1}. <b>${esc(p.name)}</b>: ${p.pts} points</p>`).join('')}</div>
+    ${isHost()?'<button id="ag" style="width:100%">Back to lobby</button>':'<p class="mut">Waiting for the host…</p>'}`;
+    if(isHost())$('ag').onclick=()=>send({t:'again'});
+  }
+}
+function toast(m){const e=$('msg');if(!e)return;e.textContent=m.text;e.style.color=m.kind==='bad'?'var(--bad)':m.kind==='hi'?'var(--hi)':'var(--ok)';clearTimeout(mt);mt=setTimeout(()=>{if($('msg'))$('msg').textContent=''},2500)}
+setInterval(()=>{if(!s||s.phase!=='play'||!$('tb'))return;const now=Date.now()+off;
+  $('tb').firstChild.style.width=Math.max(0,(s.turnEnd-now)/200)+'%';
+  $('rb').firstChild.style.width=Math.max(0,(s.roundEnd-now)/600)+'%';
+  $('rt').textContent='Round time left: '+Math.max(0,Math.ceil((s.roundEnd-now)/1000))+'s'},150);
+home();
+</script></body></html>
