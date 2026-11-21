@@ -45,7 +45,7 @@ const alive = r => r.players.filter(p => p.lives > 0);
 const toast = (r, text, kind) => r.players.forEach(p => send(p.ws, { t: 'toast', text, kind }));
 function broadcast(r) {
   for (const p of r.players) send(p.ws, {
-    t: 'state', you: p.id, serverNow: Date.now(), phase: r.phase, code: r.code, host: r.hostId,
+    t: 'state', you: p.id, solo: r.solo, serverNow: Date.now(), phase: r.phase, code: r.code, host: r.hostId,
     players: r.players.map(q => ({ id: q.id, name: q.name, pts: q.pts, lives: q.lives, on: q.ws.readyState === 1 })),
     subjects: BANK.map(b => b.topic), topic: r.topic, q: r.q && r.q.q, ri: r.ri, n: r.rounds.length,
     turn: r.phase === 'play' ? r.players[r.turn].id : null, turnEnd: r.turnEnd, roundEnd: r.roundEnd,
@@ -105,9 +105,10 @@ wss.on('connection', ws => {
       const name = String(m.name || '').trim().slice(0, 16) || 'Player';
       let r = m.t === 'create' ? null : rooms.get(String(m.code || '').toUpperCase().trim());
       if (m.t === 'join' && !r) return send(ws, { t: 'err', text: 'Room not found.' });
+      if (r && r.solo) return send(ws, { t: 'err', text: 'Room not found.' });
       if (r && r.phase !== 'lobby') return send(ws, { t: 'err', text: 'That game has already started.' });
       if (r && r.players.length >= MAXP) return send(ws, { t: 'err', text: 'Room is full.' });
-      if (!r) { r = { code: newCode(), hostId: null, players: [], phase: 'lobby', rounds: [], ri: 0, startAt: 0, turn: 0, log: [], missed: [], rpts: {} }; rooms.set(r.code, r); }
+      if (!r) { r = { code: newCode(), solo: !!m.solo, hostId: null, players: [], phase: 'lobby', rounds: [], ri: 0, startAt: 0, turn: 0, log: [], missed: [], rpts: {} }; rooms.set(r.code, r); }
       me = { id: Math.random().toString(36).slice(2, 8), name, pts: 0, lives: 3, ws };
       r.players.push(me); if (!r.hostId) r.hostId = me.id; room = r; return broadcast(r);
     }
