@@ -2,6 +2,10 @@
 <html lang="en-GB"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ReviseRush – GCSE revision party game</title>
+<meta name="description" content="ReviseRush is a free GCSE revision party game. Play solo or with friends: name answers for AQA Science, AQA Geography, Edexcel History and OCR Music before the clock runs out.">
+<meta property="og:title" content="ReviseRush – GCSE revision party game">
+<meta property="og:description" content="Play solo or with friends. Name answers for GCSE Science, Geography, History and Music.">
+<meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f9d6b'/%3E%3Cpath d='M20 34l9 9 16-19' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap">
 <style>
@@ -61,6 +65,7 @@ function connect(first){
   ws.onclose=()=>{if(s)app.insertAdjacentHTML('afterbegin','<p class="bad">Connection lost. Refresh the page to rejoin.</p>')};
 }
 function leave(){const w=ws;s=null;sel=null;ws=null;view='menu';err='';if(w)w.close();home()}
+function leaveGame(){if(confirm('Leave this game and go back to the home page?'))leave()}
 
 function home(){
   if(view==='menu'){
@@ -69,7 +74,7 @@ function home(){
     <div class="menu"><button class="mb" id="m1">Play solo<span>Practise on your own</span></button>
     <button class="mb b" id="m2">Host a game<span>Create a room for friends or your class</span></button>
     <button class="mb p" id="m3">Join a game<span>Enter a room code</span></button></div>
-    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. You can skip a turn a limited number of times, for −10 points.</p><p class="mut">Covers AQA Combined Science: Trilogy, AQA Geography and Edexcel History.</p></div>`;
+    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. You can skip the current question a limited number of times, for −10 points.</p><p class="mut">Covers AQA Combined Science: Trilogy, AQA Geography, Edexcel History and OCR Music.</p></div>`;
     [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});return;
   }
   const j=view==='join',title={solo:'Play solo',host:'Host a game',join:'Join a game'}[view];
@@ -107,21 +112,21 @@ function render(){
   const top=s.players.slice().sort((a,b)=>b.pts-a.pts);
   if(s.phase==='play'){
     const mine=s.turn===s.you,who=s.players.find(p=>p.id===s.turn),me=s.players.find(p=>p.id===s.you);
-    app.innerHTML=`${scores()}<div class="card"><p class="mut">Round ${s.ri+1} of ${s.n} · ${esc(s.topic)}</p><div class="q big">${esc(s.q)}</div>
+    app.innerHTML=`<button class="back" id="hm">← Home</button>${scores()}<div class="card"><p class="mut">Round ${s.ri+1} of ${s.n} · ${esc(s.topic)}</p><div class="q big">${esc(s.q)}</div>
     <div class="bar" id="rb"><i></i></div><p class="mut" id="rt"></p>
     <div class="turn">${mine?'Your turn!':esc(who.name)+'’s turn'}</div><div class="bar" id="tb"><i></i></div>
     <div class="row"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${mine?'Type your answer':'Wait for your turn'}" aria-label="Your answer" ${mine?'':'disabled'}><button id="sub" ${mine?'':'disabled'}>Answer</button></div>
-    ${s.set.skips?`<button class="ghost" id="sk" style="margin-top:8px" ${mine&&me.skips>0?'':'disabled'}>Skip (${me.skips} left, −10 points)</button>`:''}
+    ${s.set.skips?`<button class="ghost" id="sk" style="margin-top:8px" ${mine&&me.skips>0?'':'disabled'}>Skip question (${me.skips} left, −10 points)</button>`:''}
     <p id="msg"></p><div>${s.log.map(l=>`<span class="chip ${l.tier===50?'hi':''}">${esc(l.text)} (${esc(l.by)})</span>`).join('')}</div></div>`;
     const go=()=>{const a=$('ans');if(a.value.trim()){send({t:'answer',text:a.value});a.value=''}};
-    $('sub').onclick=go;$('ans').onkeydown=e=>{if(e.key==='Enter')go()};if($('sk'))$('sk').onclick=()=>send({t:'skip'});
+    $('sub').onclick=go;$('ans').onkeydown=e=>{if(e.key==='Enter')go()};if($('sk'))$('sk').onclick=()=>send({t:'skip'});$('hm').onclick=leaveGame;
     if(mine){$('ans').value=v;$('ans').focus()}
   }else if(s.phase==='between'){
-    app.innerHTML=`<div class="card"><h2>Round over</h2><p class="mut">${esc(s.q)}</p><p><b>Answers nobody found</b> (gold = grade 7–9):</p>
+    app.innerHTML=`<button class="back" id="hm">← Home</button><div class="card"><h2>Round over</h2><p class="mut">${esc(s.q)}</p><p><b>Answers nobody found</b> (gold = grade 7–9):</p>
     <div>${s.missed.map(m=>`<span class="chip miss ${m.tier===50?'hi':''}">${esc(m.text)}</span>`).join('')||'You found every answer!'}</div></div>
     <div class="card">${top.map(p=>`<p><b>${esc(p.name)}</b>: ${p.pts} points ${p.lives>0?'':'(out)'}${s.rpts[p.name]?' · +'+s.rpts[p.name]+' this round':''}</p>`).join('')}</div>
     ${isHost()?`<button id="nx" style="width:100%">${s.last?'See results':'Next round'}</button>`:'<p class="mut">Waiting for the host…</p>'}`;
-    if(isHost())$('nx').onclick=()=>send({t:'next'});
+    if(isHost())$('nx').onclick=()=>send({t:'next'});$('hm').onclick=leaveGame;
   }else{
     app.innerHTML=`<h1>${s.solo?'Game over!':esc(top[0].name)+' wins!'}</h1><div class="card">${top.map((p,i)=>`<p>${i+1}. <b>${esc(p.name)}</b>: ${p.pts} points</p>`).join('')}</div>
     <h2 style="margin-top:22px">Revision summary</h2><p class="mut">Every answer from your game. <span class="chip">✓ You said it</span> <span class="chip miss">You missed it</span> <span class="chip hi">Grade 7–9</span></p>
