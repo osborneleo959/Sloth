@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en-GB"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -31,12 +32,16 @@ input[type=text],input:not([type]){font:inherit;width:100%;padding:12px 14px;bor
 .chip{display:inline-block;border:2px solid var(--ok);color:var(--ok);border-radius:20px;padding:2px 12px;margin:3px 4px 3px 0;font-weight:600}
 .chip.hi{border-color:var(--hi);color:var(--hi)}.chip.miss{border-style:dashed;opacity:.8}
 label{display:block;padding:4px 0}
+.menu{display:grid;gap:12px;margin:18px 0}
+.mb{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:18px;border-radius:18px;font-size:1.3rem;background:var(--card);color:var(--ink);border:2px solid var(--line);font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;font-weight:800;width:100%}
+.mb span{font:400 1rem Figtree,system-ui,sans-serif;color:var(--mut)}.mb:hover{border-color:var(--ink)}
+.back{background:transparent;color:var(--ink);padding:6px 0;margin-bottom:8px}
 @media (prefers-reduced-motion:reduce){.pl.on{transform:none}}
 </style></head><body><main id="app"></main>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let ws=null,s=null,off=0,err='',sel=null,mt=null;
+let ws=null,s=null,off=0,err='',sel=null,mt=null,view='menu';
 const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
 
 function connect(first){
@@ -49,23 +54,36 @@ function connect(first){
   ws.onclose=()=>{if(s)app.insertAdjacentHTML('afterbegin','<p class="bad">Connection lost. Refresh the page to rejoin.</p>')};
 }
 function home(){
-  app.innerHTML=`<h1>Name it!</h1><p class="mut">GCSE revision party game. Up to 8 players, each on their own device.</p>
-  <div class="card"><input id="nm" maxlength="16" placeholder="Your name" aria-label="Your name"><button id="cr" style="width:100%;margin-top:10px">Create room</button></div>
-  <div class="card"><div class="row"><input id="cd" maxlength="4" placeholder="Room code" aria-label="Room code" style="text-transform:uppercase"><button id="jn">Join</button></div></div>
-  <p class="bad">${esc(err)}</p>`;
-  $('cr').onclick=()=>{err='';connect({t:'create',name:$('nm').value})};
-  $('jn').onclick=()=>{err='';connect({t:'join',name:$('nm').value,code:$('cd').value})};
+  if(view==='menu'){
+    app.innerHTML=`<h1>Name it!</h1><p class="mut">The GCSE revision party game. Name answers before the clock runs out. Higher-level answers score more.</p>
+    <div class="menu"><button class="mb" id="m1">Play solo<span>Practise on your own</span></button>
+    <button class="mb" id="m2">Host a game<span>Create a room for friends or your class</span></button>
+    <button class="mb" id="m3">Join a game<span>Enter a room code</span></button></div>
+    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. You get 20 seconds per turn and 3 lives. Run out of time and you lose one.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50.</p><p class="mut">Covers AQA Combined Science Trilogy, AQA Geography and Edexcel History.</p></div>`;
+    [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});
+    return;
+  }
+  const j=view==='join',title={solo:'Play solo',host:'Host a game',join:'Join a game'}[view];
+  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${title}</h1>
+  <div class="card"><input id="nm" maxlength="16" placeholder="Your name" aria-label="Your name">${j?'<input id="cd" maxlength="4" placeholder="Room code" aria-label="Room code" style="text-transform:uppercase;margin-top:8px">':''}
+  <button id="go" style="width:100%;margin-top:10px">${j?'Join':'Continue'}</button></div><p class="bad">${esc(err)}</p>`;
+  $('bk').onclick=()=>{view='menu';err='';home()};
+  const go=()=>{err='';connect({t:j?'join':'create',name:$('nm').value,code:j?$('cd').value:undefined,solo:view==='solo'})};
+  $('go').onclick=go;app.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')go()});
+  $('nm').focus();
 }
+function leave(){const w=ws;s=null;sel=null;ws=null;view='menu';err='';if(w)w.close();home()}
 function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${[0,1,2].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
 const isHost=()=>s.host===s.you;
 function render(){
   const v=$('ans')?$('ans').value:'',foc=document.activeElement&&document.activeElement.id==='ans';
   if(s.phase==='lobby'){
     if(!sel)sel=new Set(s.subjects);
-    app.innerHTML=`<h1>Lobby</h1><div class="card"><p class="mut">Share this code:</p><div class="code">${s.code}</div></div>
-    <div class="card"><h2>Players (${s.players.length}/8)</h2>${s.players.map(p=>`<p>${esc(p.name)}${p.id===s.host?' (host)':''}</p>`).join('')}</div>
+    app.innerHTML=`<button class="back" id="lv">← Leave</button><h1>${s.solo?'Solo practice':'Lobby'}</h1>${s.solo?'':`<div class="card"><p class="mut">Share this code:</p><div class="code">${s.code}</div></div>
+    <div class="card"><h2>Players (${s.players.length}/8)</h2>${s.players.map(p=>`<p>${esc(p.name)}${p.id===s.host?' (host)':''}</p>`).join('')}</div>`}
     ${isHost()?`<div class="card"><h2>Subjects</h2>${s.subjects.map(t=>`<label><input type="checkbox" value="${esc(t)}" ${sel.has(t)?'checked':''}> ${esc(t)}</label>`).join('')}<p class="mut">One round per subject.</p></div>
     <button id="st" style="width:100%;font-size:1.2rem">Start game</button>`:'<p class="mut">Waiting for the host to start…</p>'}`;
+    $('lv').onclick=leave;
     if(isHost()){document.querySelectorAll('input[type=checkbox]').forEach(c=>c.onchange=()=>{c.checked?sel.add(c.value):sel.delete(c.value);$('st').disabled=!sel.size});
       $('st').onclick=()=>send({t:'start',subjects:[...sel]})}
   }else if(s.phase==='play'){
@@ -87,9 +105,10 @@ function render(){
     if(isHost())$('nx').onclick=()=>send({t:'next'});
   }else{
     const top=s.players.slice().sort((a,b)=>b.pts-a.pts);
-    app.innerHTML=`<h1>${esc(top[0].name)} wins!</h1><div class="card">${top.map((p,i)=>`<p>${i+1}. <b>${esc(p.name)}</b>: ${p.pts} points</p>`).join('')}</div>
-    ${isHost()?'<button id="ag" style="width:100%">Back to lobby</button>':'<p class="mut">Waiting for the host…</p>'}`;
+    app.innerHTML=`<h1>${s.solo?'Game over!':esc(top[0].name)+' wins!'}</h1><div class="card">${top.map((p,i)=>`<p>${i+1}. <b>${esc(p.name)}</b>: ${p.pts} points</p>`).join('')}</div>
+    ${isHost()?`<button id="ag" style="width:100%">${s.solo?'Play again':'Back to lobby'}</button>`:'<p class="mut">Waiting for the host…</p>'}<button class="back" id="hm" style="margin-top:10px">Back to home</button>`;
     if(isHost())$('ag').onclick=()=>send({t:'again'});
+    $('hm').onclick=leave;
   }
 }
 function toast(m){const e=$('msg');if(!e)return;e.textContent=m.text;e.style.color=m.kind==='bad'?'var(--bad)':m.kind==='hi'?'var(--hi)':'var(--ok)';clearTimeout(mt);mt=setTimeout(()=>{if($('msg'))$('msg').textContent=''},2500)}
