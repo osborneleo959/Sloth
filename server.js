@@ -47,7 +47,7 @@ function broadcast(r) {
   for (const p of r.players) send(p.ws, {
     t: 'state', you: p.id, solo: r.solo, serverNow: Date.now(), phase: r.phase, code: r.code, host: r.hostId,
     players: r.players.map(q => ({ id: q.id, name: q.name, pts: q.pts, lives: q.lives, skips: r.set.skips - (q.skipsUsed || 0), on: q.ws.readyState === 1 })),
-    bank: BANK.map(b => ({ subject: b.subject, topics: b.topics.map(t => t.name) })), set: r.set, review: r.phase === 'end' ? r.review : undefined, topic: r.topic, q: r.q && r.q.q, ri: r.ri, n: r.rounds.length,
+    bank: BANK.map(s => ({ subject: s.subject, boards: s.boards.map(b => ({ board: b.board, topics: b.topics.map(t => t.name) })) })), set: r.set, review: r.phase === 'end' ? r.review : undefined, topic: r.topic, q: r.q && r.q.q, ri: r.ri, n: r.rounds.length,
     turn: r.phase === 'play' ? r.players[r.turn].id : null, turnEnd: r.turnEnd, roundEnd: r.roundEnd,
     log: r.log, missed: r.missed, rpts: r.rpts, last: r.last
   });
@@ -74,7 +74,7 @@ function startGame(r, m) {
   const o = m.set || {};
   r.set = { lives: c(o.lives, 1, 5, 3), turn: c(o.turn, 5, 60, 20), round: c(o.round, 20, 180, 60), rounds: c(o.rounds, 1, 15, 5), skips: c(o.skips, 0, 5, 2) };
   const want = new Set(Array.isArray(m.topics) ? m.topics : []), pool = [];
-  BANK.forEach(b => b.topics.forEach(t => { if (want.has(t.name)) t.qs.forEach(q => pool.push({ topic: b.subject + ': ' + t.name, q })); }));
+  BANK.forEach(s => s.boards.forEach(b => b.topics.forEach(t => { if (want.has(s.subject + '|' + b.board + '|' + t.name)) t.qs.forEach(q => pool.push({ topic: s.subject + ' (' + b.board + '): ' + t.name, q })); })));
   if (!pool.length) return;
   r.rounds = shuffle(pool).slice(0, r.set.rounds); r.review = [];
   r.players.forEach(p => { p.pts = 0; p.lives = r.set.lives; p.skipsUsed = 0; });
