@@ -2,11 +2,15 @@
 const http = require('http'), fs = require('fs'), path = require('path');
 const { WebSocketServer } = require('ws');
 const BANK = require('./bank');
+const db = require('./db'), api = require('./api');
 
 const page = fs.readFileSync(path.join(__dirname, 'public', 'index.html'));
+const privacy = fs.readFileSync(path.join(__dirname, 'public', 'privacy.html'));
 const server = http.createServer((req, res) => {
+  const p = req.url.split('?')[0];
+  if (p.startsWith('/api/')) return api(req, res);
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-  res.end(page);
+  res.end(p === '/privacy' ? privacy : page);
 });
 const wss = new WebSocketServer({ server });
 const rooms = new Map();
@@ -25,7 +29,7 @@ const alive = r => r.players.filter(p => p.lives > 0);
 const toast = (r, text, kind) => r.players.forEach(p => send(p.ws, { t: 'toast', text, kind }));
 function broadcast(r) {
   for (const p of r.players) send(p.ws, {
-    t: 'state', you: p.id, solo: r.solo, serverNow: Date.now(), phase: r.phase, code: r.code, host: r.hostId,
+    t: 'state', you: p.id, solo: r.solo, daily: r.daily ? { subject: r.daily.subject, board: r.daily.board } : null, result: r.result, serverNow: Date.now(), phase: r.phase, code: r.code, host: r.hostId,
     players: r.players.map(q => ({ id: q.id, name: q.name, pts: q.pts, lives: q.lives, skips: r.set.skips - (q.skipsUsed || 0), on: q.ws.readyState === 1 })),
     bank: BANK.map(s => ({ subject: s.subject, boards: s.boards.map(b => ({ board: b.board, topics: b.topics.map(t => t.name) })) })), set: r.set, review: r.phase === 'end' ? r.review : undefined, topic: r.topic, q: r.q && r.q.q, ri: r.ri, n: r.rounds.length,
     turn: r.phase === 'play' ? r.players[r.turn].id : null, turnEnd: r.turnEnd, roundEnd: r.roundEnd,
@@ -47,6 +51,12 @@ function endRound(r, early) {
   r.startAt = r.turn + 1;
   r.missed = r.entries.map((e, i) => r.used.has(i) ? null : { text: e.al[0], tier: e.tier }).filter(Boolean);
   r.review.push({ topic: r.topic, q: r.q.q, answers: r.entries.map((e, i) => ({ text: e.al[0], tier: e.tier, by: r.usedBy[i] || null })) });
+  if (r.daily && r.last && !r.recording) {
+    r.recording = true;
+    const answers = r.review.reduce((a, x) => a + x.answers.filter(y => y.by).length, 0);
+    db.recordDaily({ p_user: r.daily.userId, p_date: r.daily.date, p_subject: r.daily.subject, p_board: r.daily.board, p_score: r.players[0].pts, p_answers: answers })
+      .then(res => { r.result = res; broadcast(r); }).catch(() => { r.result = { error: true }; broadcast(r); });
+  }
   broadcast(r);
 }
 function startGame(r, m) {
@@ -92,10 +102,42 @@ function tick(r) {
 }
 setInterval(() => rooms.forEach(r => r.phase === 'play' && tick(r)), 250);
 
+// ---- daily challenge: same questions for everyone each (UK) day ----
+function seeded(str) {
+  let h = 1779033703 ^ str.length;
+  for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+  let a = h >>> 0;
+  return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+async function makeDaily(m, ws) {
+  if (!db.enabled()) return { error: 'Accounts are not set up on this server yet.' };
+  const id = await db.userFromToken(String(m.token || ''));
+  if (!id) return { error: 'Please sign in again.' };
+  const profile = await db.getProfile(id); if (!profile) return { error: 'Profile not found.' };
+  const d = m.daily || {}, sb = BANK.find(s => s.subject === d.subject), bd = sb && sb.boards.find(b => b.board === d.board), pool = [];
+  if (bd) bd.topics.forEach(t => t.qs.forEach(q => pool.push({ topic: sb.subject + ' (' + bd.board + '): ' + t.name, q })));
+  if (!pool.length) return { error: 'No questions for that subject and board yet.' };
+  const date = db.ukDate();
+  if (await db.hasPlayed(id, date, sb.subject, bd.board)) return { error: 'You have already completed today’s challenge for this subject.' };
+  const rnd = seeded(date + '|' + sb.subject + '|' + bd.board);
+  const picks = pool.map(x => [rnd(), x]).sort((a, b) => a[0] - b[0]).map(x => x[1]).slice(0, 5);
+  const r = { code: newCode(), solo: true, daily: { subject: sb.subject, board: bd.board, date, userId: id }, set: { lives: 3, turn: 20, round: 60, rounds: picks.length, skips: 0, need: 3 }, review: [], hostId: null, players: [], phase: 'lobby', rounds: picks, ri: 0, startAt: 0, turn: 0, log: [], missed: [], rpts: {} };
+  rooms.set(r.code, r);
+  const me = { id: Math.random().toString(36).slice(2, 8), name: profile.display_name, pts: 0, lives: 3, skipsUsed: 0, ws };
+  r.players.push(me); r.hostId = me.id; beginRound(r);
+  return { room: r, me };
+}
+
 wss.on('connection', ws => {
-  let room = null, me = null;
+  let room = null, me = null, pending = false;
   ws.on('message', raw => {
     let m; try { m = JSON.parse(raw); } catch { return; }
+    if (m.t === 'create' && m.daily) {
+      if (room || pending) return; pending = true;
+      makeDaily(m, ws).then(o => { pending = false; if (o.error) return send(ws, { t: 'err', text: o.error }); room = o.room; me = o.me; broadcast(room); })
+        .catch(() => { pending = false; send(ws, { t: 'err', text: 'Could not start the daily challenge.' }); });
+      return;
+    }
     if (m.t === 'create' || m.t === 'join') {
       if (room) return;
       const name = String(m.name || '').trim().slice(0, 16) || 'Player';
@@ -115,7 +157,7 @@ wss.on('connection', ws => {
     else if (m.t === 'skip') skip(room, me);
     else if (m.t === 'next' && host && room.phase === 'between') {
       if (room.last) { room.phase = 'end'; broadcast(room); } else { room.ri++; beginRound(room); }
-    } else if (m.t === 'again' && host && room.phase === 'end') {
+    } else if (m.t === 'again' && host && room.phase === 'end' && !room.daily) {
       room.players = room.players.filter(p => p.ws.readyState === 1); room.phase = 'lobby'; broadcast(room);
     }
   });
