@@ -52,7 +52,7 @@ function endRound(r, early) {
 function startGame(r, m) {
   const c = (v, lo, hi, d) => { v = Number(v); return Number.isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v))) : d; };
   const o = m.set || {};
-  r.set = { lives: c(o.lives, 1, 5, 3), turn: c(o.turn, 5, 60, 20), round: c(o.round, 20, 180, 60), rounds: c(o.rounds, 1, 15, 5), skips: c(o.skips, 0, 5, 2) };
+  r.set = { lives: c(o.lives, 1, 5, 3), turn: c(o.turn, 5, 60, 20), round: c(o.round, 20, 180, 60), rounds: c(o.rounds, 1, 15, 5), skips: c(o.skips, 0, 5, 2), need: c(o.need, 1, 10, 5) };
   const want = new Set(Array.isArray(m.topics) ? m.topics : []), pool = [];
   BANK.forEach(s => s.boards.forEach(b => b.topics.forEach(t => { if (want.has(s.subject + '|' + b.board + '|' + t.name)) t.qs.forEach(q => pool.push({ topic: s.subject + ' (' + b.board + '): ' + t.name, q })); })));
   if (!pool.length) return;
@@ -68,14 +68,20 @@ function answer(r, p, text) {
   const e = r.entries[i]; r.used.add(i); r.usedBy[i] = p.id; p.pts += e.tier; r.rpts[p.name] = (r.rpts[p.name] || 0) + e.tier;
   r.log.unshift({ by: p.name, text: e.al[0], tier: e.tier });
   toast(r, e.tier === 50 ? `${p.name}: +50 Grade 7–9!` : `${p.name}: +10`, e.tier === 50 ? 'hi' : 'ok');
+  if (r.solo) { if (r.used.size >= r.set.need) return endRound(r, false); return broadcast(r); }
   nextTurn(r);
 }
 function skip(r, p) {
-  if (r.phase !== 'play' || r.players[r.turn] !== p || (p.skipsUsed || 0) >= r.set.skips) return;
-  p.skipsUsed = (p.skipsUsed || 0) + 1; p.pts = Math.max(0, p.pts - 10);
-  toast(r, p.name + ' skipped the question (−10 points)', 'bad'); endRound(r, false);
+  if (r.phase !== 'play' || r.players[r.turn] !== p) return;
+  if (!r.solo) {
+    if ((p.skipsUsed || 0) >= r.set.skips) return;
+    p.skipsUsed = (p.skipsUsed || 0) + 1; p.pts = Math.max(0, p.pts - 10);
+    toast(r, p.name + ' skipped the question (−10 points)', 'bad');
+  }
+  endRound(r, false);
 }
 function tick(r) {
+  if (r.solo) return;
   const now = Date.now();
   if (now >= r.roundEnd) return endRound(r, false);
   if (now < r.turnEnd) return;
