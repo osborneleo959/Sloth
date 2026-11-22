@@ -1292,6 +1292,17 @@ module.exports=[
          "informal sector|recycling",
          "improved services|better services"
         ]
+       },
+       {
+        "q": "Name a cause of urban growth in a low income country",
+        "s": [
+         "rural urban migration|migration",
+         "natural increase"
+        ],
+        "h": [
+         "push factors|pull factors",
+         "lack of jobs in rural areas|poverty in rural areas"
+        ]
        }
       ]
      },
@@ -1443,6 +1454,42 @@ module.exports=[
          "service sector|tertiary sector|banking",
          "foreign investment|investment"
         ]
+       },
+       {
+        "q": "Name a cause of uneven development",
+        "s": [
+         "physical factors|climate",
+         "economic factors",
+         "historical factors|colonialism",
+         "lack of resources|poor soil"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a change in the UK economy",
+        "s": [
+         "deindustrialisation|decline of manufacturing",
+         "post industrial economy|service industries",
+         "science parks|business parks",
+         "globalisation"
+        ],
+        "h": [
+         "north south divide",
+         "government policy",
+         "information technology|finance"
+        ]
+       },
+       {
+        "q": "Name an advantage of a TNC to a host country",
+        "s": [
+         "jobs|employment",
+         "investment",
+         "new technology|skills",
+         "infrastructure"
+        ],
+        "h": [
+         "improved quality of life|tax revenue"
+        ]
        }
       ]
      },
@@ -1512,6 +1559,62 @@ module.exports=[
          "pests and disease|pests",
          "poor infrastructure|poor transport",
          "food waste"
+        ]
+       },
+       {
+        "q": "Name a source in the UK energy mix",
+        "s": [
+         "gas",
+         "oil",
+         "coal",
+         "nuclear",
+         "wind",
+         "solar"
+        ],
+        "h": [
+         "biomass",
+         "hydroelectric|hydro",
+         "tidal"
+        ]
+       },
+       {
+        "q": "Name an impact of food insecurity",
+        "s": [
+         "famine",
+         "undernutrition|malnutrition",
+         "rising prices",
+         "social unrest"
+        ],
+        "h": [
+         "soil erosion",
+         "conflict"
+        ]
+       },
+       {
+        "q": "Name a cause of water insecurity",
+        "s": [
+         "pollution",
+         "over abstraction|over-abstraction",
+         "climate|drought",
+         "limited infrastructure",
+         "poverty"
+        ],
+        "h": [
+         "geology",
+         "rising demand"
+        ]
+       },
+       {
+        "q": "Name a sustainable food strategy",
+        "s": [
+         "organic farming|organic",
+         "permaculture",
+         "urban farming",
+         "seasonal food|local food",
+         "reducing waste"
+        ],
+        "h": [
+         "sustainable fishing|sustainable meat"
         ]
        }
       ]
@@ -1789,6 +1892,40 @@ module.exports=[
          "revetment",
          "do nothing"
         ]
+       },
+       {
+        "q": "Name a coastal process",
+        "s": [
+         "weathering",
+         "erosion",
+         "transportation|longshore drift",
+         "deposition",
+         "mass movement"
+        ],
+        "h": [
+         "hydraulic power|hydraulic action",
+         "abrasion",
+         "attrition",
+         "sliding|slumping|rock falls"
+        ]
+       },
+       {
+        "q": "Name a landform of coastal deposition",
+        "s": [
+         "beach",
+         "sand dune|dune",
+         "spit",
+         "bar"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a type of wave",
+        "s": [
+         "constructive",
+         "destructive"
+        ],
+        "h": []
        }
       ]
      },
@@ -1826,6 +1963,33 @@ module.exports=[
          "river restoration|restoring meanders",
          "dredging|straightening"
         ]
+       },
+       {
+        "q": "Name a fluvial process",
+        "s": [
+         "erosion",
+         "transportation",
+         "deposition"
+        ],
+        "h": [
+         "hydraulic action",
+         "abrasion",
+         "attrition",
+         "solution",
+         "traction",
+         "saltation",
+         "suspension"
+        ]
+       },
+       {
+        "q": "Name a factor affecting flood risk",
+        "s": [
+         "precipitation|heavy rainfall",
+         "geology",
+         "relief|steep slopes",
+         "land use|urbanisation"
+        ],
+        "h": []
        }
       ]
      },
@@ -1927,6 +2091,41 @@ module.exports=[
          "fragile ecosystem|fragile",
          "wind farms|hydroelectric"
         ]
+       },
+       {
+        "q": "Name a cause of desertification",
+        "s": [
+         "climate change",
+         "population growth",
+         "overgrazing",
+         "over cultivation|over-cultivation",
+         "removal of fuel wood|fuelwood|cutting trees"
+        ],
+        "h": [
+         "soil erosion"
+        ]
+       },
+       {
+        "q": "Name a strategy to reduce the risk of desertification",
+        "s": [
+         "water management|soil management",
+         "tree planting|planting trees",
+         "appropriate technology"
+        ],
+        "h": [
+         "water and soil management"
+        ]
+       },
+       {
+        "q": "Name a development opportunity in a hot desert or cold environment",
+        "s": [
+         "mineral extraction|mining",
+         "energy|solar energy",
+         "farming",
+         "tourism",
+         "fishing"
+        ],
+        "h": []
        }
       ]
      }
@@ -1934,7 +2133,390 @@ module.exports=[
    },
    {
     "board": "Edexcel",
-    "topics": []
+    "topics": [
+     {
+      "name": "Topic 1: The changing landscapes of the UK",
+      "qs": [
+       {
+        "q": "Name a UK rock type",
+        "s": [
+         "chalk",
+         "sandstone",
+         "basalt",
+         "granite",
+         "slate"
+        ],
+        "h": [
+         "schist|schists"
+        ]
+       },
+       {
+        "q": "Name a coastal landform",
+        "s": [
+         "headland",
+         "bay",
+         "cave",
+         "arch",
+         "cliff",
+         "stack",
+         "beach"
+        ],
+        "h": [
+         "wave cut platform",
+         "bar",
+         "spit"
+        ]
+       },
+       {
+        "q": "Name a river landform",
+        "s": [
+         "waterfall",
+         "meander",
+         "floodplain|flood plain",
+         "gorge"
+        ],
+        "h": [
+         "interlocking spurs",
+         "ox bow lake|oxbow lake",
+         "levee",
+         "point bar",
+         "river cliff"
+        ]
+       },
+       {
+        "q": "Name a glaciated upland landform",
+        "s": [
+         "corrie",
+         "arete|arête",
+         "glacial trough|u shaped valley",
+         "tarn|glacial lake",
+         "moraine"
+        ],
+        "h": [
+         "truncated spur",
+         "hanging valley",
+         "roche moutonnee",
+         "drumlin",
+         "crag and tail"
+        ]
+       },
+       {
+        "q": "Name a coastal defence used in the UK",
+        "s": [
+         "sea wall",
+         "groynes|groyne",
+         "rip rap|rock armour",
+         "beach nourishment",
+         "managed retreat"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a process of erosion",
+        "s": [
+         "abrasion",
+         "hydraulic action",
+         "attrition",
+         "solution"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Topic 2: Weather hazards and climate change",
+      "qs": [
+       {
+        "q": "Name a natural cause of climate change",
+        "s": [
+         "milankovitch cycles|milankovitch",
+         "solar variation|sunspots",
+         "volcanism|volcanic eruptions"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name evidence for natural climate change",
+        "s": [
+         "ice cores",
+         "pollen records|pollen",
+         "tree rings",
+         "historical sources"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a human activity that produces greenhouse gases",
+        "s": [
+         "industry",
+         "transport",
+         "energy production|energy",
+         "farming"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name an effect of climate change",
+        "s": [
+         "rising sea levels|sea level rise",
+         "retreating glaciers|melting glaciers",
+         "changing crop yields|crop yields"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a hazard caused by tropical cyclones",
+        "s": [
+         "high winds|strong winds",
+         "intense rainfall|heavy rain",
+         "storm surge",
+         "coastal flooding|flooding",
+         "landslides"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a cause of drought",
+        "s": [
+         "lack of rainfall|meteorological",
+         "hydrological",
+         "deforestation",
+         "dam building|agriculture"
+        ],
+        "h": [
+         "global atmospheric circulation|high pressure"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Topic 3: Ecosystems, biodiversity and management",
+      "qs": [
+       {
+        "q": "Name a large-scale ecosystem",
+        "s": [
+         "tropical rainforest|rainforest",
+         "temperate forest|deciduous woodland",
+         "boreal forest",
+         "desert",
+         "tundra",
+         "grassland"
+        ],
+        "h": [
+         "savanna"
+        ]
+       },
+       {
+        "q": "Name a resource provided by the biosphere",
+        "s": [
+         "food",
+         "medicine",
+         "building materials|timber",
+         "fuel"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a UK ecosystem",
+        "s": [
+         "moorland",
+         "heathland|heath",
+         "woodland",
+         "wetland"
+        ],
+        "h": [
+         "marine ecosystem"
+        ]
+       },
+       {
+        "q": "Name an adaptation of a tropical rainforest plant or animal",
+        "s": [
+         "buttress roots",
+         "drip tips",
+         "stratified layers|canopy",
+         "camouflage",
+         "strong limbs"
+        ],
+        "h": [
+         "modified wings",
+         "modified beaks"
+        ]
+       },
+       {
+        "q": "Name a cause of tropical rainforest deforestation",
+        "s": [
+         "agriculture",
+         "resource extraction|mining",
+         "population pressure|settlement"
+        ],
+        "h": [
+         "commodity value",
+         "poor governance"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Topic 4: Changing cities",
+      "qs": [
+       {
+        "q": "Name a zone of a UK city",
+        "s": [
+         "cbd|central business district",
+         "inner city",
+         "suburbs",
+         "urban rural fringe|rural urban fringe"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a process of urban change",
+        "s": [
+         "urbanisation",
+         "suburbanisation",
+         "counter urbanisation",
+         "re urbanisation"
+        ],
+        "h": [
+         "deindustrialisation",
+         "decentralisation"
+        ]
+       },
+       {
+        "q": "Name a challenge of rapid urbanisation in a developing city",
+        "s": [
+         "pollution",
+         "informal employment|under employment",
+         "slums|poor housing",
+         "lack of services|poor infrastructure"
+        ],
+        "h": [
+         "inequality"
+        ]
+       },
+       {
+        "q": "Name a way to make urban living more sustainable",
+        "s": [
+         "recycling",
+         "employment",
+         "education",
+         "health",
+         "transport",
+         "affordable housing|energy efficient housing"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a recent change in retailing",
+        "s": [
+         "out of town shopping|edge of town shopping",
+         "internet shopping|online shopping",
+         "decline of the cbd|decline of the high street"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Topic 5: Global development",
+      "qs": [
+       {
+        "q": "Name a measure of development",
+        "s": [
+         "gdp per capita|gdp",
+         "human development index|hdi"
+        ],
+        "h": [
+         "inequality|gini coefficient",
+         "corruption index"
+        ]
+       },
+       {
+        "q": "Name a factor affecting development",
+        "s": [
+         "economic",
+         "social",
+         "technological",
+         "cultural",
+         "food security|water security"
+        ],
+        "h": [
+         "physical",
+         "historic"
+        ]
+       },
+       {
+        "q": "Name a strategy to reduce uneven development",
+        "s": [
+         "international aid|aid",
+         "intergovernmental agreements|agreements"
+        ],
+        "h": [
+         "top down projects|top down",
+         "bottom up projects|bottom up",
+         "tncs"
+        ]
+       },
+       {
+        "q": "Name a sector of the economy",
+        "s": [
+         "primary",
+         "secondary",
+         "tertiary"
+        ],
+        "h": [
+         "quaternary"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Topic 6: Resource management",
+      "qs": [
+       {
+        "q": "Name a type of natural resource",
+        "s": [
+         "biotic",
+         "abiotic",
+         "renewable",
+         "non renewable"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a way people exploit the environment for resources",
+        "s": [
+         "extraction of fossil fuels|fossil fuels",
+         "fishing",
+         "farming",
+         "deforestation"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name an environmental effect of exploiting resources",
+        "s": [
+         "reduced biodiversity",
+         "soil erosion",
+         "reduced water quality",
+         "reduced air quality|air pollution"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a natural resource",
+        "s": [
+         "soil",
+         "forestry|timber",
+         "fossil fuels",
+         "water",
+         "minerals|rock"
+        ],
+        "h": []
+       }
+      ]
+     }
+    ]
    }
   ]
  },
@@ -2080,6 +2662,82 @@ module.exports=[
          "false confessions|hoax letters",
          "no fingerprinting|fingerprints not used"
         ]
+       },
+       {
+        "q": "Name a form of law enforcement in medieval England",
+        "s": [
+         "tithings|tithing",
+         "hue and cry",
+         "parish constable"
+        ],
+        "h": [
+         "shire reeve"
+        ]
+       },
+       {
+        "q": "Name a way the Church influenced medieval justice",
+        "s": [
+         "sanctuary",
+         "benefit of clergy",
+         "trial by ordeal"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a crime that was newly defined in early modern England",
+        "s": [
+         "vagabondage|vagrancy",
+         "witchcraft",
+         "heresy",
+         "treason"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a key case study or individual in crime and punishment",
+        "s": [
+         "gunpowder plot|gunpowder plotters",
+         "matthew hopkins",
+         "pentonville prison|pentonville",
+         "robert peel",
+         "derek bentley",
+         "conscientious objectors"
+        ],
+        "h": [
+         "tolpuddle martyrs",
+         "elizabeth fry",
+         "john howard",
+         "fielding brothers"
+        ]
+       },
+       {
+        "q": "Name a feature of modern policing",
+        "s": [
+         "neighbourhood watch",
+         "specialisation",
+         "science and technology|dna|forensics",
+         "prevention"
+        ],
+        "h": [
+         "open prisons",
+         "community service"
+        ]
+       },
+       {
+        "q": "Name a feature of policing in Whitechapel",
+        "s": [
+         "beat constable",
+         "h division",
+         "cid",
+         "scotland yard",
+         "metropolitan police"
+        ],
+        "h": [
+         "city of london police",
+         "sir charles warren|warren",
+         "vigilance committee",
+         "home secretary"
+        ]
        }
       ]
      },
@@ -2193,6 +2851,63 @@ module.exports=[
          "spy network|walsingham",
          "monopolies|rewards and titles",
          "punishing disloyalty|executions"
+        ]
+       },
+       {
+        "q": "Name a feature of the 1559 religious settlement",
+        "s": [
+         "act of supremacy|supreme governor",
+         "act of uniformity|book of common prayer",
+         "church of england"
+        ],
+        "h": [
+         "middle way"
+        ]
+       },
+       {
+        "q": "Name a plot or revolt against Elizabeth I",
+        "s": [
+         "ridolfi plot|ridolfi",
+         "throckmorton plot|throckmorton",
+         "babington plot|babington"
+        ],
+        "h": [
+         "revolt of the northern earls|northern earls"
+        ]
+       },
+       {
+        "q": "Name a reason for worsening relations with Spain",
+        "s": [
+         "religious rivalry|religion",
+         "commercial rivalry|trade",
+         "privateering|drake",
+         "netherlands|dutch revolt"
+        ],
+        "h": [
+         "robert dudley",
+         "raid on cadiz"
+        ]
+       },
+       {
+        "q": "Name an Elizabethan pastime or form of leisure",
+        "s": [
+         "theatre",
+         "bear baiting",
+         "hunting",
+         "sport|bowls|archery"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a reason for attempting to colonise Virginia",
+        "s": [
+         "raleigh",
+         "trade",
+         "new technology|better ships",
+         "expand empire|claim land"
+        ],
+        "h": [
+         "weakening spain|find gold"
         ]
        }
       ]
@@ -2312,6 +3027,63 @@ module.exports=[
          "ostpolitik",
          "nixon visit to china"
         ]
+       },
+       {
+        "q": "Name a conference of the Grand Alliance",
+        "s": [
+         "tehran",
+         "yalta",
+         "potsdam"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Cold War alliance or organisation",
+        "s": [
+         "nato",
+         "warsaw pact",
+         "cominform",
+         "comecon"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name an arms control agreement",
+        "s": [
+         "limited test ban treaty",
+         "outer space treaty",
+         "nuclear non proliferation treaty|npt",
+         "salt 1",
+         "salt 2"
+        ],
+        "h": [
+         "hotline"
+        ]
+       },
+       {
+        "q": "Name an event or idea that ended the Cold War",
+        "s": [
+         "gorbachev",
+         "new thinking|glasnost|perestroika",
+         "fall of the berlin wall",
+         "collapse of the soviet union"
+        ],
+        "h": [
+         "strategic defence initiative|sdi",
+         "end of the warsaw pact"
+        ]
+       },
+       {
+        "q": "Name a US policy or doctrine in the Cold War",
+        "s": [
+         "truman doctrine",
+         "marshall plan",
+         "carter doctrine",
+         "strategic defence initiative|sdi"
+        ],
+        "h": [
+         "containment"
+        ]
        }
       ]
      },
@@ -2430,6 +3202,73 @@ module.exports=[
          "us loans|american loans",
          "ending the ruhr occupation|ruhr"
         ]
+       },
+       {
+        "q": "Name a group that challenged the Weimar Republic",
+        "s": [
+         "spartacists",
+         "freikorps",
+         "kapp putsch|kapp",
+         "communists",
+         "nazis"
+        ],
+        "h": [
+         "french occupation of the ruhr"
+        ]
+       },
+       {
+        "q": "Name a feature of the Weimar Constitution",
+        "s": [
+         "proportional representation",
+         "article 48",
+         "president|chancellor",
+         "reichstag",
+         "bill of rights"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name an organisation the Nazis used to control young people",
+        "s": [
+         "hitler youth",
+         "league of german maidens|league of german girls"
+        ],
+        "h": [
+         "schools|education"
+        ]
+       },
+       {
+        "q": "Name a Nazi policy to reduce unemployment",
+        "s": [
+         "labour service|rad",
+         "autobahns",
+         "rearmament",
+         "invisible unemployment"
+        ],
+        "h": [
+         "strength through joy",
+         "labour front"
+        ]
+       },
+       {
+        "q": "Name a group persecuted by the Nazis",
+        "s": [
+         "jews|jewish people",
+         "roma|sinti",
+         "homosexuals",
+         "disabled people|people with disabilities",
+         "slavs"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a source of opposition to the Nazis",
+        "s": [
+         "churches|pastor niemoller|niemoller",
+         "swing youth",
+         "edelweiss pirates"
+        ],
+        "h": []
        }
       ]
      }
@@ -3714,327 +4553,416 @@ module.exports=[
     "board": "Edexcel",
     "topics": [
      {
-      "name": "Enterprise and entrepreneurship",
+      "name": "1.1 Enterprise and entrepreneurship",
       "qs": [
        {
-        "q": "Name a characteristic of an entrepreneur",
+        "q": "Name a reason new business ideas come about",
         "s": [
-         "risk taker|risk taking",
-         "creative|creativity",
-         "determined|determination",
-         "hard working",
-         "confident|confidence"
+         "changes in technology|technology",
+         "changes in what consumers want|consumer demand",
+         "products becoming obsolete|obsolete"
         ],
         "h": [
-         "resilient|resilience",
-         "leadership|leader",
-         "innovative|innovation",
-         "self motivated|motivated"
+         "original ideas",
+         "adapting existing products|adapting ideas"
         ]
        },
        {
-        "q": "Name a reason people start a business",
+        "q": "Name a way a business adds value",
         "s": [
-         "be their own boss|independence",
-         "profit|make money",
-         "passion|follow an interest",
-         "redundancy|unemployment"
+         "convenience",
+         "branding",
+         "quality",
+         "design",
+         "usp|unique selling point"
         ],
-        "h": [
-         "spotting a gap in the market|gap in the market",
-         "job satisfaction",
-         "flexibility",
-         "hobby"
-        ]
+        "h": []
+       },
+       {
+        "q": "Name a risk or reward of starting a business",
+        "s": [
+         "business failure|failure",
+         "financial loss",
+         "lack of security",
+         "profit",
+         "independence|success"
+        ],
+        "h": []
        }
       ]
      },
      {
-      "name": "Business ownership",
+      "name": "1.2 Spotting a business opportunity",
       "qs": [
        {
-        "q": "Name a type of business ownership",
+        "q": "Name a customer need",
         "s": [
-         "sole trader",
-         "partnership",
-         "private limited company|ltd",
-         "public limited company|plc"
+         "price",
+         "quality",
+         "choice",
+         "convenience"
         ],
-        "h": [
-         "franchise",
-         "co operative|co-operative",
-         "social enterprise"
-        ]
+        "h": []
        },
        {
-        "q": "Name an advantage of being a sole trader",
-        "s": [
-         "be your own boss|control",
-         "keep all the profit|keep profit",
-         "simple to set up|easy to set up",
-         "privacy"
-        ],
-        "h": [
-         "flexibility",
-         "personal service",
-         "close customer relationships"
-        ]
-       }
-      ]
-     },
-     {
-      "name": "Marketing",
-      "qs": [
-       {
-        "q": "Name a market research method",
+        "q": "Name a method of market research",
         "s": [
          "survey|questionnaire",
          "focus group",
-         "interview",
-         "observation|test marketing"
+         "observation",
+         "internet research|internet"
         ],
         "h": [
-         "secondary research|desk research",
-         "primary research",
-         "online research|social media",
-         "sample"
+         "market reports",
+         "government reports",
+         "social media"
         ]
        },
        {
-        "q": "Name a method of promotion",
+        "q": "Name a way of segmenting a market",
+        "s": [
+         "location",
+         "age",
+         "income",
+         "lifestyle",
+         "demographics"
+        ],
+        "h": [
+         "market mapping"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "1.3 Putting a business idea into practice",
+      "qs": [
+       {
+        "q": "Name a financial aim or objective for a start-up",
+        "s": [
+         "survival",
+         "profit",
+         "sales",
+         "market share",
+         "financial security"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a non-financial aim or objective",
+        "s": [
+         "social objectives",
+         "personal satisfaction",
+         "challenge",
+         "independence|control"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name something shown on a break-even diagram",
+        "s": [
+         "revenue",
+         "fixed costs",
+         "total costs",
+         "break even point|break even",
+         "margin of safety"
+        ],
+        "h": [
+         "variable costs",
+         "profit",
+         "loss"
+        ]
+       },
+       {
+        "q": "Name a source of finance for a small business",
+        "s": [
+         "overdraft",
+         "trade credit",
+         "personal savings|savings",
+         "loan",
+         "retained profit",
+         "crowdfunding|crowd funding"
+        ],
+        "h": [
+         "venture capital",
+         "share capital"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "1.4 Making the business effective",
+      "qs": [
+       {
+        "q": "Name a type of business ownership for start-ups",
+        "s": [
+         "sole trader",
+         "partnership",
+         "private limited company|ltd"
+        ],
+        "h": [
+         "franchise"
+        ]
+       },
+       {
+        "q": "Name a factor influencing business location",
+        "s": [
+         "near customers|proximity to market",
+         "labour",
+         "raw materials|materials",
+         "competitors"
+        ],
+        "h": [
+         "nature of the business",
+         "internet|e commerce"
+        ]
+       },
+       {
+        "q": "Name something included in a business plan",
+        "s": [
+         "business idea",
+         "aims and objectives",
+         "target market",
+         "cash flow forecast",
+         "sources of finance",
+         "location",
+         "marketing mix"
+        ],
+        "h": [
+         "forecast revenue costs and profit|forecast"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "1.5 External influences",
+      "qs": [
+       {
+        "q": "Name a business stakeholder",
+        "s": [
+         "shareholders|owners",
+         "employees",
+         "customers",
+         "managers",
+         "suppliers",
+         "local community"
+        ],
+        "h": [
+         "pressure groups",
+         "government"
+        ]
+       },
+       {
+        "q": "Name a type of technology used by businesses",
+        "s": [
+         "e commerce",
+         "social media",
+         "digital communication",
+         "payment systems|card payments"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name an economic factor affecting businesses",
+        "s": [
+         "unemployment",
+         "inflation",
+         "interest rates",
+         "taxation|tax",
+         "consumer income"
+        ],
+        "h": [
+         "exchange rates"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "2.1 Growing the business",
+      "qs": [
+       {
+        "q": "Name a method of business growth",
+        "s": [
+         "new products|innovation",
+         "new markets|expanding overseas",
+         "merger",
+         "takeover",
+         "organic growth"
+        ],
+        "h": [
+         "research and development|r and d",
+         "external growth|inorganic growth",
+         "stock market flotation|flotation"
+        ]
+       },
+       {
+        "q": "Name something linked to globalisation",
+        "s": [
+         "imports",
+         "exports",
+         "multinationals|multinational",
+         "changing locations"
+        ],
+        "h": [
+         "tariffs",
+         "trade blocs"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "2.2 Making marketing decisions",
+      "qs": [
+       {
+        "q": "Name an element of the design mix",
+        "s": [
+         "function",
+         "aesthetics",
+         "cost"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a way to promote a product",
         "s": [
          "advertising",
-         "sales promotion|discounts",
-         "social media|influencers",
-         "public relations|pr"
-        ],
-        "h": [
          "sponsorship",
-         "direct marketing",
-         "personal selling",
-         "product placement"
+         "product trials",
+         "special offers",
+         "branding"
+        ],
+        "h": [
+         "targeted online advertising",
+         "viral advertising",
+         "e newsletters"
         ]
        },
        {
-        "q": "Name a pricing strategy",
+        "q": "Name a method of distribution",
         "s": [
-         "penetration pricing|penetration",
-         "price skimming|skimming",
-         "competitive pricing|competitive",
-         "cost plus"
+         "retailers|retailer",
+         "e tailers|e commerce|online"
         ],
-        "h": [
-         "psychological pricing",
-         "loss leader",
-         "promotional pricing",
-         "premium pricing"
-        ]
+        "h": []
        }
       ]
      },
      {
-      "name": "Finance",
+      "name": "2.3 Making operational decisions",
       "qs": [
        {
-        "q": "Name a source of finance",
+        "q": "Name a type of production process",
         "s": [
-         "bank loan|loan",
-         "overdraft",
-         "personal savings|savings",
-         "crowdfunding",
-         "retained profit|retained profits"
+         "job",
+         "batch",
+         "flow"
         ],
-        "h": [
-         "share capital|selling shares",
-         "venture capital",
-         "trade credit",
-         "leasing",
-         "business angels"
-        ]
+        "h": []
        },
        {
-        "q": "Name a financial term",
+        "q": "Name a part of the sales process",
         "s": [
-         "revenue|sales revenue|turnover",
-         "profit",
-         "costs|cost",
-         "fixed costs|variable costs"
+         "product knowledge",
+         "speed of service|efficiency",
+         "customer engagement",
+         "responding to customer feedback|customer feedback",
+         "post sales service|after sales"
         ],
-        "h": [
-         "break even|break even point",
-         "cash flow",
-         "gross profit|net profit",
-         "profit margin|margin",
-         "margin of safety"
-        ]
-       },
-       {
-        "q": "Name a cause of cash flow problems",
-        "s": [
-         "late payments|slow payment",
-         "too much stock|overstocking",
-         "high costs",
-         "overtrading"
-        ],
-        "h": [
-         "seasonal sales|seasonality",
-         "poor planning|poor forecasting",
-         "falling sales"
-        ]
+        "h": []
        }
       ]
      },
      {
-      "name": "Operations",
+      "name": "2.4 Making financial decisions",
       "qs": [
        {
-        "q": "Name a method of production",
+        "q": "Name a business calculation",
         "s": [
-         "job production|job",
-         "batch production|batch",
-         "flow production|flow",
-         "mass production"
+         "gross profit",
+         "net profit"
         ],
         "h": [
-         "lean production|just in time|jit",
-         "cell production",
-         "kaizen"
+         "gross profit margin",
+         "net profit margin",
+         "average rate of return|arr"
         ]
        },
        {
-        "q": "Name a way to improve quality",
+        "q": "Name a type of data businesses use to make decisions",
         "s": [
-         "quality control",
-         "quality assurance",
-         "training",
-         "inspection",
-         "checking products|better materials|train staff"
+         "graphs and charts|charts",
+         "financial data",
+         "marketing data",
+         "market data|market share"
         ],
-        "h": [
-         "total quality management|tqm",
-         "kaizen",
-         "quality circles",
-         "benchmarking"
-        ]
+        "h": []
        }
       ]
      },
      {
-      "name": "People in business",
+      "name": "2.5 Making human resource decisions",
       "qs": [
        {
-        "q": "Name a way of motivating workers",
+        "q": "Name a type of organisational structure",
         "s": [
-         "pay|wages|salary",
+         "hierarchical|hierarchy",
+         "flat",
+         "centralised",
+         "decentralised"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a way of working",
+        "s": [
+         "part time",
+         "full time",
+         "flexible hours",
+         "permanent",
+         "temporary",
+         "freelance|remote working"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a recruitment document",
+        "s": [
+         "job description",
+         "person specification",
+         "application form",
+         "cv"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a financial method of motivation",
+        "s": [
+         "pay|remuneration",
          "bonus",
+         "commission",
          "promotion",
-         "training",
-         "job security",
-         "pay rise|higher pay|rewards|incentives"
+         "fringe benefits"
         ],
-        "h": [
-         "job enrichment|job rotation",
-         "fringe benefits|benefits",
-         "empowerment|delegation",
-         "recognition|praise"
-        ]
+        "h": []
        },
        {
-        "q": "Name a method of recruitment",
+        "q": "Name a non-financial method of motivation",
         "s": [
-         "job advert|advert",
-         "recruitment agency|agency",
-         "interview",
-         "word of mouth"
+         "job rotation",
+         "job enrichment",
+         "autonomy"
         ],
-        "h": [
-         "jobcentre|job centre",
-         "headhunting|head hunting",
-         "internal recruitment",
-         "application form|cv"
-        ]
+        "h": []
        },
        {
-        "q": "Name a method of training",
+        "q": "Name a way businesses train employees",
         "s": [
-         "induction",
-         "on the job",
-         "off the job"
+         "formal training",
+         "informal training",
+         "self learning",
+         "performance reviews|target setting",
+         "ongoing training"
         ],
-        "h": [
-         "apprenticeship",
-         "mentoring|coaching",
-         "e learning|online training"
-        ]
-       }
-      ]
-     },
-     {
-      "name": "External influences",
-      "qs": [
-       {
-        "q": "Name an external influence on a business",
-        "s": [
-         "competitors|competition",
-         "technology",
-         "economy|economic climate",
-         "legislation|laws"
-        ],
-        "h": [
-         "interest rates|exchange rates|inflation",
-         "consumer trends",
-         "environmental issues|environment",
-         "political changes"
-        ]
-       },
-       {
-        "q": "Name a UK law that affects businesses",
-        "s": [
-         "consumer rights act|consumer rights",
-         "health and safety act|health and safety",
-         "equality act|equality",
-         "minimum wage|national minimum wage"
-        ],
-        "h": [
-         "data protection act",
-         "sale of goods act|trade descriptions act",
-         "employment rights act"
-        ]
-       }
-      ]
-     },
-     {
-      "name": "Growth and ethics",
-      "qs": [
-       {
-        "q": "Name a way a business can grow",
-        "s": [
-         "new products|new product",
-         "new markets|expanding",
-         "more outlets|opening new stores",
-         "online|ecommerce"
-        ],
-        "h": [
-         "takeover|merger",
-         "franchising",
-         "organic growth|internal growth",
-         "external growth"
-        ]
-       },
-       {
-        "q": "Name an ethical or environmental consideration for a business",
-        "s": [
-         "fair pay|fair trade",
-         "recycling",
-         "reducing pollution|pollution",
-         "sustainability|sustainable"
-        ],
-        "h": [
-         "carbon footprint",
-         "ethical sourcing",
-         "corporate social responsibility|csr",
-         "working conditions"
-        ]
+        "h": []
        }
       ]
      }
@@ -4044,37 +4972,48 @@ module.exports=[
     "board": "AQA",
     "topics": [
      {
-      "name": "Enterprise and entrepreneurship",
+      "name": "Purpose and nature of business",
       "qs": [
        {
-        "q": "Name a characteristic of an entrepreneur",
+        "q": "Name a reason for starting a business",
         "s": [
-         "risk taker|risk taking",
-         "creative|creativity",
-         "determined|determination",
-         "hard working",
-         "confident|confidence"
+         "produce goods|supply services",
+         "fulfil a business opportunity|business opportunity",
+         "be own boss",
+         "earn more money|make profit",
+         "pursue an interest"
         ],
         "h": [
-         "resilient|resilience",
-         "leadership|leader",
-         "innovative|innovation",
-         "self motivated|motivated"
+         "meet needs|benefit others",
+         "dissatisfied with current job",
+         "gap in the market",
+         "flexible hours"
         ]
        },
        {
-        "q": "Name a reason people start a business",
+        "q": "Name a characteristic of an entrepreneur",
         "s": [
-         "be their own boss|independence",
-         "profit|make money",
-         "passion|follow an interest",
-         "redundancy|unemployment"
+         "hard working",
+         "innovative|innovation",
+         "organised|organized",
+         "risk taker|willing to take risks"
         ],
         "h": [
-         "spotting a gap in the market|gap in the market",
-         "job satisfaction",
-         "flexibility",
-         "hobby"
+         "confident",
+         "determined",
+         "resilient",
+         "creative"
+        ]
+       },
+       {
+        "q": "Name a factor of production",
+        "s": [
+         "land",
+         "labour",
+         "capital"
+        ],
+        "h": [
+         "enterprise"
         ]
        }
       ]
@@ -4091,284 +5030,1777 @@ module.exports=[
          "public limited company|plc"
         ],
         "h": [
-         "franchise",
-         "co operative|co-operative",
-         "social enterprise"
+         "not for profit|charity|social enterprise"
         ]
        },
        {
-        "q": "Name an advantage of being a sole trader",
+        "q": "Name a drawback of being a sole trader",
         "s": [
-         "be your own boss|control",
-         "keep all the profit|keep profit",
-         "simple to set up|easy to set up",
-         "privacy"
+         "unlimited liability",
+         "long hours",
+         "limited finance|lack of finance",
+         "bears all the risk"
         ],
         "h": [
-         "flexibility",
-         "personal service",
-         "close customer relationships"
+         "no one to share the workload",
+         "hard to raise capital",
+         "business ends if owner leaves"
         ]
        }
       ]
      },
      {
-      "name": "Marketing",
+      "name": "Aims, objectives and stakeholders",
       "qs": [
        {
-        "q": "Name a market research method",
+        "q": "Name a business aim or objective",
         "s": [
-         "survey|questionnaire",
-         "focus group",
-         "interview",
-         "observation|test marketing"
+         "survival",
+         "profit maximisation|profit",
+         "growth",
+         "market share",
+         "customer satisfaction"
         ],
         "h": [
-         "secondary research|desk research",
-         "primary research",
-         "online research|social media",
-         "sample"
+         "shareholder value",
+         "social objectives|ethical objectives",
+         "international growth"
         ]
        },
        {
-        "q": "Name a method of promotion",
+        "q": "Name a stakeholder of a business",
         "s": [
-         "advertising",
-         "sales promotion|discounts",
-         "social media|influencers",
-         "public relations|pr"
+         "owners|shareholders",
+         "employees|workers",
+         "customers",
+         "suppliers",
+         "local community"
         ],
         "h": [
-         "sponsorship",
-         "direct marketing",
-         "personal selling",
-         "product placement"
+         "government",
+         "managers",
+         "pressure groups"
         ]
        },
        {
-        "q": "Name a pricing strategy",
+        "q": "Name an objective of a stakeholder",
         "s": [
-         "penetration pricing|penetration",
-         "price skimming|skimming",
-         "competitive pricing|competitive",
-         "cost plus"
+         "higher pay|maximise pay",
+         "high dividends|dividends",
+         "lower prices|quality products",
+         "reduce environmental impact|less pollution"
         ],
         "h": [
-         "psychological pricing",
-         "loss leader",
-         "promotional pricing",
-         "premium pricing"
-        ]
-       }
-      ]
-     },
-     {
-      "name": "Finance",
-      "qs": [
-       {
-        "q": "Name a source of finance",
-        "s": [
-         "bank loan|loan",
-         "overdraft",
-         "personal savings|savings",
-         "crowdfunding",
-         "retained profit|retained profits"
-        ],
-        "h": [
-         "share capital|selling shares",
-         "venture capital",
-         "trade credit",
-         "leasing",
-         "business angels"
-        ]
-       },
-       {
-        "q": "Name a financial term",
-        "s": [
-         "revenue|sales revenue|turnover",
-         "profit",
-         "costs|cost",
-         "fixed costs|variable costs"
-        ],
-        "h": [
-         "break even|break even point",
-         "cash flow",
-         "gross profit|net profit",
-         "profit margin|margin",
-         "margin of safety"
-        ]
-       },
-       {
-        "q": "Name a cause of cash flow problems",
-        "s": [
-         "late payments|slow payment",
-         "too much stock|overstocking",
-         "high costs",
-         "overtrading"
-        ],
-        "h": [
-         "seasonal sales|seasonality",
-         "poor planning|poor forecasting",
-         "falling sales"
-        ]
-       }
-      ]
-     },
-     {
-      "name": "Operations",
-      "qs": [
-       {
-        "q": "Name a method of production",
-        "s": [
-         "job production|job",
-         "batch production|batch",
-         "flow production|flow",
-         "mass production"
-        ],
-        "h": [
-         "lean production|just in time|jit",
-         "cell production",
-         "kaizen"
-        ]
-       },
-       {
-        "q": "Name a way to improve quality",
-        "s": [
-         "quality control",
-         "quality assurance",
-         "training",
-         "inspection",
-         "checking products|better materials|train staff"
-        ],
-        "h": [
-         "total quality management|tqm",
-         "kaizen",
-         "quality circles",
-         "benchmarking"
-        ]
-       }
-      ]
-     },
-     {
-      "name": "People in business",
-      "qs": [
-       {
-        "q": "Name a way of motivating workers",
-        "s": [
-         "pay|wages|salary",
-         "bonus",
-         "promotion",
-         "training",
          "job security",
-         "pay rise|higher pay|rewards|incentives"
-        ],
-        "h": [
-         "job enrichment|job rotation",
-         "fringe benefits|benefits",
-         "empowerment|delegation",
-         "recognition|praise"
-        ]
-       },
-       {
-        "q": "Name a method of recruitment",
-        "s": [
-         "job advert|advert",
-         "recruitment agency|agency",
-         "interview",
-         "word of mouth"
-        ],
-        "h": [
-         "jobcentre|job centre",
-         "headhunting|head hunting",
-         "internal recruitment",
-         "application form|cv"
-        ]
-       },
-       {
-        "q": "Name a method of training",
-        "s": [
-         "induction",
-         "on the job",
-         "off the job"
-        ],
-        "h": [
-         "apprenticeship",
-         "mentoring|coaching",
-         "e learning|online training"
+         "regular orders|prompt payment",
+         "more local jobs"
         ]
        }
       ]
      },
      {
-      "name": "External influences",
+      "name": "Location and planning",
       "qs": [
        {
-        "q": "Name an external influence on a business",
+        "q": "Name a factor affecting business location",
         "s": [
-         "competitors|competition",
-         "technology",
-         "economy|economic climate",
-         "legislation|laws"
+         "near customers|proximity to market",
+         "raw materials",
+         "skilled labour|labour",
+         "competition",
+         "costs"
         ],
         "h": [
-         "interest rates|exchange rates|inflation",
-         "consumer trends",
-         "environmental issues|environment",
-         "political changes"
+         "transport links|infrastructure",
+         "rent and rates"
+        ]
+       },
+       {
+        "q": "Name a reason for writing a business plan",
+        "s": [
+         "set up a new business|start up",
+         "raise finance|get a loan",
+         "set objectives",
+         "organise functions"
+        ],
+        "h": [
+         "reduce risk",
+         "persuade investors|banks"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Expanding a business",
+      "qs": [
+       {
+        "q": "Name a method of business growth",
+        "s": [
+         "franchising",
+         "opening new stores|new stores",
+         "e commerce|online",
+         "outsourcing",
+         "merger",
+         "takeover"
+        ],
+        "h": [
+         "organic growth",
+         "external growth",
+         "new markets"
+        ]
+       },
+       {
+        "q": "Name an economy or diseconomy of scale",
+        "s": [
+         "purchasing economies|bulk buying",
+         "technical economies"
+        ],
+        "h": [
+         "poor communication",
+         "coordination problems|poor coordination",
+         "reduced staff motivation|lower motivation"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Technology and ethics",
+      "qs": [
+       {
+        "q": "Name a benefit of e-commerce",
+        "s": [
+         "wider market|reach more customers",
+         "open 24 hours|24 7",
+         "lower costs",
+         "international sales"
+        ],
+        "h": [
+         "digital communication|social media",
+         "compete globally"
+        ]
+       },
+       {
+        "q": "Name an environmental consideration for businesses",
+        "s": [
+         "traffic congestion|congestion",
+         "recycling",
+         "waste disposal|disposing of waste",
+         "noise pollution",
+         "air pollution|pollution"
+        ],
+        "h": [
+         "global warming",
+         "scarce resources",
+         "sustainability"
+        ]
+       },
+       {
+        "q": "Name a way a business can behave ethically",
+        "s": [
+         "fair pay|pay fairly",
+         "honest advertising|honesty",
+         "fair trade|ethical sourcing",
+         "treat staff well"
+        ],
+        "h": [
+         "not testing on animals",
+         "reduce waste",
+         "accept lower profit"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Economy, globalisation and the law",
+      "qs": [
+       {
+        "q": "Name an effect of interest rate changes on businesses",
+        "s": [
+         "cost of loans|loan repayments",
+         "overdraft costs",
+         "less consumer spending|spending falls"
+        ],
+        "h": [
+         "more borrowing when rates fall",
+         "changes in demand"
         ]
        },
        {
         "q": "Name a UK law that affects businesses",
         "s": [
-         "consumer rights act|consumer rights",
-         "health and safety act|health and safety",
-         "equality act|equality",
-         "minimum wage|national minimum wage"
+         "national minimum wage|living wage",
+         "equality act",
+         "health and safety at work act|health and safety",
+         "trade descriptions|consumer law"
         ],
         "h": [
-         "data protection act",
-         "sale of goods act|trade descriptions act",
-         "employment rights act"
+         "employment law",
+         "consumer rights"
+        ]
+       },
+       {
+        "q": "Name a risk or uncertainty businesses face",
+        "s": [
+         "new competitors|competition",
+         "changing customer tastes|change in demand",
+         "recession|economic downturn",
+         "new technology"
+        ],
+        "h": [
+         "exchange rate changes",
+         "new legislation"
         ]
        }
       ]
      },
      {
-      "name": "Growth and ethics",
+      "name": "Production and procurement",
       "qs": [
        {
-        "q": "Name a way a business can grow",
+        "q": "Name a method of production",
         "s": [
-         "new products|new product",
-         "new markets|expanding",
-         "more outlets|opening new stores",
-         "online|ecommerce"
+         "job production|job",
+         "flow production|flow"
         ],
         "h": [
-         "takeover|merger",
-         "franchising",
-         "organic growth|internal growth",
-         "external growth"
+         "batch production|batch",
+         "mass production"
         ]
        },
        {
-        "q": "Name an ethical or environmental consideration for a business",
+        "q": "Name a way to make production more efficient",
         "s": [
-         "fair pay|fair trade",
-         "recycling",
-         "reducing pollution|pollution",
-         "sustainability|sustainable"
+         "lean production|lean",
+         "just in time|jit",
+         "automation|machinery",
+         "training"
         ],
         "h": [
-         "carbon footprint",
-         "ethical sourcing",
-         "corporate social responsibility|csr",
-         "working conditions"
+         "kaizen",
+         "reduce waste",
+         "cell production"
+        ]
+       },
+       {
+        "q": "Name a factor in choosing a supplier",
+        "s": [
+         "price|cost",
+         "quality",
+         "reliability"
+        ],
+        "h": [
+         "delivery time",
+         "trade credit|payment terms",
+         "ethical reputation"
+        ]
+       },
+       {
+        "q": "Name a drawback of just in time",
+        "s": [
+         "risk of running out|stock outs",
+         "more frequent deliveries|delivery costs",
+         "lost bulk buying discounts"
+        ],
+        "h": [
+         "relies on suppliers|supplier delays",
+         "disrupts production"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Quality and customer service",
+      "qs": [
+       {
+        "q": "Name a way to maintain quality",
+        "s": [
+         "quality control",
+         "quality assurance",
+         "inspection",
+         "staff training"
+        ],
+        "h": [
+         "total quality management|tqm",
+         "quality circles",
+         "benchmarking"
+        ]
+       },
+       {
+        "q": "Name a method of good customer service",
+        "s": [
+         "product knowledge",
+         "customer engagement|friendly staff",
+         "after sales service|help lines",
+         "user training"
+        ],
+        "h": [
+         "servicing|repairs",
+         "website|social media"
+        ]
+       },
+       {
+        "q": "Name a benefit of good customer service",
+        "s": [
+         "customer loyalty|loyal customers",
+         "satisfied customers|customer satisfaction",
+         "repeat purchases|increased spend",
+         "good reputation"
+        ],
+        "h": [
+         "higher profit|higher sales",
+         "word of mouth"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Human resources",
+      "qs": [
+       {
+        "q": "Name a feature of organisational structure",
+        "s": [
+         "span of control",
+         "chain of command",
+         "delegation",
+         "delayering",
+         "hierarchy|tall structure|flat structure"
+        ],
+        "h": [
+         "centralisation",
+         "decentralisation"
+        ]
+       },
+       {
+        "q": "Name a stage in recruitment and selection",
+        "s": [
+         "job analysis",
+         "job description",
+         "person specification",
+         "advertising|advert",
+         "interview"
+        ],
+        "h": [
+         "shortlisting",
+         "selection tests|references",
+         "contract of employment"
+        ]
+       },
+       {
+        "q": "Name a type of employment contract",
+        "s": [
+         "full time",
+         "part time",
+         "zero hours",
+         "job share"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a financial method of motivation",
+        "s": [
+         "salary",
+         "wages|wage",
+         "commission",
+         "profit sharing|bonus"
+        ],
+        "h": [
+         "share options|fringe benefits"
+        ]
+       },
+       {
+        "q": "Name a way of training employees",
+        "s": [
+         "induction training|induction",
+         "on the job training|on the job",
+         "off the job training|off the job"
+        ],
+        "h": [
+         "apprenticeship",
+         "mentoring"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Marketing: customers and research",
+      "qs": [
+       {
+        "q": "Name a way to segment a market",
+        "s": [
+         "gender",
+         "age",
+         "location",
+         "income"
+        ],
+        "h": [
+         "lifestyle",
+         "occupation"
+        ]
+       },
+       {
+        "q": "Name a method of market research",
+        "s": [
+         "questionnaires|questionnaire",
+         "surveys|survey",
+         "interviews|interview",
+         "focus groups|focus group",
+         "internet research|online research",
+         "newspapers|printed press"
+        ],
+        "h": [
+         "primary research",
+         "secondary research",
+         "qualitative research",
+         "quantitative research"
+        ]
+       },
+       {
+        "q": "Name a reason for market research",
+        "s": [
+         "identify demand|demand",
+         "find out about competition|competition",
+         "target market"
+        ],
+        "h": [
+         "reduce risk",
+         "market size",
+         "market share"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Marketing mix: product and price",
+      "qs": [
+       {
+        "q": "Name a stage of the product life cycle",
+        "s": [
+         "introduction",
+         "growth",
+         "maturity",
+         "decline"
+        ],
+        "h": [
+         "research and development|r and d",
+         "extension strategy"
+        ]
+       },
+       {
+        "q": "Name an extension strategy",
+        "s": [
+         "updating packaging|new packaging",
+         "adding features|new features",
+         "changing target market|new market",
+         "advertising",
+         "price reduction|lower price"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a pricing method",
+        "s": [
+         "price skimming|skimming",
+         "price penetration|penetration",
+         "competitive pricing|competitive",
+         "loss leader",
+         "cost plus"
+        ],
+        "h": [
+         "promotional pricing"
+        ]
+       },
+       {
+        "q": "Name a part of the Boston Matrix",
+        "s": [
+         "stars|star",
+         "cash cows|cash cow",
+         "question marks|problem children",
+         "dogs|dog"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a way to make a product different from competitors",
+        "s": [
+         "usp|unique selling point",
+         "brand image|branding"
+        ],
+        "h": [
+         "design",
+         "quality"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Marketing mix: promotion and place",
+      "qs": [
+       {
+        "q": "Name a method of advertising",
+        "s": [
+         "newspapers",
+         "magazines",
+         "television|tv",
+         "internet|online",
+         "billboards"
+        ],
+        "h": [
+         "social media",
+         "radio"
+        ]
+       },
+       {
+        "q": "Name a sales promotion",
+        "s": [
+         "2 for 1|buy one get one free",
+         "free gifts|free gift",
+         "samples|free samples",
+         "coupons|vouchers",
+         "competitions"
+        ],
+        "h": [
+         "point of sale displays|point of sale",
+         "sponsorship"
+        ]
+       },
+       {
+        "q": "Name a channel of distribution",
+        "s": [
+         "retailers|retailer",
+         "wholesalers|wholesaler",
+         "telesales",
+         "e commerce|online"
+        ],
+        "h": [
+         "m commerce|mobile commerce"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Finance: sources and cash flow",
+      "qs": [
+       {
+        "q": "Name a source of finance",
+        "s": [
+         "personal savings|family and friends",
+         "retained profit",
+         "bank loan|loan|mortgage",
+         "overdraft",
+         "share issue|selling shares"
+        ],
+        "h": [
+         "trade credit",
+         "hire purchase",
+         "government grant|grants",
+         "selling assets"
+        ]
+       },
+       {
+        "q": "Name a way to solve cash flow problems",
+        "s": [
+         "overdraft",
+         "reduce outflows|cut costs",
+         "increase inflows|increase sales",
+         "reschedule payments|delay payments"
+        ],
+        "h": [
+         "new sources of finance|loan"
+        ]
+       },
+       {
+        "q": "Name a term in a cash flow forecast",
+        "s": [
+         "cash inflows|inflow",
+         "cash outflows|outflow",
+         "net cash flow",
+         "opening balance",
+         "closing balance"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Finance: terms and performance",
+      "qs": [
+       {
+        "q": "Name a financial term",
+        "s": [
+         "revenue",
+         "fixed costs",
+         "variable costs",
+         "total costs",
+         "profit",
+         "loss"
+        ],
+        "h": [
+         "break even|break even output",
+         "margin of safety",
+         "average rate of return|arr"
+        ]
+       },
+       {
+        "q": "Name a part of financial statements",
+        "s": [
+         "income statement|profit and loss account",
+         "statement of financial position|balance sheet",
+         "assets",
+         "liabilities"
+        ],
+        "h": [
+         "gross profit margin",
+         "net profit margin"
         ]
        }
       ]
      }
     ]
+   }
+  ]
+ },
+ {
+  "subject": "French",
+  "boards": [
+   {
+    "board": "AQA",
+    "topics": [
+     {
+      "name": "Theme 1: Identity and relationships with others",
+      "qs": [
+       {
+        "q": "Name a family member in French",
+        "s": [
+         "mère|maman",
+         "père|papa",
+         "frère",
+         "sœur|soeur",
+         "grand-mère",
+         "grand-père"
+        ],
+        "h": [
+         "beau-père",
+         "belle-mère",
+         "demi-frère",
+         "demi-sœur",
+         "cousin",
+         "oncle",
+         "tante"
+        ]
+       },
+       {
+        "q": "Name a personality adjective in French",
+        "s": [
+         "sympa|sympathique",
+         "drôle",
+         "gentil|gentille",
+         "timide",
+         "intelligent",
+         "paresseux",
+         "sportif"
+        ],
+        "h": [
+         "bavard",
+         "têtu",
+         "généreux",
+         "patient",
+         "courageux"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme 1: Healthy living and lifestyle",
+      "qs": [
+       {
+        "q": "Name a part of the body in French",
+        "s": [
+         "tête",
+         "bras",
+         "jambe",
+         "main",
+         "pied",
+         "dos",
+         "ventre"
+        ],
+        "h": [
+         "genou",
+         "épaule",
+         "cheville",
+         "doigt",
+         "gorge"
+        ]
+       },
+       {
+        "q": "Name a healthy food or drink in French",
+        "s": [
+         "fruits|fruit",
+         "légumes|legumes",
+         "eau",
+         "poisson",
+         "salade"
+        ],
+        "h": [
+         "céréales",
+         "yaourt",
+         "jus de fruit"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme 1: Education and work",
+      "qs": [
+       {
+        "q": "Name a school subject in French",
+        "s": [
+         "maths|mathématiques",
+         "anglais",
+         "français",
+         "histoire",
+         "géographie",
+         "sciences"
+        ],
+        "h": [
+         "éducation physique|eps",
+         "informatique",
+         "dessin|arts plastiques",
+         "musique",
+         "technologie"
+        ]
+       },
+       {
+        "q": "Name a job in French",
+        "s": [
+         "médecin",
+         "professeur|prof",
+         "infirmier|infirmière",
+         "avocat",
+         "ingénieur",
+         "boulanger"
+        ],
+        "h": [
+         "vétérinaire",
+         "comptable",
+         "journaliste",
+         "électricien"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme 2: Free-time activities",
+      "qs": [
+       {
+        "q": "Name a free-time activity in French",
+        "s": [
+         "jouer|jouer au foot|football",
+         "lire",
+         "nager|natation",
+         "écouter de la musique|musique",
+         "regarder la télé|télé",
+         "sortir avec des amis|sortir"
+        ],
+        "h": [
+         "faire du vélo|vélo",
+         "faire de la danse|danser",
+         "jouer de la guitare|guitare",
+         "jouer du piano|piano"
+        ]
+       },
+       {
+        "q": "Name a sport in French",
+        "s": [
+         "football|foot",
+         "tennis",
+         "natation",
+         "basket",
+         "rugby",
+         "cyclisme"
+        ],
+        "h": [
+         "équitation",
+         "escrime",
+         "gymnastique",
+         "patinage",
+         "randonnée"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme 2: Customs, festivals and celebrations",
+      "qs": [
+       {
+        "q": "Name a festival or celebration in French",
+        "s": [
+         "noël",
+         "pâques",
+         "quatorze juillet|14 juillet|fête nationale",
+         "nouvel an|jour de l an"
+        ],
+        "h": [
+         "mardi gras",
+         "fête de la musique",
+         "chandeleur",
+         "épiphanie",
+         "toussaint",
+         "aïd"
+        ]
+       },
+       {
+        "q": "Name a festive food in French",
+        "s": [
+         "dinde",
+         "bûche de noël|bûche",
+         "crêpe",
+         "galette des rois|galette"
+        ],
+        "h": [
+         "foie gras",
+         "chocolat",
+         "champagne",
+         "marrons"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme 2: Celebrity culture",
+      "qs": [
+       {
+        "q": "Name a type of celebrity in French",
+        "s": [
+         "acteur|actrice",
+         "chanteur|chanteuse",
+         "sportif|sportive",
+         "influenceur|influenceuse",
+         "présentateur"
+        ],
+        "h": [
+         "mannequin",
+         "réalisateur",
+         "vedette|star",
+         "célébrité"
+        ]
+       },
+       {
+        "q": "Name a French phrase for giving an opinion",
+        "s": [
+         "à mon avis",
+         "je pense que",
+         "je crois que",
+         "selon moi",
+         "pour moi"
+        ],
+        "h": [
+         "d après moi",
+         "il me semble que",
+         "je trouve que",
+         "en ce qui me concerne"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme 3: Travel and tourism",
+      "qs": [
+       {
+        "q": "Name a place of interest or a place in town in French",
+        "s": [
+         "gare",
+         "aéroport",
+         "plage",
+         "musée",
+         "tour eiffel",
+         "château"
+        ],
+        "h": [
+         "cathédrale",
+         "port",
+         "office de tourisme",
+         "parc d attractions"
+        ]
+       },
+       {
+        "q": "Name transport or holiday accommodation in French",
+        "s": [
+         "hôtel",
+         "camping",
+         "auberge de jeunesse",
+         "train",
+         "avion",
+         "voiture"
+        ],
+        "h": [
+         "gîte",
+         "chambre d hôte",
+         "bateau",
+         "autocar"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme 3: Media and technology",
+      "qs": [
+       {
+        "q": "Name a technology word in French",
+        "s": [
+         "ordinateur|ordi",
+         "téléphone|portable",
+         "réseaux sociaux",
+         "internet",
+         "application|appli",
+         "tablette"
+        ],
+        "h": [
+         "courriel|email",
+         "mot de passe",
+         "télécharger",
+         "site web",
+         "jeu vidéo",
+         "messagerie"
+        ]
+       },
+       {
+        "q": "Name a type of media in French",
+        "s": [
+         "télévision|télé",
+         "radio",
+         "journal|presse",
+         "film",
+         "série",
+         "magazine"
+        ],
+        "h": [
+         "émission",
+         "chaîne",
+         "podcast"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme 3: The environment and where people live",
+      "qs": [
+       {
+        "q": "Name an environmental issue in French",
+        "s": [
+         "pollution",
+         "réchauffement climatique|changement climatique",
+         "déchets",
+         "déforestation"
+        ],
+        "h": [
+         "énergie renouvelable",
+         "recyclage",
+         "gaspillage",
+         "inondation",
+         "sécheresse"
+        ]
+       },
+       {
+        "q": "Name a room or type of home in French",
+        "s": [
+         "cuisine",
+         "salon",
+         "chambre",
+         "salle de bains",
+         "jardin",
+         "maison",
+         "appartement"
+        ],
+        "h": [
+         "grenier",
+         "cave",
+         "salle à manger",
+         "garage",
+         "immeuble"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "French grammar",
+      "qs": [
+       {
+        "q": "Name a French tense",
+        "s": [
+         "présent",
+         "passé composé",
+         "imparfait",
+         "futur proche"
+        ],
+        "h": [
+         "futur simple|futur",
+         "conditionnel",
+         "plus que parfait",
+         "subjonctif"
+        ]
+       },
+       {
+        "q": "Name a French negative expression",
+        "s": [
+         "ne pas",
+         "ne jamais",
+         "ne rien",
+         "ne personne"
+        ],
+        "h": [
+         "ne plus",
+         "ne que",
+         "ne aucun"
+        ]
+       },
+       {
+        "q": "Name a French question word",
+        "s": [
+         "qui",
+         "quand",
+         "pourquoi",
+         "comment",
+         "combien",
+         "où"
+        ],
+        "h": [
+         "quel|quelle",
+         "que|qu est ce que",
+         "lequel"
+        ]
+       },
+       {
+        "q": "Name a French connective",
+        "s": [
+         "mais",
+         "et",
+         "parce que",
+         "car",
+         "donc"
+        ],
+        "h": [
+         "cependant|pourtant",
+         "bien que",
+         "alors que",
+         "puisque",
+         "néanmoins",
+         "en revanche"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "board": "Edexcel",
+    "topics": []
+   }
+  ]
+ },
+ {
+  "subject": "Religious Studies",
+  "boards": [
+   {
+    "board": "AQA",
+    "topics": [
+     {
+      "name": "Buddhism",
+      "qs": [
+       {
+        "q": "Name one of the Three Marks of Existence",
+        "s": [
+         "anicca|impermanence",
+         "anatta|no fixed self",
+         "dukkha|suffering|unsatisfactoriness"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name one of the five moral precepts",
+        "s": [
+         "do not take life|not kill|kill",
+         "do not steal|take what is not given|steal",
+         "do not misuse the senses|sexual misconduct",
+         "do not lie|falsehoods|lie",
+         "intoxicants|drugs|alcohol"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Buddhist form of meditation",
+        "s": [
+         "samatha",
+         "vipassana",
+         "zazen",
+         "visualisation"
+        ],
+        "h": [
+         "mindfulness of breathing|mindfulness"
+        ]
+       },
+       {
+        "q": "Name one of the Three Poisons or Three Roots",
+        "s": [
+         "ignorance",
+         "greed",
+         "hate|hatred"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name one of the six perfections",
+        "s": [
+         "generosity",
+         "morality",
+         "patience",
+         "energy",
+         "meditation",
+         "wisdom"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Buddhist festival",
+        "s": [
+         "wesak",
+         "parinirvana day|parinirvana"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Christianity",
+      "qs": [
+       {
+        "q": "Name a Christian belief about God",
+        "s": [
+         "omnipotent",
+         "loving",
+         "just|justice",
+         "trinity|father son and holy spirit"
+        ],
+        "h": [
+         "problem of evil and suffering|evil and suffering",
+         "oneness of god"
+        ]
+       },
+       {
+        "q": "Name a Christian sacrament",
+        "s": [
+         "baptism",
+         "holy communion|eucharist"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a form of Christian worship",
+        "s": [
+         "liturgical",
+         "non liturgical",
+         "informal",
+         "private worship",
+         "prayer"
+        ],
+        "h": [
+         "use of the bible|bible reading"
+        ]
+       },
+       {
+        "q": "Name a Christian pilgrimage site or celebration",
+        "s": [
+         "lourdes",
+         "iona",
+         "christmas",
+         "easter"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Christian charity or church role",
+        "s": [
+         "cafod",
+         "christian aid",
+         "tearfund",
+         "food banks|foodbank",
+         "street pastors"
+        ],
+        "h": [
+         "mission|evangelism",
+         "reconciliation"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Catholic Christianity",
+      "qs": [
+       {
+        "q": "Name one of the seven sacraments",
+        "s": [
+         "baptism",
+         "confirmation",
+         "reconciliation|confession",
+         "anointing of the sick",
+         "matrimony|marriage",
+         "holy orders",
+         "eucharist"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Catholic belief about life after death",
+        "s": [
+         "resurrection",
+         "judgement",
+         "heaven",
+         "hell",
+         "purgatory"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Catholic form of popular piety",
+        "s": [
+         "rosary",
+         "stations of the cross"
+        ],
+        "h": [
+         "pilgrimage"
+        ]
+       },
+       {
+        "q": "Name a Catholic agency or organisation",
+        "s": [
+         "cafod",
+         "trocaire",
+         "missio",
+         "svp|society of saint vincent de paul"
+        ],
+        "h": [
+         "pax christi",
+         "corrymeela"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Hinduism",
+      "qs": [
+       {
+        "q": "Name a Hindu deity",
+        "s": [
+         "brahma",
+         "vishnu",
+         "shiva",
+         "ganesha",
+         "lakshmi",
+         "hanuman",
+         "saraswati"
+        ],
+        "h": [
+         "krishna",
+         "rama"
+        ]
+       },
+       {
+        "q": "Name a form of Hindu worship",
+        "s": [
+         "puja",
+         "havan",
+         "arati",
+         "darshan",
+         "bhajan|kirtan",
+         "japa|mantra"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name one of the four aims of human life",
+        "s": [
+         "dharma",
+         "artha",
+         "kama",
+         "moksha"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Hindu festival",
+        "s": [
+         "diwali",
+         "holi"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a path of yoga",
+        "s": [
+         "karma yoga|action",
+         "jnana yoga|knowledge",
+         "astanga yoga|meditation",
+         "bhakti yoga|devotion"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Islam",
+      "qs": [
+       {
+        "q": "Name one of the Five Pillars of Islam",
+        "s": [
+         "shahadah",
+         "salah|prayer",
+         "zakah|zakat",
+         "sawm|fasting",
+         "hajj"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Muslim festival",
+        "s": [
+         "id ul adha|eid ul adha",
+         "id ul fitr|eid ul fitr",
+         "ashura"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name one of the six articles of faith in Sunni Islam",
+        "s": [
+         "tawhid|oneness of god",
+         "angels|malaikah",
+         "holy books",
+         "prophets|risalah",
+         "akhirah|day of judgement|life after death",
+         "predestination"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a place or site visited during Hajj",
+        "s": [
+         "kaaba|ka aba",
+         "mina",
+         "arafat",
+         "muzdalifah",
+         "makkah|mecca"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name one of the Shia roots of faith",
+        "s": [
+         "tawhid",
+         "adalat|justice",
+         "nubuwwah|prophethood",
+         "imamah|imamate",
+         "ma ad|day of judgement"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Judaism",
+      "qs": [
+       {
+        "q": "Name a feature of a synagogue",
+        "s": [
+         "bimah|reading platform",
+         "aron hakodesh|ark",
+         "ner tamid|eternal light"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Jewish festival",
+        "s": [
+         "rosh hashanah",
+         "yom kippur",
+         "pesach|passover"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Jewish ceremony or ritual",
+        "s": [
+         "brit milah|circumcision",
+         "bar mitzvah|bat mitzvah",
+         "marriage|wedding",
+         "mourning|funeral"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Jewish holy text",
+        "s": [
+         "tenakh|torah",
+         "talmud"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Jewish idea about God or the covenant",
+        "s": [
+         "one god",
+         "creator",
+         "law giver|judge",
+         "shekhinah|divine presence",
+         "covenant with abraham|covenant at sinai"
+        ],
+        "h": [
+         "messiah",
+         "pikuach nefesh|saving a life"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Sikhism",
+      "qs": [
+       {
+        "q": "Name one of the five Ks",
+        "s": [
+         "kesh",
+         "kangha",
+         "kara",
+         "kirpan",
+         "kachera"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Sikh festival",
+        "s": [
+         "vaisakhi|baisakhi",
+         "divali|diwali",
+         "gurpurbs|guru nanak birthday"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a feature of a gurdwara",
+        "s": [
+         "palki",
+         "takht",
+         "langar",
+         "guru granth sahib"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a Sikh belief or practice",
+        "s": [
+         "mool mantra",
+         "karma",
+         "mukti",
+         "equality|oneness of humanity",
+         "sewa|service",
+         "nam japna|meditation",
+         "akhand path"
+        ],
+        "h": [
+         "haumai|ego",
+         "gurmukh",
+         "five khands"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme A: Relationships and families",
+      "qs": [
+       {
+        "q": "Name an issue studied in relationships and families",
+        "s": [
+         "contraception",
+         "sex before marriage|sexual relationships",
+         "same sex relationships",
+         "divorce",
+         "marriage",
+         "gender equality|equality"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a purpose of the family",
+        "s": [
+         "procreation|having children",
+         "stability|protecting children",
+         "educating children in a faith"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a type of family",
+        "s": [
+         "nuclear",
+         "extended"
+        ],
+        "h": [
+         "same sex parents",
+         "polygamy"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme B: Religion and life",
+      "qs": [
+       {
+        "q": "Name an issue about life studied",
+        "s": [
+         "abortion",
+         "euthanasia",
+         "animal experimentation"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a religious idea about looking after the world",
+        "s": [
+         "stewardship",
+         "dominion",
+         "responsibility",
+         "awe and wonder"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a belief about the value of life",
+        "s": [
+         "sanctity of life",
+         "quality of life"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Theme C: The existence of God and revelation",
+      "qs": [
+       {
+        "q": "Name an argument for the existence of God",
+        "s": [
+         "design argument|design",
+         "first cause argument|first cause",
+         "argument from miracles|miracles"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name an argument against the existence of God",
+        "s": [
+         "evil and suffering|problem of evil",
+         "science|big bang",
+         "scientific explanations"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a source of revelation",
+        "s": [
+         "visions|vision",
+         "nature|general revelation",
+         "special revelation",
+         "enlightenment",
+         "miracles"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Theme D: Religion, peace and conflict",
+      "qs": [
+       {
+        "q": "Name a key idea in religion and peace",
+        "s": [
+         "peace",
+         "justice",
+         "forgiveness",
+         "reconciliation"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a view or theory about war",
+        "s": [
+         "just war",
+         "holy war",
+         "pacifism",
+         "nuclear deterrence|deterrence",
+         "terrorism"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a reason for war",
+        "s": [
+         "greed",
+         "self defence",
+         "retaliation"
+        ],
+        "h": [
+         "religion",
+         "revenge"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme E: Religion, crime and punishment",
+      "qs": [
+       {
+        "q": "Name an aim of punishment",
+        "s": [
+         "retribution",
+         "deterrence",
+         "reformation"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a reason for crime",
+        "s": [
+         "poverty",
+         "upbringing",
+         "mental health problems|mental health",
+         "addiction",
+         "greed",
+         "hate"
+        ],
+        "h": [
+         "opposition to an unjust law"
+        ]
+       },
+       {
+        "q": "Name a type of punishment",
+        "s": [
+         "prison",
+         "corporal punishment",
+         "community service",
+         "death penalty|capital punishment"
+        ],
+        "h": []
+       }
+      ]
+     },
+     {
+      "name": "Theme F: Religion, human rights and social justice",
+      "qs": [
+       {
+        "q": "Name a human rights or social justice issue",
+        "s": [
+         "status of women|sexism",
+         "uses of wealth",
+         "freedom of religious expression|freedom of religion",
+         "racial prejudice|racism",
+         "discrimination",
+         "poverty"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name a way to help people living in poverty",
+        "s": [
+         "charity",
+         "giving money|donations",
+         "fair pay",
+         "stop exploitation"
+        ],
+        "h": [
+         "tackling the causes of poverty"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme G: St Mark’s Gospel – the life of Jesus",
+      "qs": [
+       {
+        "q": "Name a title of Jesus",
+        "s": [
+         "son of man",
+         "son of god",
+         "christ|messiah",
+         "son of david"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name an event in the life of Jesus in Mark",
+        "s": [
+         "baptism|baptism of jesus",
+         "temptation",
+         "feeding of the five thousand",
+         "transfiguration",
+         "last supper",
+         "crucifixion",
+         "empty tomb"
+        ],
+        "h": [
+         "bartimaeus",
+         "jairus daughter",
+         "entry into jerusalem",
+         "gethsemane",
+         "trial before pilate|pilate",
+         "rejection at nazareth",
+         "paralysed man"
+        ]
+       }
+      ]
+     },
+     {
+      "name": "Theme H: St Mark’s Gospel – religious, moral and spiritual truths",
+      "qs": [
+       {
+        "q": "Name a parable from Mark",
+        "s": [
+         "sower",
+         "growing seed",
+         "mustard seed"
+        ],
+        "h": []
+       },
+       {
+        "q": "Name someone Jesus helped who was disregarded by society",
+        "s": [
+         "man with leprosy|leprosy",
+         "levi|tax collector",
+         "greek woman|syro phoenician woman",
+         "epileptic boy|demon possessed boy",
+         "widow at the treasury|widow"
+        ],
+        "h": [
+         "woman with a haemorrhage"
+        ]
+       },
+       {
+        "q": "Name an idea or event about faith and discipleship",
+        "s": [
+         "call of the first disciples|first disciples",
+         "cost of discipleship|discipleship",
+         "peter denials|denial",
+         "mission of the twelve|twelve",
+         "commission and ascension"
+        ],
+        "h": [
+         "kingdom of god",
+         "faith"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "board": "Edexcel",
+    "topics": []
    }
   ]
  }
