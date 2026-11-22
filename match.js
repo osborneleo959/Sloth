@@ -19,12 +19,13 @@ function stem(w) {
   return w;
 }
 function toks(text) {
-  return String(text).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w && !STOP.has(w))
+  return String(text).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/œ/g, 'oe').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w && !STOP.has(w))
     .map(w => SYN[w] || w).join(' ').split(' ').filter(Boolean).map(stem);
 }
 function same(a, b) {
   if (a === b) return true;
   const n = Math.max(a.length, b.length);
+  if (a.length >= 5 && b.length >= 5 && (a.includes(b) || b.includes(a))) return true;
   return a.length >= 5 && b.length >= 5 && lev(a, b) <= (n >= 9 ? 2 : 1);
 }
 const build = q => [...q.h.map(x => ({ tier: 50, al: x.split('|') })), ...q.s.map(x => ({ tier: 10, al: x.split('|') }))];
@@ -36,6 +37,10 @@ function match(entries, input) {
     if (bt.every(b => at.some(a => same(a, b)))) return i;
     // the player gave a clear part of a longer accepted answer
     if (at.length < bt.length && (at.length >= 2 || at[0].length >= 7) && at.every(a => bt.some(b => same(a, b)))) return i;
+    // generous: most of a long accepted answer, or one long distinctive keyword
+    const hit = bt.filter(b => at.some(a => same(a, b)));
+    if (bt.length >= 3 && hit.length >= 2 && hit.length >= Math.ceil(bt.length * 2 / 3)) return i;
+    if (bt.length >= 2 && hit.some(h => h.length >= 9)) return i;
   }
   return -1;
 }
