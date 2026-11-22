@@ -2,9 +2,9 @@
 <html lang="en-GB"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ReviseRush – GCSE revision party game</title>
-<meta name="description" content="ReviseRush is a free GCSE revision party game. Play solo or with friends: name answers for GCSE Science, Geography, History, Music, Computer Science and Business Studies before the clock runs out.">
+<meta name="description" content="ReviseRush is a free GCSE revision party game. Play solo or with friends: name answers for GCSE Science, Geography, History, Music, Computer Science, Business Studies, French and Religious Studies before the clock runs out.">
 <meta property="og:title" content="ReviseRush – GCSE revision party game">
-<meta property="og:description" content="Play solo or with friends. Name answers for GCSE Science, Geography, History, Music, Computer Science and Business Studies.">
+<meta property="og:description" content="Play solo or with friends. Name answers for GCSE Science, Geography, History, Music, Computer Science, Business Studies, French and Religious Studies.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f9d6b'/%3E%3Cpath d='M20 34l9 9 16-19' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap">
@@ -52,7 +52,7 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const LOGO='<svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="ReviseRush logo"><rect width="64" height="64" rx="16" fill="var(--g)"/><rect x="9" y="13" width="46" height="31" rx="9" fill="#fff"/><path d="M19 43v11l12-11z" fill="#fff"/><path d="M21 29l8 8 14-17" fill="none" stroke="var(--g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="12" r="8" fill="var(--sun)"/></svg>';
-let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},cfg={lives:3,turn:20,round:60,rounds:5,skips:2};
+let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
 const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
 const isHost=()=>s.host===s.you;
 
@@ -75,7 +75,7 @@ function home(){
     <div class="menu"><button class="mb" id="m1">Play solo<span>Practise on your own</span></button>
     <button class="mb b" id="m2">Host a game<span>Create a room for friends or your class</span></button>
     <button class="mb p" id="m3">Join a game<span>Enter a room code</span></button></div>
-    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. You can skip the current question a limited number of times, for −10 points.</p><p class="mut">Covers GCSE Biology, Chemistry, Physics, Geography, History, Music, Computer Science and Business Studies. Choose your subject, exam board and topics.</p></div>`;
+    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. In a hosted game you can skip the current question a limited number of times, for −10 points. Solo mode has no timer: name enough different answers to move on to the next question.</p><p class="mut">Covers GCSE Biology, Chemistry, Physics, Geography, History, Music, Computer Science, Business Studies, French and Religious Studies. Choose your subject, exam board and topics.</p></div>`;
     [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});return;
   }
   const j=view==='join',title={solo:'Play solo',host:'Host a game',join:'Join a game'}[view];
@@ -87,7 +87,7 @@ function home(){
   $('go').onclick=go;app.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')go()});$('nm').focus();
 }
 
-function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${[...Array(s.set.lives).keys()].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
+function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${s.solo?'':[...Array(s.set.lives).keys()].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
 
 function lobby(){
   const y=window.scrollY;
@@ -104,7 +104,7 @@ function lobby(){
   const tps=B.topics.length?B.topics.map(n=>`<label class="c"><input type="checkbox" data-t="${esc(n)}" ${sel.has(key(n))?'checked':''}> ${esc(n)}</label>`).join(''):'<p class="mut">No questions for this board yet.</p>';
   app.innerHTML=`<button class="back" id="lv">← Leave</button><h1>${s.solo?'Solo practice':'Lobby'}</h1>
   ${s.solo?'':`<div class="card"><p class="mut">Share this code:</p><div class="code">${s.code}</div></div><div class="card"><h2>Players (${s.players.length}/8)</h2>${s.players.map(p=>`<p>${esc(p.name)}${p.id===s.host?' (host)':''}</p>`).join('')}</div>`}
-  ${isHost()?`<div class="card"><h2>Settings</h2><div class="sets">${opt('lives',[1,2,3,4,5],'Lives')}${opt('turn',[10,15,20,30,45],'Seconds per turn')}${opt('round',[30,60,90,120],'Seconds per round')}${opt('rounds',[3,5,8,10,15],'Rounds')}${opt('skips',[0,1,2,3],'Skips each')}</div></div>
+  ${isHost()?`<div class="card"><h2>Settings</h2><div class="sets">${s.solo?opt('rounds',[3,5,8,10,15],'Questions')+opt('need',[3,5,8,10],'Answers needed per question'):opt('lives',[1,2,3,4,5],'Lives')+opt('turn',[10,15,20,30,45],'Seconds per turn')+opt('round',[30,60,90,120],'Seconds per round')+opt('rounds',[3,5,8,10,15],'Rounds')+opt('skips',[0,1,2,3],'Skips each')}</div></div>
   <div class="card"><h2>1. Subject</h2><div class="chips">${subs}</div>
   <h2 style="margin-top:16px">2. Exam board</h2><div class="chips">${boards}</div>
   <h2 style="margin-top:16px">3. Topics</h2><div class="row" style="margin-bottom:6px"><button class="lnk" id="all">Select all</button><button class="lnk" id="none">Clear</button></div><div class="tps">${tps}</div>
@@ -127,16 +127,16 @@ function render(){
   if(s.phase==='play'){
     const mine=s.turn===s.you,who=s.players.find(p=>p.id===s.turn),me=s.players.find(p=>p.id===s.you);
     app.innerHTML=`<button class="back" id="hm">← Home</button>${scores()}<div class="card"><p class="mut">Round ${s.ri+1} of ${s.n} · ${esc(s.topic)}</p><div class="q big">${esc(s.q)}</div>
-    <div class="bar" id="rb"><i></i></div><p class="mut" id="rt"></p>
-    <div class="turn">${mine?'Your turn!':esc(who.name)+'’s turn'}</div><div class="bar" id="tb"><i></i></div>
+    ${s.solo?`<p class="turn">Found ${s.log.length} of ${s.set.need} different answers</p><div class="bar"><i style="width:${Math.min(100,s.log.length/s.set.need*100)}%"></i></div><p class="mut">No timer. Take your time and name ${s.set.need} to move on.</p>`:`<div class="bar" id="rb"><i></i></div><p class="mut" id="rt"></p>
+    <div class="turn">${mine?'Your turn!':esc(who.name)+'’s turn'}</div><div class="bar" id="tb"><i></i></div>`}
     <div class="row"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${mine?'Type your answer':'Wait for your turn'}" aria-label="Your answer" ${mine?'':'disabled'}><button id="sub" ${mine?'':'disabled'}>Answer</button></div>
-    ${s.set.skips?`<button class="ghost" id="sk" style="margin-top:8px" ${mine&&me.skips>0?'':'disabled'}>Skip question (${me.skips} left, −10 points)</button>`:''}
+    ${s.solo?'<button class="ghost" id="sk" style="margin-top:8px">Skip question</button>':s.set.skips?`<button class="ghost" id="sk" style="margin-top:8px" ${mine&&me.skips>0?'':'disabled'}>Skip question (${me.skips} left, −10 points)</button>`:''}
     <p id="msg"></p><div>${s.log.map(l=>`<span class="chip ${l.tier===50?'hi':''}">${esc(l.text)} (${esc(l.by)})</span>`).join('')}</div></div>`;
     const go=()=>{const a=$('ans');if(a.value.trim()){send({t:'answer',text:a.value});a.value=''}};
     $('sub').onclick=go;$('ans').onkeydown=e=>{if(e.key==='Enter')go()};if($('sk'))$('sk').onclick=()=>send({t:'skip'});$('hm').onclick=leaveGame;
     if(mine){$('ans').value=v;$('ans').focus()}
   }else if(s.phase==='between'){
-    app.innerHTML=`<button class="back" id="hm">← Home</button><div class="card"><h2>Round over</h2><p class="mut">${esc(s.q)}</p><p><b>Answers nobody found</b> (gold = grade 7–9):</p>
+    app.innerHTML=`<button class="back" id="hm">← Home</button><div class="card"><h2>Round over</h2><p class="mut">${esc(s.q)}</p><p><b>${s.solo?'Answers you missed':'Answers nobody found'}</b> (gold = grade 7–9):</p>
     <div>${s.missed.map(m=>`<span class="chip miss ${m.tier===50?'hi':''}">${esc(m.text)}</span>`).join('')||'You found every answer!'}</div></div>
     <div class="card">${top.map(p=>`<p><b>${esc(p.name)}</b>: ${p.pts} points ${p.lives>0?'':'(out)'}${s.rpts[p.name]?' · +'+s.rpts[p.name]+' this round':''}</p>`).join('')}</div>
     ${isHost()?`<button id="nx" style="width:100%">${s.last?'See results':'Next round'}</button>`:'<p class="mut">Waiting for the host…</p>'}`;
