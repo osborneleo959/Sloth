@@ -32,6 +32,7 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 .mb.b{border-left-color:var(--blue)}.mb.p{border-left-color:var(--pur)}
 .sets{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sets label{display:flex;flex-direction:column;font-size:.9rem;color:var(--mut)}.sets select{margin-top:4px;color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chipb{background:var(--card);color:var(--ink);border:2px solid var(--line);padding:8px 14px;border-radius:20px}.chipb.on{border-color:var(--g);background:var(--g);color:var(--on)}.chipb:disabled{opacity:.45}
+.mb.a{border-left-color:var(--sun)}.acct{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0 10px}.lb{width:100%;border-collapse:collapse}.lb th,.lb td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}.lb tr.me td{font-weight:800;color:var(--g)}
 .sub{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
 .tps{padding:0 0 8px 8px;display:grid;gap:2px}label.c{display:block;padding:2px 0}
 .row{display:flex;gap:10px;align-items:center}.row>input{flex:1}
@@ -52,7 +53,7 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const LOGO='<svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="ReviseRush logo"><rect width="64" height="64" rx="16" fill="var(--g)"/><rect x="9" y="13" width="46" height="31" rx="9" fill="#fff"/><path d="M19 43v11l12-11z" fill="#fff"/><path d="M21 29l8 8 14-17" fill="none" stroke="var(--g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="12" r="8" fill="var(--sun)"/></svg>';
-let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
+let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},sess=null,me=null,cfgSrv={accounts:false},meta=null,mode='in',msgA='',dsub=null,dbd={},lbp='daily',lbs=null,lbb=null,cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
 const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
 const isHost=()=>s.host===s.you;
 
@@ -65,26 +66,119 @@ function connect(first){
     else if(m.t==='err'){err=m.text;if(!s)home()}};
   ws.onclose=()=>{if(s)app.insertAdjacentHTML('afterbegin','<p class="bad">Connection lost. Refresh the page to rejoin.</p>')};
 }
-function leave(){const w=ws;s=null;sel=null;act=null;board={};ws=null;view='menu';err='';if(w)w.close();home()}
+function leave(){const w=ws;s=null;sel=null;act=null;board={};ws=null;view='menu';err='';if(w)w.close();home();if(sess&&cfgSrv.accounts)loadMe().then(()=>{if(view==='menu'&&!s)home()})}
 function leaveGame(){if(confirm('Leave this game and go back to the home page?'))leave()}
+
+async function ensureFresh(){if(sess&&sess.expires_at-Date.now()/1000<120){try{const j=await api('/api/refresh',{refresh_token:sess.refresh_token});store(j.session)}catch{store(null);me=null}}}
+const store=v=>{sess=v;try{v?localStorage.setItem('rr_sess',JSON.stringify(v)):localStorage.removeItem('rr_sess')}catch{}};
+async function api(path,body,auth){
+  const h={'Content-Type':'application/json'};
+  if(auth){await ensureFresh();if(!sess)throw new Error('Please sign in again.');h.Authorization='Bearer '+sess.access_token}
+  const r=await fetch(path,{method:body===null||body===undefined?'GET':'POST',headers:h,body:body===null||body===undefined?undefined:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Something went wrong.');return j}
+async function loadMe(){me=null;if(!sess)return;try{me=await api('/api/me',null,true)}catch{me=null}}
+async function loadMeta(){if(!meta){try{meta=await api('/api/subjects')}catch{meta=[]}}}
+async function boot(){try{sess=JSON.parse(localStorage.getItem('rr_sess')||'null')}catch{sess=null}
+  try{cfgSrv=await api('/api/config')}catch{}
+  if(sess&&cfgSrv.accounts)await loadMe();home()}
+function acctBar(){if(!cfgSrv.accounts)return '';
+  return me?`<div class="acct"><span>Hi <b>${esc(me.display_name)}</b> · 🔥 ${me.streak}-day streak</span><button class="lnk" id="pf">Profile</button></div>`
+  :`<div class="acct"><span class="mut">Sign in to keep streaks and join leaderboards</span><button class="lnk" id="si">Sign in</button></div>`}
+function dailyCard(){const r=s.result;
+  if(!r)return '<div class="card"><p>Saving your score…</p></div>';
+  if(r.error)return '<div class="card"><p class="bad">Could not save your score. Check your connection and try again.</p></div>';
+  return `<div class="card"><h2>Daily challenge complete</h2><p><b>${s.players[0].pts}</b> points · ranked <b>#${r.rank}</b> today</p><p>🔥 <b>${r.streak}</b>-day streak (best ${r.best})</p><button id="lbx" style="margin-top:8px">View leaderboard</button></div>`}
 
 function home(){
   if(view==='menu'){
     app.innerHTML=`<div class="logo">${LOGO}<div class="brand">Revise<span>Rush</span></div></div>
-    <p class="mut">The GCSE revision party game. Name answers before the clock runs out. Higher-level answers score more.</p>
-    <div class="menu"><button class="mb" id="m1">Play solo<span>Practise on your own</span></button>
+    <p class="mut">The GCSE revision party game. Name answers before the clock runs out. Higher-level answers score more.</p>${acctBar()}
+    <div class="menu">${cfgSrv.accounts?'<button class="mb a" id="m4">Daily challenge<span>New questions every day. Build your streak.</span></button>':''}
+    <button class="mb" id="m1">Play solo<span>Practise on your own</span></button>
     <button class="mb b" id="m2">Host a game<span>Create a room for friends or your class</span></button>
-    <button class="mb p" id="m3">Join a game<span>Enter a room code</span></button></div>
+    <button class="mb p" id="m3">Join a game<span>Enter a room code</span></button>
+    ${cfgSrv.accounts?'<button class="mb" id="m5">Leaderboards<span>See who is top today</span></button>':''}</div>
     <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. In a hosted game you can skip the current question a limited number of times, for −10 points. Solo mode has no timer: name enough different answers to move on to the next question.</p><p class="mut">Covers GCSE Biology, Chemistry, Physics, Geography, History, Music, Computer Science, Business Studies, French and Religious Studies. Choose your subject, exam board and topics.</p></div>`;
-    [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});return;
+    [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});
+    if($('m4'))$('m4').onclick=()=>{err='';view=me?'daily':'auth';mode='in';home()};
+    if($('m5'))$('m5').onclick=()=>{view='lb';home()};
+    if($('pf'))$('pf').onclick=()=>{err='';view='profile';home()};
+    if($('si'))$('si').onclick=()=>{view='auth';mode='in';msgA='';home()};
+    return;
   }
+  if(view==='auth')return authView();
+  if(view==='daily')return dailyView();
+  if(view==='lb')return lbView();
+  if(view==='profile')return profileView();
   const j=view==='join',title={solo:'Play solo',host:'Host a game',join:'Join a game'}[view];
   app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${title}</h1>
-  <div class="card"><input id="nm" maxlength="16" placeholder="Your name" aria-label="Your name">${j?'<input id="cd" maxlength="4" placeholder="Room code" aria-label="Room code" style="text-transform:uppercase;margin-top:8px">':''}
+  <div class="card"><input id="nm" maxlength="16" placeholder="Your name" aria-label="Your name" value="${me&&!j?esc(me.display_name):''}">${j?'<input id="cd" maxlength="4" placeholder="Room code" aria-label="Room code" style="text-transform:uppercase;margin-top:8px">':''}
   <button id="go" style="width:100%;margin-top:10px">${j?'Join':'Continue'}</button></div><p class="bad">${esc(err)}</p>`;
   $('bk').onclick=()=>{view='menu';err='';home()};
   const go=()=>{err='';connect({t:j?'join':'create',name:$('nm').value,code:j?$('cd').value:undefined,solo:view==='solo'})};
   $('go').onclick=go;app.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')go()});$('nm').focus();
+}
+function authView(){
+  const up=mode==='up';
+  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${up?'Create account':'Sign in'}</h1>
+  <div class="card">${up?'<input id="dn" maxlength="16" placeholder="Display name (shown on leaderboards)" aria-label="Display name" style="margin-bottom:8px">':''}
+  <input id="em" type="email" placeholder="Email" aria-label="Email" autocomplete="email"><input id="pw" type="password" placeholder="Password (8+ characters)" aria-label="Password" autocomplete="${up?'new-password':'current-password'}" style="margin-top:8px">
+  <button id="go" style="width:100%;margin-top:10px">${up?'Create account':'Sign in'}</button>
+  ${up?'<p class="mut" style="margin-top:10px">Use a nickname, not your real name. Your email is never shown to other players. You must be 13 or over. <a href="/privacy" target="_blank">Privacy notice</a></p>':''}
+  <button class="lnk" id="sw" style="margin-top:8px">${up?'I already have an account':'Create an account'}</button></div>
+  <p class="${msgA.startsWith('✓')?'':'bad'}">${esc(msgA)}</p>`;
+  $('bk').onclick=()=>{view='menu';msgA='';home()};
+  $('sw').onclick=()=>{mode=up?'in':'up';msgA='';home()};
+  $('go').onclick=async()=>{
+    try{msgA='';const j=await api(up?'/api/signup':'/api/login',{email:$('em').value,password:$('pw').value,displayName:up?$('dn').value:undefined});
+      if(j.session){store(j.session);await loadMe();view='menu';home()}else{msgA='✓ '+(j.message||'Check your email to confirm, then sign in.');mode='in';home()}}
+    catch(e){msgA=e.message;home()}};
+}
+async function dailyView(){
+  await loadMeta();if(view!=='daily')return;
+  if(!me){view='auth';return home()}
+  if(!meta.length){app.innerHTML='<button class="back" id="bk">← Back</button><p>No questions available yet.</p>';$('bk').onclick=()=>{view='menu';home()};return}
+  const S=meta.find(x=>x.subject===dsub)||meta[0];dsub=S.subject;
+  const bd=S.boards.some(b=>b.board===dbd[dsub])?dbd[dsub]:S.boards[0].board;
+  const done=me.doneToday.find(d=>d.subject===dsub&&d.board===bd);
+  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>Daily challenge</h1><p class="mut">🔥 ${me.streak}-day streak · best ${me.best}</p>
+  <div class="card"><h2>1. Subject</h2><div class="chips">${meta.map(x=>`<button class="chipb ${x.subject===dsub?'on':''}" data-s="${esc(x.subject)}">${esc(x.subject)}${me.doneToday.some(d=>d.subject===x.subject)?' ✓':''}</button>`).join('')}</div>
+  <h2 style="margin-top:16px">2. Exam board</h2><div class="chips">${S.boards.map(b=>`<button class="chipb ${b.board===bd?'on':''}" data-b="${esc(b.board)}">${esc(b.board)}</button>`).join('')}</div>
+  <p class="mut" style="margin-top:12px">5 questions, no timer. Name 3 different answers for each. Everyone gets the same questions today.</p></div>
+  ${done?`<div class="card"><p>✓ Done today: <b>${done.score}</b> points. Come back tomorrow, or try another subject.</p></div>`:'<button id="st" style="width:100%;font-size:1.2rem">Start today’s challenge</button>'}
+  ${err?`<p class="bad">${esc(err)}</p>`:''}`;
+  $('bk').onclick=()=>{view='menu';err='';home()};
+  app.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{dsub=b.dataset.s;err='';dailyView()});
+  app.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{dbd[dsub]=b.dataset.b;err='';dailyView()});
+  if($('st'))$('st').onclick=async()=>{err='';await ensureFresh();if(!sess){view='auth';return home()}connect({t:'create',solo:true,daily:{subject:dsub,board:bd},token:sess.access_token})};
+}
+async function lbView(){
+  await loadMeta();if(view!=='lb')return;
+  if(!meta.length){app.innerHTML='<button class="back" id="bk">← Back</button><p>No questions available yet.</p>';$('bk').onclick=()=>{view='menu';home()};return}
+  const S=meta.find(x=>x.subject===lbs)||meta[0];lbs=S.subject;const bd=S.boards.some(b=>b.board===lbb)?lbb:S.boards[0].board;lbb=bd;
+  const tabs=[['daily','Today'],['weekly','This week'],['alltime','All time'],['streak','Streaks']];
+  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>Leaderboards</h1>
+  <div class="chips">${tabs.map(([k,t])=>`<button class="chipb ${k===lbp?'on':''}" data-p="${k}">${t}</button>`).join('')}</div>
+  ${lbp==='streak'?'':`<div class="sets" style="margin:12px 0"><label>Subject<select id="ls">${meta.map(x=>`<option ${x.subject===lbs?'selected':''}>${esc(x.subject)}</option>`).join('')}</select></label><label>Exam board<select id="lbd">${S.boards.map(b=>`<option ${b.board===bd?'selected':''}>${esc(b.board)}</option>`).join('')}</select></label></div>`}
+  <div class="card" id="lbt"><p class="mut">Loading…</p></div>`;
+  $('bk').onclick=()=>{view='menu';home()};
+  app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{lbp=b.dataset.p;lbView()});
+  if($('ls'))$('ls').onchange=e=>{lbs=e.target.value;lbView()};
+  if($('lbd'))$('lbd').onchange=e=>{lbb=e.target.value;lbView()};
+  try{const j=await api(`/api/leaderboard?period=${lbp}&subject=${encodeURIComponent(lbs)}&board=${encodeURIComponent(bd)}`);if(!$('lbt'))return;
+    $('lbt').innerHTML=j.rows.length?`<table class="lb"><tr><th>#</th><th>Player</th><th>${lbp==='streak'?'Days':'Points'}</th></tr>${j.rows.map((r,i)=>`<tr class="${me&&r.name===me.display_name?'me':''}"><td>${i+1}</td><td>${esc(r.name)}</td><td>${r.score}</td></tr>`).join('')}</table>`:'<p class="mut">No scores yet. Be the first!</p>'}
+  catch(e){if($('lbt'))$('lbt').innerHTML='<p class="bad">'+esc(e.message)+'</p>'}
+}
+function profileView(){
+  if(!me){view='auth';return home()}
+  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${esc(me.display_name)}</h1>
+  <div class="card"><p>🔥 <b>${me.streak}</b>-day streak</p><p>Best streak: <b>${me.best}</b> days</p><p>Daily challenges completed: <b>${me.games}</b></p><p>Total daily points: <b>${me.total}</b></p></div>
+  <div class="card"><h2>Today</h2>${me.doneToday.length?me.doneToday.map(d=>`<p>✓ ${esc(d.subject)} (${esc(d.board)}): ${d.score} points</p>`).join(''):'<p class="mut">No daily challenge completed yet today.</p>'}</div>
+  <button id="out" class="ghost" style="width:100%">Sign out</button>
+  <button id="del" class="lnk" style="margin-top:14px">Delete my account and data</button><p class="bad">${esc(err)}</p>`;
+  $('bk').onclick=()=>{view='menu';err='';home()};
+  $('out').onclick=()=>{store(null);me=null;view='menu';home()};
+  $('del').onclick=()=>{if(confirm('Delete your account, streak and scores permanently? This cannot be undone.'))api('/api/delete',{},true).then(()=>{store(null);me=null;view='menu';home()}).catch(e=>{err=e.message;home()})};
 }
 
 function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${s.solo?'':[...Array(s.set.lives).keys()].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
@@ -142,11 +236,11 @@ function render(){
     ${isHost()?`<button id="nx" style="width:100%">${s.last?'See results':'Next round'}</button>`:'<p class="mut">Waiting for the host…</p>'}`;
     if(isHost())$('nx').onclick=()=>send({t:'next'});$('hm').onclick=leaveGame;
   }else{
-    app.innerHTML=`<h1>${s.solo?'Game over!':esc(top[0].name)+' wins!'}</h1><div class="card">${top.map((p,i)=>`<p>${i+1}. <b>${esc(p.name)}</b>: ${p.pts} points</p>`).join('')}</div>
+    app.innerHTML=`<h1>${s.daily?'Daily challenge':s.solo?'Game over!':esc(top[0].name)+' wins!'}</h1>${s.daily?dailyCard():''}<div class="card">${top.map((p,i)=>`<p>${i+1}. <b>${esc(p.name)}</b>: ${p.pts} points</p>`).join('')}</div>
     <h2 style="margin-top:22px">Revision summary</h2><p class="mut">Every answer from your game. <span class="chip">✓ You said it</span> <span class="chip miss">You missed it</span> <span class="chip hi">Grade 7–9</span></p>
     ${(s.review||[]).map(r=>`<div class="card"><p class="mut">${esc(r.topic)}</p><p><b>${esc(r.q)}</b></p>${r.answers.map(a=>`<span class="chip ${a.tier===50?'hi':''} ${a.by===s.you?'':'miss'}">${a.by===s.you?'✓ ':''}${esc(a.text)}</span>`).join('')}</div>`).join('')}
-    ${isHost()?`<button id="ag" style="width:100%">${s.solo?'Play again':'Back to lobby'}</button>`:'<p class="mut">Waiting for the host…</p>'}<button class="back" id="hm" style="margin-top:10px">Back to home</button>`;
-    if(isHost())$('ag').onclick=()=>send({t:'again'});$('hm').onclick=leave;
+    ${s.daily?'':isHost()?`<button id="ag" style="width:100%">${s.solo?'Play again':'Back to lobby'}</button>`:'<p class="mut">Waiting for the host…</p>'}<button class="back" id="hm" style="margin-top:10px">Back to home</button>`;
+    if($('ag'))$('ag').onclick=()=>send({t:'again'});$('hm').onclick=leave;if($('lbx')){const dd=s.daily;$('lbx').onclick=()=>{leave();lbp='daily';lbs=dd.subject;lbb=dd.board;view='lb';home()}}
   }
 }
 function toast(m){const e=$('msg');if(!e)return;e.textContent=m.text;e.style.color=m.kind==='bad'?'var(--bad)':m.kind==='hi'?'var(--sun)':'var(--g)';clearTimeout(mt);mt=setTimeout(()=>{if($('msg'))$('msg').textContent=''},2500)}
@@ -154,5 +248,5 @@ setInterval(()=>{if(!s||s.phase!=='play'||!$('tb'))return;const now=Date.now()+o
   $('tb').firstChild.style.width=Math.max(0,(s.turnEnd-now)/(s.set.turn*10))+'%';
   $('rb').firstChild.style.width=Math.max(0,(s.roundEnd-now)/(s.set.round*10))+'%';
   $('rt').textContent='Round time left: '+Math.max(0,Math.ceil((s.roundEnd-now)/1000))+'s'},150);
-home();
+boot();
 </script></body></html>
