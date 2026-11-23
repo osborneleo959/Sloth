@@ -118,31 +118,36 @@ function home(){
   const go=()=>{err='';connect({t:j?'join':'create',name:$('nm').value,code:j?$('cd').value:undefined,solo:view==='solo'})};
   $('go').onclick=go;app.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')go()});$('nm').focus();
 }
+function yearSelect(v){return `<select id="yr" aria-label="Year group" style="width:100%"><option value="">Choose your year</option>${[9,10,11,12,13].map(y=>`<option value="${y}" ${+v===y?'selected':''}>Year ${y}</option>`).join('')}</select>`}
+function subjectBoxes(sel){return meta.map(x=>`<label class="c"><input type="checkbox" data-sj value="${esc(x.subject)}" ${sel.includes(x.subject)?'checked':''}> ${esc(x.subject)}</label>`).join('')}
+const picked=()=>({year:+$('yr').value||null,subjects:[...app.querySelectorAll('[data-sj]:checked')].map(c=>c.value)});
 function authView(){
   const up=mode==='up';
+  if(up&&!meta){app.innerHTML='<p class="mut">Loading…</p>';loadMeta().then(()=>{if(view==='auth')home()});return}
   app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${up?'Create account':'Sign in'}</h1>
   <div class="card">${up?'<input id="dn" maxlength="16" placeholder="Display name (shown on leaderboards)" aria-label="Display name" style="margin-bottom:8px">':''}
-  <input id="em" type="email" placeholder="Email" aria-label="Email" autocomplete="email"><input id="pw" type="password" placeholder="Password (8+ characters)" aria-label="Password" autocomplete="${up?'new-password':'current-password'}" style="margin-top:8px">
-  <button id="go" style="width:100%;margin-top:10px">${up?'Create account':'Sign in'}</button>
+  <input id="em" type="email" placeholder="Email" aria-label="Email" autocomplete="email"><input id="pw" type="password" placeholder="Password (8+ characters)" aria-label="Password" autocomplete="${up?'new-password':'current-password'}" style="margin-top:8px"></div>
+  ${up?`<div class="card"><h2>About you</h2><p class="mut">Your year group</p>${yearSelect('')}<p class="mut" style="margin-top:12px">Subjects you study (choose all that apply)</p>${subjectBoxes([])}</div>`:''}
+  <button id="go" style="width:100%">${up?'Create account':'Sign in'}</button>
   ${up?'<p class="mut" style="margin-top:10px">Use a nickname, not your real name. Your email is never shown to other players. You must be 13 or over. <a href="/privacy" target="_blank">Privacy notice</a></p>':''}
-  <button class="lnk" id="sw" style="margin-top:8px">${up?'I already have an account':'Create an account'}</button></div>
+  <button class="lnk" id="sw" style="margin-top:8px">${up?'I already have an account':'Create an account'}</button>
   <p class="${msgA.startsWith('✓')?'':'bad'}">${esc(msgA)}</p>`;
   $('bk').onclick=()=>{view='menu';msgA='';home()};
   $('sw').onclick=()=>{mode=up?'in':'up';msgA='';home()};
   $('go').onclick=async()=>{
-    try{msgA='';const j=await api(up?'/api/signup':'/api/login',{email:$('em').value,password:$('pw').value,displayName:up?$('dn').value:undefined});
-      if(j.session){store(j.session);await loadMe();view='menu';home()}else{msgA='✓ '+(j.message||'Check your email to confirm, then sign in.');mode='in';home()}}
+    try{msgA='';const j=await api(up?'/api/signup':'/api/login',{email:$('em').value,password:$('pw').value,displayName:up?$('dn').value:undefined,...(up?picked():{})});
+      if(j.session){store(j.session);await loadMe();view=(me&&!me.year)?'profile':'menu';home()}else{msgA='✓ '+(j.message||'Check your email to confirm, then sign in.');mode='in';home()}}
     catch(e){msgA=e.message;home()}};
 }
 async function dailyView(){
   await loadMeta();if(view!=='daily')return;
   if(!me){view='auth';return home()}
   if(!meta.length){app.innerHTML='<button class="back" id="bk">← Back</button><p>No questions available yet.</p>';$('bk').onclick=()=>{view='menu';home()};return}
-  const S=meta.find(x=>x.subject===dsub)||meta[0];dsub=S.subject;
+  const mine=me.subjects||[],ordered=[...meta].sort((a,b)=>mine.includes(b.subject)-mine.includes(a.subject));if(!dsub)dsub=ordered[0].subject;const S=meta.find(x=>x.subject===dsub)||ordered[0];dsub=S.subject;
   const bd=S.boards.some(b=>b.board===dbd[dsub])?dbd[dsub]:S.boards[0].board;
   const done=me.doneToday.find(d=>d.subject===dsub&&d.board===bd);
   app.innerHTML=`<button class="back" id="bk">← Back</button><h1>Daily challenge</h1><p class="mut">🔥 ${me.streak}-day streak · best ${me.best}</p>
-  <div class="card"><h2>1. Subject</h2><div class="chips">${meta.map(x=>`<button class="chipb ${x.subject===dsub?'on':''}" data-s="${esc(x.subject)}">${esc(x.subject)}${me.doneToday.some(d=>d.subject===x.subject)?' ✓':''}</button>`).join('')}</div>
+  <div class="card"><h2>1. Subject</h2><div class="chips">${ordered.map(x=>`<button class="chipb ${x.subject===dsub?'on':''}" data-s="${esc(x.subject)}">${mine.includes(x.subject)?'★ ':''}${esc(x.subject)}${me.doneToday.some(d=>d.subject===x.subject)?' ✓':''}</button>`).join('')}</div>
   <h2 style="margin-top:16px">2. Exam board</h2><div class="chips">${S.boards.map(b=>`<button class="chipb ${b.board===bd?'on':''}" data-b="${esc(b.board)}">${esc(b.board)}</button>`).join('')}</div>
   <p class="mut" style="margin-top:12px">5 questions, no timer. Name 3 different answers for each. Everyone gets the same questions today.</p></div>
   ${done?`<div class="card"><p>✓ Done today: <b>${done.score}</b> points. Come back tomorrow, or try another subject.</p></div>`:'<button id="st" style="width:100%;font-size:1.2rem">Start today’s challenge</button>'}
@@ -171,13 +176,16 @@ async function lbView(){
 }
 function profileView(){
   if(!me){view='auth';return home()}
-  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${esc(me.display_name)}</h1>
+  if(!meta){app.innerHTML='<p class="mut">Loading…</p>';loadMeta().then(()=>{if(view==='profile')home()});return}
+  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${esc(me.display_name)}</h1>${me.year?'':'<p class="bad">Please add your year group and subjects.</p>'}
   <div class="card"><p>🔥 <b>${me.streak}</b>-day streak</p><p>Best streak: <b>${me.best}</b> days</p><p>Daily challenges completed: <b>${me.games}</b></p><p>Total daily points: <b>${me.total}</b></p></div>
   <div class="card"><h2>Today</h2>${me.doneToday.length?me.doneToday.map(d=>`<p>✓ ${esc(d.subject)} (${esc(d.board)}): ${d.score} points</p>`).join(''):'<p class="mut">No daily challenge completed yet today.</p>'}</div>
+  <div class="card"><h2>About you</h2><p class="mut">Your year group</p>${yearSelect(me.year)}<p class="mut" style="margin-top:12px">Subjects you study</p>${subjectBoxes(me.subjects||[])}<button id="sv" style="margin-top:10px">Save</button>${msgA?`<p style="color:var(--g)">${esc(msgA)}</p>`:''}</div>
   <button id="out" class="ghost" style="width:100%">Sign out</button>
   <button id="del" class="lnk" style="margin-top:14px">Delete my account and data</button><p class="bad">${esc(err)}</p>`;
-  $('bk').onclick=()=>{view='menu';err='';home()};
-  $('out').onclick=()=>{store(null);me=null;view='menu';home()};
+  $('bk').onclick=()=>{view='menu';err='';msgA='';home()};
+  $('sv').onclick=async()=>{try{err='';await api('/api/profile',picked(),true);await loadMe();msgA='✓ Saved';home()}catch(e){err=e.message;msgA='';home()}};
+  $('out').onclick=()=>{store(null);me=null;view='menu';msgA='';home()};
   $('del').onclick=()=>{if(confirm('Delete your account, streak and scores permanently? This cannot be undone.'))api('/api/delete',{},true).then(()=>{store(null);me=null;view='menu';home()}).catch(e=>{err=e.message;home()})};
 }
 
