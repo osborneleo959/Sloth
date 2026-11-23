@@ -6,6 +6,8 @@ setInterval(() => hits.clear(), 600000).unref();
 const out = (res, code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(obj)); };
 const body = req => new Promise((ok, no) => { let d = ''; req.on('data', c => { d += c; if (d.length > 10000) { no(new Error('too big')); req.destroy(); } }); req.on('end', () => { try { ok(d ? JSON.parse(d) : {}); } catch { no(new Error('bad json')); } }); });
 const subjects = () => BANK.map(s => ({ subject: s.subject, boards: s.boards.filter(b => b.topics.some(t => t.qs.length)).map(b => ({ board: b.board })) })).filter(s => s.boards.length);
+const SUBJECTS = BANK.map(s => s.subject);
+const cleanYS = b => { const year = Number(b.year), subs = Array.isArray(b.subjects) ? [...new Set(b.subjects.map(String))].filter(s => SUBJECTS.includes(s)) : []; return { year: [9, 10, 11, 12, 13].includes(year) ? year : null, subjects: subs }; };
 const authId = req => db.userFromToken((req.headers.authorization || '').replace(/^Bearer /i, ''));
 
 module.exports = async function api(req, res) {
@@ -13,6 +15,7 @@ module.exports = async function api(req, res) {
   try {
     if (p === '/api/config') return out(res, 200, { accounts: db.enabled() });
     if (p === '/api/subjects') return out(res, 200, subjects());
+    if (p === '/api/diag') { if (limited(ip, 'diag', 20)) return out(res, 429, { error: 'Slow down.' }); return out(res, 200, { accounts: db.enabled(), ...(await db.diag()) }); }
     if (!db.enabled()) return out(res, 503, { error: 'Accounts are not set up on this server yet.' });
 
     if (p === '/api/signup' && req.method === 'POST') {
@@ -21,10 +24,13 @@ module.exports = async function api(req, res) {
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return out(res, 400, { error: 'Enter a valid email address.' });
       if (pw.length < 8) return out(res, 400, { error: 'Password must be at least 8 characters.' });
       if (!/^[A-Za-z0-9 -]{3,16}$/.test(name)) return out(res, 400, { error: 'Display name: 3 to 16 letters, numbers, spaces or hyphens.' });
+      const ys = cleanYS(b);
+      if (!ys.year) return out(res, 400, { error: 'Choose your year group.' });
+      if (!ys.subjects.length) return out(res, 400, { error: 'Choose at least one subject you study.' });
       if (await db.nameTaken(name)) return out(res, 409, { error: 'That display name is taken. Try another.' });
       const r = await db.signUp(email, pw);
       if (!r.ok) return out(res, 400, { error: r.error });
-      if (!(await db.createProfile(r.id, name))) return out(res, 400, { error: 'Could not create the account. If you already have one, sign in instead.' });
+      if (!(await db.createProfile(r.id, name, ys.year, ys.subjects))) return out(res, 400, { error: 'Could not create the account. If you already have one, sign in instead.' });
       return out(res, 200, { session: r.session, message: 'Account created. Check your email to confirm it, then sign in.' });
     }
     if (p === '/api/login' && req.method === 'POST') {
@@ -50,7 +56,12 @@ module.exports = async function api(req, res) {
       const pr = await db.getProfile(id); if (!pr) return out(res, 404, { error: 'Profile not found.' });
       const today = db.ukDate(), yest = new Date(Date.parse(today + 'T12:00:00Z') - 864e5).toISOString().slice(0, 10);
       const live = pr.last_daily === today || pr.last_daily === yest;
-      return out(res, 200, { display_name: pr.display_name, streak: live ? pr.current_streak : 0, best: pr.best_streak, total: pr.total_points, games: pr.games_played, doneToday: await db.doneToday(id, today) });
+      return out(res, 200, { display_name: pr.display_name, streak: live ? pr.current_streak : 0, year: pr.year, subjects: pr.subjects || [], best: pr.best_streak, total: pr.total_points, games: pr.games_played, doneToday: await db.doneToday(id, today) });
+    }
+    if (p === '/api/profile' && req.method === 'POST') {
+      const ys = cleanYS(await body(req));
+      if (!ys.year || !ys.subjects.length) return out(res, 400, { error: 'Choose your year group and at least one subject.' });
+      return (await db.updateProfile(id, ys.year, ys.subjects)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not save. Try again.' });
     }
     if (p === '/api/delete' && req.method === 'POST') return (await db.deleteUser(id)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not delete the account. Try again.' });
     return out(res, 404, { error: 'Not found.' });
