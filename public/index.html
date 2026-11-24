@@ -48,7 +48,19 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 .chip{display:inline-block;border:2px solid var(--g);color:var(--g);border-radius:20px;padding:2px 12px;margin:3px 4px 3px 0;font-weight:600}
 .chip.hi{border-color:var(--sun);color:var(--sun)}.chip.miss{border-style:dashed;opacity:.85}
 @media (prefers-reduced-motion:reduce){.pl.on{transform:none}}
-</style></head><body><main id="app"></main>
+
+header.nav{background:var(--card);border-bottom:2px solid var(--line);position:sticky;top:0;z-index:10}
+.nav-in{max-width:920px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.nav-links{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.nbtn{background:transparent;color:var(--ink);border:2px solid transparent;padding:7px 12px;border-radius:10px;font-weight:600}
+.nbtn.on{background:var(--bg);border-color:var(--line);color:var(--g)}
+.nbtn.play{background:var(--g);color:var(--on)}
+main.wide{max-width:920px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
+.badge{display:inline-block;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-size:.82rem;font-weight:600;color:var(--mut);margin-right:6px}
+.ms{background:var(--bg);border-left:4px solid var(--g);padding:10px 14px;border-radius:8px;margin-top:10px}
+.countdown{font:800 1.35rem "Bricolage Grotesque",sans-serif;color:var(--g);margin-top:6px}
+</style></head><body><header id="topnav" class="nav"></header><main id="app"></main>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -80,7 +92,7 @@ async function loadMe(){me=null;needsProfile=false;if(!sess)return;try{me=await 
 async function loadMeta(){if(!meta){try{meta=await api('/api/subjects')}catch{meta=[]}}}
 async function boot(){try{sess=JSON.parse(localStorage.getItem('rr_sess')||'null')}catch{sess=null}
   try{cfgSrv=await api('/api/config')}catch{}
-  if(sess&&cfgSrv.accounts){await loadMe();if(needsProfile)view='setup'}home()}
+  if(sess&&cfgSrv.accounts){await loadMe();if(needsProfile){view='setup';pageTab='game'}}renderShell()}
 function acctBar(){if(!cfgSrv.accounts)return '';
   if(needsProfile)return '<div class="acct"><span class="bad">Finish setting up your account</span><button class="lnk" id="su">Finish</button></div>';
   return me?`<div class="acct"><span>Hi <b>${esc(me.display_name)}</b> · 🔥 ${me.streak}-day streak</span><button class="lnk" id="pf">Profile</button></div>`
@@ -269,5 +281,238 @@ setInterval(()=>{if(!s||s.phase!=='play'||!$('tb'))return;const now=Date.now()+o
   $('tb').firstChild.style.width=Math.max(0,(s.turnEnd-now)/(s.set.turn*10))+'%';
   $('rb').firstChild.style.width=Math.max(0,(s.roundEnd-now)/(s.set.round*10))+'%';
   $('rt').textContent='Round time left: '+Math.max(0,Math.ceil((s.roundEnd-now)/1000))+'s'},150);
+
+const STUDY_DATA = {
+  exams: [
+    { subject: 'English Literature', board: 'AQA', paper: 'Paper 1: Shakespeare & 19th-Century Novel', date: '2027-05-10T09:00:00', duration: '1h 45m' },
+    { subject: 'Biology', board: 'AQA', paper: 'Paper 1 (Combined & Separate)', date: '2027-05-11T13:30:00', duration: '1h 45m' },
+    { subject: 'Geography', board: 'AQA', paper: 'Paper 1: Living with the Physical Environment', date: '2027-05-12T09:00:00', duration: '1h 30m' },
+    { subject: 'Computer Science', board: 'OCR', paper: 'J277/01: Computer Systems', date: '2027-05-13T13:30:00', duration: '1h 30m' },
+    { subject: 'History', board: 'Edexcel', paper: 'Paper 1: Crime and Punishment', date: '2027-05-14T09:00:00', duration: '1h 15m' },
+    { subject: 'Chemistry', board: 'AQA', paper: 'Paper 1 (Combined & Separate)', date: '2027-05-17T09:00:00', duration: '1h 45m' },
+    { subject: 'Physics', board: 'AQA', paper: 'Paper 1 (Combined & Separate)', date: '2027-05-20T09:00:00', duration: '1h 45m' },
+    { subject: 'Business Studies', board: 'Edexcel', paper: 'Paper 1: Investigating Small Business', date: '2027-05-21T13:30:00', duration: '1h 45m' },
+    { subject: 'French', board: 'AQA', paper: 'Paper 1 & 3: Listening and Reading', date: '2027-05-24T09:00:00', duration: '1h 45m' },
+    { subject: 'Religious Studies', board: 'AQA', paper: 'Paper 1: Study of Religions', date: '2027-05-25T13:30:00', duration: '1h 45m' }
+  ],
+  resources: [
+    {
+      subject: 'Biology', board: 'AQA', topic: 'Cell biology',
+      summary: 'Eukaryotic vs prokaryotic cells, microscopy magnification formula, mitosis, and transport (diffusion, osmosis, active transport).',
+      keyPoints: [
+        'Magnification = Image size ÷ Actual size (keep units consistent: 1 mm = 1,000 µm).',
+        'Osmosis is the diffusion of water from a dilute to a concentrated solution across a partially permeable membrane.',
+        'Active transport moves substances against a concentration gradient using energy from respiration.'
+      ]
+    },
+    {
+      subject: 'Chemistry', board: 'AQA', topic: 'Bonding, structure and properties of matter',
+      summary: 'Ionic, covalent, and metallic bonding, giant lattices vs simple molecules, and carbon allotropes.',
+      keyPoints: [
+        'Ionic compounds conduct electricity only when molten or dissolved in water because ions are free to move.',
+        'Simple molecular substances have low melting/boiling points due to weak intermolecular forces—covalent bonds do NOT break on boiling.',
+        'Graphite conducts electricity because each carbon forms 3 covalent bonds, leaving 1 delocalised electron per atom.'
+      ]
+    },
+    {
+      subject: 'Physics', board: 'AQA', topic: 'Energy',
+      summary: '8 energy stores, 4 pathways, efficiency calculations, and specific heat capacity.',
+      keyPoints: [
+        'Kinetic Energy: Ek = 0.5 × mass × speed² (J).',
+        'Gravitational Potential Energy: Ep = mass × g × height (J).',
+        'Efficiency = Useful output energy transfer ÷ Total input energy transfer.'
+      ]
+    },
+    {
+      subject: 'Computer Science', board: 'OCR', topic: 'Systems architecture',
+      summary: 'Von Neumann architecture, FDE cycle registers (PC, MAR, MDR, Accumulator), and CPU performance factors.',
+      keyPoints: [
+        'Clock speed (Hz), cache size (fast SRAM on CPU), and number of cores determine throughput.',
+        'Embedded systems have a dedicated function inside a larger mechanical/electrical system (e.g., washing machine).'
+      ]
+    },
+    {
+      subject: 'History', board: 'Edexcel', topic: 'Cold War',
+      summary: 'Origins of the Cold War (1941–58), Berlin Blockade, Cuban Missile Crisis, and collapse of the USSR.',
+      keyPoints: [
+        'Truman Doctrine (1947) committed the USA to containing communism; Marshall Plan gave $13bn to rebuild Western Europe.',
+        'Cuban Missile Crisis (Oct 1962) led to the Hotline, Limited Test Ban Treaty (1963), and secret removal of US missiles in Turkey.'
+      ]
+    },
+    {
+      subject: 'Business Studies', board: 'Edexcel', topic: '1.3 Putting a business idea into practice',
+      summary: 'Revenue, fixed/variable/total costs, break-even analysis, and short- vs long-term sources of finance.',
+      keyPoints: [
+        'Break-even output = Fixed Costs ÷ (Selling Price per unit − Variable Cost per unit).',
+        'Margin of Safety = Actual or budgeted sales − Break-even sales.'
+      ]
+    }
+  ],
+  examQuestions: [
+    {
+      subject: 'Biology', board: 'AQA', topic: 'Cell biology', marks: 4,
+      question: 'Explain how root hair cells are adapted for the efficient uptake of water and mineral ions from the soil. (4 marks)',
+      markScheme: [
+        '1 mark: Large surface area (due to long hair-like projection) to speed up absorption.',
+        '1 mark: Thin cell wall gives a short diffusion distance.',
+        '1 mark: Many mitochondria release energy (via respiration) for active transport.',
+        '1 mark: Active transport is needed because mineral ions are often in lower concentration in the soil than inside the root.'
+      ],
+      tip: 'Always link mitochondria to respiration releasing energy for active transport—never say mitochondria "produce" energy.'
+    },
+    {
+      subject: 'Chemistry', board: 'AQA', topic: 'Bonding, structure and properties of matter', marks: 4,
+      question: 'Explain why sodium chloride has a high melting point and conducts electricity when molten, but not when solid. (4 marks)',
+      markScheme: [
+        '1 mark: Giant ionic lattice structure with strong electrostatic forces of attraction between oppositely charged ions.',
+        '1 mark: A large amount of energy is needed to overcome these strong forces (high melting point).',
+        '1 mark: When solid, ions are fixed in position and cannot move.',
+        '1 mark: When molten, ions are free to move and carry electrical charge.'
+      ],
+      tip: 'Mention "ions" carrying charge—never say "electrons" move in molten ionic compounds.'
+    },
+    {
+      subject: 'History', board: 'Edexcel', topic: 'Cold War', marks: 4,
+      question: 'Give two consequences of the Berlin Blockade (1948–49). (4 marks)',
+      markScheme: [
+        'Consequence 1 (2 marks): Germany was formally divided into two separate states in 1949—West Germany (FRG) and East Germany (GDR).',
+        'Consequence 2 (2 marks): Western powers formed NATO in April 1949 as a defensive military alliance against Soviet expansion.'
+      ],
+      tip: 'For Edexcel 4-mark consequence questions, keep each consequence in a separate mini-paragraph with specific dates/names.'
+    },
+    {
+      subject: 'Business Studies', board: 'Edexcel', topic: '1.3 Putting a business idea into practice', marks: 3,
+      question: 'A café has fixed costs of £1,200 per month, sells coffees for £3.50, and has variable costs of £1.50 per cup. Calculate the monthly break-even output. (3 marks)',
+      markScheme: [
+        '1 mark: Contribution per unit = £3.50 − £1.50 = £2.00.',
+        '1 mark: Break-even = Fixed Costs ÷ Contribution (£1,200 ÷ £2.00).',
+        '1 mark: 600 coffees per month.'
+      ],
+      tip: 'Always state the units ("600 coffees", not just "600") to guarantee the final mark.'
+    }
+  ]
+};
+
+let pageTab = location.pathname === '/game' ? 'game' : (location.pathname.slice(1) || 'hub');
+if (!['hub', 'resources', 'questions', 'exams', 'game'].includes(pageTab)) pageTab = 'hub';
+let fSub = 'All', fBoard = 'All';
+
+function goTab(tab) {
+  if (s && tab !== 'game') {
+    if (!confirm('Leave your active game and switch section?')) return;
+    leave();
+  }
+  pageTab = tab;
+  history.pushState(null, '', tab === 'hub' ? '/' : '/' + tab);
+  renderShell();
+}
+
+function renderNav() {
+  const tabs = [
+    ['hub', 'Home'],
+    ['resources', 'Resources'],
+    ['questions', 'Exam Questions'],
+    ['exams', 'Exam Dates'],
+    ['game', '⚡ Play ReviseRush']
+  ];
+  $('topnav').innerHTML = `<div class="nav-in">
+    <div class="logo" style="margin:0;cursor:pointer" onclick="goTab('hub')">${LOGO}<div class="brand" style="font-size:1.6rem">Revise<span>Rush</span></div></div>
+    <div class="nav-links">${tabs.map(([k, label]) =>
+      `<button class="nbtn ${k === 'game' ? 'play' : ''} ${pageTab === k ? 'on' : ''}" onclick="goTab('${k}')">${label}</button>`
+    ).join('')}</div>
+  </div>`;
+}
+
+function filterBar(items) {
+  const subs = ['All', ...new Set(items.map(x => x.subject))];
+  const boards = ['All', ...new Set(items.map(x => x.board))];
+  return `<div class="sets" style="margin:12px 0">
+    <label>Subject<select onchange="fSub=this.value;renderShell()">${subs.map(x => `<option ${fSub === x ? 'selected' : ''}>${esc(x)}</option>`).join('')}</label>
+    <label>Exam Board<select onchange="fBoard=this.value;renderShell()">${boards.map(x => `<option ${fBoard === x ? 'selected' : ''}>${esc(x)}</option>`).join('')}</label>
+  </div>`;
+}
+
+function renderExamCard(ex) {
+  const target = new Date(ex.date);
+  const days = Math.max(0, Math.ceil((target - Date.now()) / 86400000));
+  const niceDate = target.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  const niceTime = target.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  return `<div class="card">
+    <div><span class="badge">${esc(ex.subject)}</span><span class="badge">${esc(ex.board)}</span></div>
+    <h2 style="margin-top:6px">${esc(ex.paper)}</h2>
+    <p class="mut">${niceDate} at ${niceTime} · Duration: ${esc(ex.duration)}</p>
+    <div class="countdown">${days} day${days === 1 ? '' : 's'} to go</div>
+  </div>`;
+}
+
+function renderShell() {
+  renderNav();
+  app.className = pageTab === 'game' ? '' : 'wide';
+  if (pageTab === 'game') return s ? render() : home();
+
+  if (pageTab === 'hub') {
+    const nextExams = STUDY_DATA.exams.slice(0, 3);
+    app.innerHTML = `
+      <div class="card" style="border-left:10px solid var(--g)">
+        <h1>GCSE Revision Hub &amp; Party Game</h1>
+        <p class="mut">Topic notes, exam-style mark schemes, live Summer 2027 exam countdowns, and fast-paced recall battles.</p>
+        <div class="row" style="margin-top:14px;flex-wrap:wrap">
+          <button onclick="goTab('game')" style="font-size:1.1rem">⚡ Launch ReviseRush Game</button>
+          <button class="ghost" onclick="goTab('resources')">Browse Revision Notes</button>
+          <button class="ghost" onclick="goTab('questions')">Practise Exam Questions</button>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card"><h2>📚 Revision Resources</h2><p class="mut">Concise topic summaries, key equations, and specification checklists across your GCSE subjects.</p><button class="lnk" onclick="goTab('resources')">Open resources →</button></div>
+        <div class="card"><h2>📝 Exam Questions</h2><p class="mut">Practice questions with step-by-step mark schemes and Grade 7–9 examiner tips.</p><button class="lnk" onclick="goTab('questions')">Try questions →</button></div>
+        <div class="card"><h2>📅 Exam Timetable</h2><p class="mut">Live countdowns to your Summer 2027 GCSE papers so you can plan your revision.</p><button class="lnk" onclick="goTab('exams')">View dates →</button></div>
+      </div>
+      <h2>Upcoming Exam Countdowns</h2>
+      <div class="grid2">${nextExams.map(ex => renderExamCard(ex)).join('')}</div>`;
+    return;
+  }
+
+  if (pageTab === 'resources') {
+    const list = STUDY_DATA.resources.filter(r => (fSub === 'All' || r.subject === fSub) && (fBoard === 'All' || r.board === fBoard));
+    app.innerHTML = `<h1>Revision Resources</h1><p class="mut">Key notes and formulas mapped to your GCSE exam board.</p>${filterBar(STUDY_DATA.resources)}
+      ${list.map(r => `<div class="card">
+        <div><span class="badge">${esc(r.subject)}</span><span class="badge">${esc(r.board)}</span></div>
+        <h2 style="margin-top:6px">${esc(r.topic)}</h2>
+        <p>${esc(r.summary)}</p>
+        <ul>${r.keyPoints.map(pt => `<li>${esc(pt)}</li>`).join('')}</ul>
+        <button class="lnk" onclick="goTab('game')">Practise ${esc(r.subject)} in ReviseRush →</button>
+      </div>`).join('') || '<p class="mut">No resources match that filter yet.</p>'}`;
+    return;
+  }
+
+  if (pageTab === 'questions') {
+    const list = STUDY_DATA.examQuestions.filter(q => (fSub === 'All' || q.subject === fSub) && (fBoard === 'All' || q.board === fBoard));
+    app.innerHTML = `<h1>Exam Practice Questions</h1><p class="mut">Attempt the question first, then reveal the official-style mark scheme.</p>${filterBar(STUDY_DATA.examQuestions)}
+      ${list.map((q, i) => `<div class="card">
+        <div><span class="badge">${esc(q.subject)}</span><span class="badge">${esc(q.board)}</span><span class="badge">${esc(q.topic)}</span><span class="badge">${q.marks} marks</span></div>
+        <p style="font-weight:600;margin-top:10px">${esc(q.question)}</p>
+        <button class="ghost" onclick="const el=$('ms_${i}');el.hidden=!el.hidden">Show / Hide Mark Scheme</button>
+        <div id="ms_${i}" class="ms" hidden>
+          <b>Mark Scheme:</b>
+          <ul>${q.markScheme.map(m => `<li>${esc(m)}</li>`).join('')}</ul>
+          <p class="mut"><b>Examiner Tip:</b> ${esc(q.tip)}</p>
+        </div>
+      </div>`).join('') || '<p class="mut">No questions match that filter yet.</p>'}`;
+    return;
+  }
+
+  if (pageTab === 'exams') {
+    const list = STUDY_DATA.exams.filter(e => (fSub === 'All' || e.subject === fSub) && (fBoard === 'All' || e.board === fBoard));
+    app.innerHTML = `<h1>GCSE Exam Timetable &amp; Countdowns</h1><p class="mut">Summer 2027 key dates (check your school's individual candidate timetable for exact rooming).</p>${filterBar(STUDY_DATA.exams)}
+      <div class="grid2">${list.map(ex => renderExamCard(ex)).join('')}</div>`;
+  }
+}
+
+window.onpopstate = () => {
+  pageTab = location.pathname === '/game' ? 'game' : (location.pathname.slice(1) || 'hub');
+  if (!['hub', 'resources', 'questions', 'exams', 'game'].includes(pageTab)) pageTab = 'hub';
+  renderShell();
+};
+
 boot();
 </script></body></html>
