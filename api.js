@@ -28,7 +28,7 @@ module.exports = async function api(req, res) {
       if (!ys.year) return out(res, 400, { error: 'Choose your year group.' });
       if (!ys.subjects.length) return out(res, 400, { error: 'Choose at least one subject you study.' });
       const nt = await db.nameTaken(name);
-      if (nt.error) return out(res, 500, { error: `Database problem (HTTP ${nt.error}). Has the setup script (schema.sql) been run in Supabase?` });
+      if (nt.error) return out(res, 500, { error: `Database problem (HTTP ${nt.error}: ${nt.message}). Run schema.sql in Supabase, then try again.` });
       if (nt.taken) return out(res, 409, { error: 'That display name is taken. Try another.' });
       const r = await db.signUp(email, pw);
       if (!r.ok) return out(res, 400, { error: r.error });
@@ -68,7 +68,7 @@ module.exports = async function api(req, res) {
       if (!ys.year) return out(res, 400, { error: 'Choose your year group.' });
       if (!ys.subjects.length) return out(res, 400, { error: 'Choose at least one subject you study.' });
       const nt = await db.nameTaken(name);
-      if (nt.error) return out(res, 500, { error: `Database problem (HTTP ${nt.error}). Has the setup script (schema.sql) been run in Supabase?` });
+      if (nt.error) return out(res, 500, { error: `Database problem (HTTP ${nt.error}: ${nt.message}). Run schema.sql in Supabase, then try again.` });
       if (nt.taken) return out(res, 409, { error: 'That display name is taken. Try another.' });
       const cp = await db.createProfile(id, name, ys.year, ys.subjects);
       return cp.ok ? out(res, 200, { ok: true }) : out(res, 500, { error: `Could not save your profile (HTTP ${cp.status}). If you ran schema.sql before the year and subjects update, run update.sql in Supabase.` });
