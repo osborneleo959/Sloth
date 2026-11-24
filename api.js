@@ -27,10 +27,13 @@ module.exports = async function api(req, res) {
       const ys = cleanYS(b);
       if (!ys.year) return out(res, 400, { error: 'Choose your year group.' });
       if (!ys.subjects.length) return out(res, 400, { error: 'Choose at least one subject you study.' });
-      if (await db.nameTaken(name)) return out(res, 409, { error: 'That display name is taken. Try another.' });
+      const nt = await db.nameTaken(name);
+      if (nt.error) return out(res, 500, { error: `Database problem (HTTP ${nt.error}). Has the setup script (schema.sql) been run in Supabase?` });
+      if (nt.taken) return out(res, 409, { error: 'That display name is taken. Try another.' });
       const r = await db.signUp(email, pw);
       if (!r.ok) return out(res, 400, { error: r.error });
-      if (!(await db.createProfile(r.id, name, ys.year, ys.subjects))) return out(res, 400, { error: 'Could not create the account. If you already have one, sign in instead.' });
+      const cp = await db.createProfile(r.id, name, ys.year, ys.subjects);
+      if (!cp.ok) return out(res, 200, { session: r.session, needsProfile: true, message: 'Your login was created but your profile still needs finishing. Confirm your email if asked, then sign in.' });
       return out(res, 200, { session: r.session, message: 'Account created. Check your email to confirm it, then sign in.' });
     }
     if (p === '/api/login' && req.method === 'POST') {
@@ -53,10 +56,22 @@ module.exports = async function api(req, res) {
     const id = await authId(req);
     if (!id) return out(res, 401, { error: 'Please sign in again.' });
     if (p === '/api/me') {
-      const pr = await db.getProfile(id); if (!pr) return out(res, 404, { error: 'Profile not found.' });
+      const pr = await db.getProfile(id); if (!pr) return out(res, 404, { error: 'Profile not found.', code: 'no_profile' });
       const today = db.ukDate(), yest = new Date(Date.parse(today + 'T12:00:00Z') - 864e5).toISOString().slice(0, 10);
       const live = pr.last_daily === today || pr.last_daily === yest;
       return out(res, 200, { display_name: pr.display_name, streak: live ? pr.current_streak : 0, year: pr.year, subjects: pr.subjects || [], best: pr.best_streak, total: pr.total_points, games: pr.games_played, doneToday: await db.doneToday(id, today) });
+    }
+    if (p === '/api/setup' && req.method === 'POST') {
+      if (await db.getProfile(id)) return out(res, 409, { error: 'Your profile already exists.' });
+      const b = await body(req), name = String(b.displayName || '').trim(), ys = cleanYS(b);
+      if (!/^[A-Za-z0-9 -]{3,16}$/.test(name)) return out(res, 400, { error: 'Display name: 3 to 16 letters, numbers, spaces or hyphens.' });
+      if (!ys.year) return out(res, 400, { error: 'Choose your year group.' });
+      if (!ys.subjects.length) return out(res, 400, { error: 'Choose at least one subject you study.' });
+      const nt = await db.nameTaken(name);
+      if (nt.error) return out(res, 500, { error: `Database problem (HTTP ${nt.error}). Has the setup script (schema.sql) been run in Supabase?` });
+      if (nt.taken) return out(res, 409, { error: 'That display name is taken. Try another.' });
+      const cp = await db.createProfile(id, name, ys.year, ys.subjects);
+      return cp.ok ? out(res, 200, { ok: true }) : out(res, 500, { error: `Could not save your profile (HTTP ${cp.status}). If you ran schema.sql before the year and subjects update, run update.sql in Supabase.` });
     }
     if (p === '/api/profile' && req.method === 'POST') {
       const ys = cleanYS(await body(req));
