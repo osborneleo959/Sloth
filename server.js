@@ -6,11 +6,16 @@ const db = require('./db'), api = require('./api');
 
 const page = fs.readFileSync(path.join(__dirname, 'public', 'index.html'));
 const privacy = fs.readFileSync(path.join(__dirname, 'public', 'privacy.html'));
+const ROUTES = new Set(['/', '/resources', '/questions', '/exams', '/game']);
 const server = http.createServer((req, res) => {
   const p = req.url.split('?')[0];
   if (p.startsWith('/api/')) return api(req, res);
-  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-  res.end(p === '/privacy' ? privacy : page);
+  if (p === '/privacy') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(privacy);
+  }
+  res.writeHead(ROUTES.has(p) ? 200 : 404, { 'Content-Type': 'text/html; charset=utf-8' });
+  res.end(page);
 });
 const wss = new WebSocketServer({ server });
 const rooms = new Map();
