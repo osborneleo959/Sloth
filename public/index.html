@@ -53,7 +53,7 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const LOGO='<svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="ReviseRush logo"><rect width="64" height="64" rx="16" fill="var(--g)"/><rect x="9" y="13" width="46" height="31" rx="9" fill="#fff"/><path d="M19 43v11l12-11z" fill="#fff"/><path d="M21 29l8 8 14-17" fill="none" stroke="var(--g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="12" r="8" fill="var(--sun)"/></svg>';
-let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},sess=null,me=null,cfgSrv={accounts:false},meta=null,mode='in',msgA='',dsub=null,dbd={},lbp='daily',lbs=null,lbb=null,cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
+let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},needsProfile=false,sess=null,me=null,cfgSrv={accounts:false},meta=null,mode='in',msgA='',dsub=null,dbd={},lbp='daily',lbs=null,lbb=null,cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
 const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
 const isHost=()=>s.host===s.you;
 
@@ -75,13 +75,14 @@ async function api(path,body,auth){
   const h={'Content-Type':'application/json'};
   if(auth){await ensureFresh();if(!sess)throw new Error('Please sign in again.');h.Authorization='Bearer '+sess.access_token}
   const r=await fetch(path,{method:body===null||body===undefined?'GET':'POST',headers:h,body:body===null||body===undefined?undefined:JSON.stringify(body)});
-  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Something went wrong.');return j}
-async function loadMe(){me=null;if(!sess)return;try{me=await api('/api/me',null,true)}catch{me=null}}
+  const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error||'Something went wrong.');e.code=j.code;throw e}return j}
+async function loadMe(){me=null;needsProfile=false;if(!sess)return;try{me=await api('/api/me',null,true)}catch(e){me=null;if(e.code==='no_profile')needsProfile=true}}
 async function loadMeta(){if(!meta){try{meta=await api('/api/subjects')}catch{meta=[]}}}
 async function boot(){try{sess=JSON.parse(localStorage.getItem('rr_sess')||'null')}catch{sess=null}
   try{cfgSrv=await api('/api/config')}catch{}
-  if(sess&&cfgSrv.accounts)await loadMe();home()}
+  if(sess&&cfgSrv.accounts){await loadMe();if(needsProfile)view='setup'}home()}
 function acctBar(){if(!cfgSrv.accounts)return '';
+  if(needsProfile)return '<div class="acct"><span class="bad">Finish setting up your account</span><button class="lnk" id="su">Finish</button></div>';
   return me?`<div class="acct"><span>Hi <b>${esc(me.display_name)}</b> · 🔥 ${me.streak}-day streak</span><button class="lnk" id="pf">Profile</button></div>`
   :`<div class="acct"><span class="mut">Sign in to keep streaks and join leaderboards</span><button class="lnk" id="si">Sign in</button></div>`}
 function dailyCard(){const r=s.result;
@@ -102,6 +103,7 @@ function home(){
     [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});
     if($('m4'))$('m4').onclick=()=>{err='';view=me?'daily':'auth';mode='in';home()};
     if($('m5'))$('m5').onclick=()=>{view='lb';home()};
+    if($('su'))$('su').onclick=()=>{view='setup';home()};
     if($('pf'))$('pf').onclick=()=>{err='';view='profile';home()};
     if($('si'))$('si').onclick=()=>{view='auth';mode='in';msgA='';home()};
     return;
@@ -110,6 +112,7 @@ function home(){
   if(view==='daily')return dailyView();
   if(view==='lb')return lbView();
   if(view==='profile')return profileView();
+  if(view==='setup')return setupView();
   const j=view==='join',title={solo:'Play solo',host:'Host a game',join:'Join a game'}[view];
   app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${title}</h1>
   <div class="card"><input id="nm" maxlength="16" placeholder="Your name" aria-label="Your name" value="${me&&!j?esc(me.display_name):''}">${j?'<input id="cd" maxlength="4" placeholder="Room code" aria-label="Room code" style="text-transform:uppercase;margin-top:8px">':''}
@@ -121,6 +124,16 @@ function home(){
 function yearSelect(v){return `<select id="yr" aria-label="Year group" style="width:100%"><option value="">Choose your year</option>${[9,10,11,12,13].map(y=>`<option value="${y}" ${+v===y?'selected':''}>Year ${y}</option>`).join('')}</select>`}
 function subjectBoxes(sel){return meta.map(x=>`<label class="c"><input type="checkbox" data-sj value="${esc(x.subject)}" ${sel.includes(x.subject)?'checked':''}> ${esc(x.subject)}</label>`).join('')}
 const picked=()=>({year:+$('yr').value||null,subjects:[...app.querySelectorAll('[data-sj]:checked')].map(c=>c.value)});
+function setupView(){
+  if(!sess){view='auth';return home()}
+  if(!meta){app.innerHTML='<p class="mut">Loading…</p>';loadMeta().then(()=>{if(view==='setup')home()});return}
+  app.innerHTML=`<h1>Finish setting up</h1><p class="mut">Your login works. Choose a display name, your year and your subjects to finish your profile.</p>
+  <div class="card"><input id="dn" maxlength="16" placeholder="Display name (shown on leaderboards)" aria-label="Display name"></div>
+  <div class="card"><h2>About you</h2><p class="mut">Your year group</p>${yearSelect('')}<p class="mut" style="margin-top:12px">Subjects you study</p>${subjectBoxes([])}</div>
+  <button id="go" style="width:100%">Save and continue</button><button class="lnk" id="out" style="margin-top:8px">Sign out</button><p class="bad">${esc(err)}</p>`;
+  $('out').onclick=()=>{store(null);me=null;needsProfile=false;view='menu';err='';home()};
+  $('go').onclick=async()=>{try{err='';await api('/api/setup',{displayName:$('dn').value,...picked()},true);needsProfile=false;await loadMe();view='menu';home()}catch(e){err=e.message;home()}};
+}
 function authView(){
   const up=mode==='up';
   if(up&&!meta){app.innerHTML='<p class="mut">Loading…</p>';loadMeta().then(()=>{if(view==='auth')home()});return}
@@ -136,7 +149,7 @@ function authView(){
   $('sw').onclick=()=>{mode=up?'in':'up';msgA='';home()};
   $('go').onclick=async()=>{
     try{msgA='';const j=await api(up?'/api/signup':'/api/login',{email:$('em').value,password:$('pw').value,displayName:up?$('dn').value:undefined,...(up?picked():{})});
-      if(j.session){store(j.session);await loadMe();view=(me&&!me.year)?'profile':'menu';home()}else{msgA='✓ '+(j.message||'Check your email to confirm, then sign in.');mode='in';home()}}
+      if(j.session){store(j.session);await loadMe();view=needsProfile||j.needsProfile?'setup':(me&&!me.year)?'profile':'menu';home()}else{msgA='✓ '+(j.message||'Check your email to confirm, then sign in.');mode='in';home()}}
     catch(e){msgA=e.message;home()}};
 }
 async function dailyView(){
