@@ -41,8 +41,8 @@ module.exports = {
   },
   async getProfile(id) { const r = await call(`/rest/v1/profiles?id=eq.${enc(id)}&select=*`); return (r.ok && r.json && r.json[0]) || null; },
   async nameTaken(n) { const r = await call(`/rest/v1/profiles?display_name=ilike.${enc(n)}&select=id&limit=1`); return { error: r.ok ? 0 : r.status, message: r.ok ? '' : String((r.json && (r.json.message || r.json.hint)) || '').slice(0, 140), taken: !!(r.ok && r.json && r.json.length) }; },
-  async createProfile(id, name, year, subjects) { return call('/rest/v1/profiles', { method: 'POST', body: { id, display_name: name, year, subjects }, prefer: 'return=minimal' }); },
-  async updateProfile(id, year, subjects) { return (await call(`/rest/v1/profiles?id=eq.${enc(id)}`, { method: 'PATCH', body: { year, subjects }, prefer: 'return=minimal' })).ok; },
+  async createProfile(id, name, year, subjects, qualification = null, subject_boards = {}) { return call('/rest/v1/profiles', { method: 'POST', body: { id, display_name: name, year, subjects, qualification, subject_boards }, prefer: 'return=minimal' }); },
+  async updateProfile(id, year, subjects, qualification = null, subject_boards = {}) { return (await call(`/rest/v1/profiles?id=eq.${enc(id)}`, { method: 'PATCH', body: { year, subjects, qualification, subject_boards }, prefer: 'return=minimal' })).ok; },
   async diag() {
     const o = { urlLooksRight: /^https:\/\/[a-z0-9]+\.supabase\.co$/.test(U), publishableKeyLooksRight: /^(eyJ|sb_publishable_)/.test(ANON), secretKeyLooksRight: /^(eyJ|sb_secret_)/.test(SVC), keysAreDifferent: !!ANON && ANON !== SVC };
     try { const r = await call('/auth/v1/settings', { key: ANON }); o.authStatus = r.status; if (r.json) { o.signupsDisabled = !!r.json.disable_signup; o.emailConfirmationOff = !!r.json.mailer_autoconfirm; if (!r.ok) o.authMessage = String(r.json.message || r.json.msg || '').slice(0, 120); } }
