@@ -58,6 +58,8 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 .subject-choice label{display:flex;align-items:center;gap:8px}.subject-choice select{width:100%;font-size:.85rem;padding:6px}.subject-group-title{margin:12px 0 4px;color:var(--g);font-weight:800}
 .progress-legend{display:flex;flex-wrap:wrap;gap:7px}.progress-legend span{border:1px solid var(--line);border-radius:20px;padding:5px 9px;font-size:.85rem}
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 8px}
+
+.topic-list{display:grid;gap:8px;margin-top:12px}.topic-row{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;background:var(--bg);color:var(--ink);border:2px solid var(--line);padding:13px;border-radius:13px}.topic-row span:first-child{display:flex;flex-direction:column}.topic-row small{color:var(--mut);font-weight:400;margin-top:3px}.confidence-dot{font-size:1.3rem}.confidence-dot.confident{color:var(--g)}.confidence-dot.somewhat{color:var(--sun)}.confidence-dot.unsure{color:var(--bad)}.confidence-options{display:grid;gap:8px}.confidence-choice{background:var(--bg);color:var(--ink);border:2px solid var(--line);text-align:left}.confidence-choice.selected{border-color:var(--g);box-shadow:inset 0 0 0 1px var(--g)}.confidence-choice.good{border-left:7px solid var(--g)}.confidence-choice.mid{border-left:7px solid var(--sun)}.confidence-choice.low{border-left:7px solid var(--bad)}.model-answer{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px}.model-answer h3{margin:0 0 6px;font-family:"Bricolage Grotesque",sans-serif}.mark-entry{display:block;font-weight:600;margin-top:12px}.mark-entry input{display:block;margin-top:5px;max-width:140px}.progress-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.progress-stats div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}.progress-stats b{display:block;font:800 1.6rem "Bricolage Grotesque",sans-serif}.progress-stats small{color:var(--mut)}.exam-question h2{font-size:1.12rem;line-height:1.35}
 @media(max-width:420px){.subject-choice{grid-template-columns:minmax(0,1fr) 125px}.hero h1{font-size:1.9rem}}
 .chip{display:inline-block;border:2px solid var(--g);color:var(--g);border-radius:20px;padding:2px 12px;margin:3px 4px 3px 0;font-weight:600}
 .chip.hi{border-color:var(--sun);color:var(--sun)}.chip.miss{border-style:dashed;opacity:.85}
@@ -67,7 +69,7 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const LOGO='<svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="ReviseRush logo"><rect width="64" height="64" rx="16" fill="var(--g)"/><rect x="9" y="13" width="46" height="31" rx="9" fill="#fff"/><path d="M19 43v11l12-11z" fill="#fff"/><path d="M21 29l8 8 14-17" fill="none" stroke="var(--g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="12" r="8" fill="var(--sun)"/></svg>';
-let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},needsProfile=false,sess=null,me=null,cfgSrv={accounts:false},meta=null,curriculum=null,examBoards=['AQA','Pearson Edexcel','OCR','Eduqas','WJEC','CCEA'],mode='in',msgA='',dsub=null,dbd={},lbp='daily',lbs=null,lbb=null,activeSubject='',cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
+let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},needsProfile=false,sess=null,me=null,cfgSrv={accounts:false},meta=null,curriculum=null,examBoards=['AQA','Pearson Edexcel','OCR','Eduqas','WJEC','CCEA'],mode='in',msgA='',dsub=null,dbd={},lbp='daily',lbs=null,lbb=null,activeSubject='',activeTopic='',revisionBoards={},cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
 const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
 const isHost=()=>s.host===s.you;
 
@@ -147,6 +149,7 @@ function home(){
   }
   if(view==='revision')return revisionView();
   if(view==='subject')return subjectView();
+  if(view==='topic')return topicDetailView();
   if(view==='auth')return authView();
   if(view==='daily')return dailyView();
   if(view==='lb')return lbView();
@@ -245,20 +248,68 @@ function profileView(){
   $('out').onclick=()=>{store(null);me=null;view='menu';msgA='';home()};
   $('del').onclick=()=>{if(confirm('Delete your account, streak and scores permanently? This cannot be undone.'))api('/api/delete',{},true).then(()=>{store(null);me=null;view='menu';home()}).catch(e=>{err=e.message;home()})};
 }
+function confidenceLabel(v){return v==='confident'?'Confident':v==='somewhat'?'Sort of confident':v==='unsure'?'Not sure':'Not rated'}
+function confidenceClass(v){return v==='confident'?'confident':v==='somewhat'?'somewhat':v==='unsure'?'unsure':'none'}
 function subjectView(){
-  const subject=activeSubject,boardName=(me&&me.subjectBoards||{})[subject]||'Exam board not selected';
-  app.innerHTML=`<button class="back" id="bk">← My revision hub</button><div class="eyebrow">${esc(me&&me.qualification||'Your subject')}</div><h1>${esc(subject)}</h1><p class="mut">${esc(boardName)} · Year ${me&&me.year||''}</p>
-  <div class="card"><h2>Revision notes</h2><p class="mut">Topic-by-topic notes, key terms and explanations will live here.</p><p>We're building the revision content library for this subject.</p></div>
-  <div class="card"><h2>Topic confidence</h2><p class="mut">As you work through each topic, you'll be able to mark it as:</p><div class="progress-legend"><span>🟢 Confident</span><span>🟡 Sort of confident</span><span>🔴 Not sure</span></div></div>
-  <div class="card"><h2>Exam questions</h2><p class="mut">Topic-based exam practice, marks and worked explanations will appear here.</p></div>`;
-  $('bk').onclick=()=>{view='menu';home()};
+  if(!me){view='auth';mode='in';return home()}
+  const subject=activeSubject,boardName=(me.subjectBoards||{})[subject]||revisionBoards[subject]||'AQA';
+  app.innerHTML=`<button class="back" id="bk">← My revision hub</button><div class="eyebrow">${esc(me.qualification||'Your subject')}</div><h1>${esc(subject)}</h1><p class="mut">Choose a topic, study the notes and record how confident you feel.</p>
+  <div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><b>Exam board</b><select id="revBoard" aria-label="Exam board">${examBoards.map(b=>`<option value="${esc(b)}" ${b===boardName?'selected':''}>${esc(b)}</option>`).join('')}</select></div><p class="mut" style="margin-top:8px">Your topic progress is saved to your account.</p></div>
+  <div id="topicList" class="card"><p class="mut">Loading your topics…</p></div>
+  <div class="card"><h2>Confidence key</h2><div class="progress-legend"><span>🟢 Confident</span><span>🟡 Sort of confident</span><span>🔴 Not sure</span></div></div>`;
+  $('bk').onclick=()=>{view='revision';home()};
+  $('revBoard').onchange=()=>{revisionBoards[subject]=$('revBoard').value;subjectView()};
+  api(`/api/revision/topics?subject=${encodeURIComponent(subject)}&board=${encodeURIComponent(boardName)}`,null,true).then(j=>{
+    if(view!=='subject'||activeSubject!==subject)return;
+    const list=$('topicList');if(!list)return;
+    if(!j.topics.length){list.innerHTML=`<h2>Topics coming soon</h2><p class="mut">We haven't published revision notes for ${esc(subject)} (${esc(boardName)}) yet. The topic library will grow over time.</p><p class="mut">If you have another exam board, you can change it above.</p>`;return}
+    list.innerHTML=`<h2>Topics</h2><p class="mut">${j.topics.length} topic${j.topics.length===1?'':'s'} available</p><div class="topic-list">${j.topics.map(t=>`<button class="topic-row" data-topic="${esc(t.id)}"><span><b>${esc(t.title)}</b><small>${t.confidence?`Your confidence: ${confidenceLabel(t.confidence)}`:'Not rated yet'}</small></span><span class="confidence-dot ${confidenceClass(t.confidence)}">${t.confidence==='confident'?'●':t.confidence==='somewhat'?'◐':t.confidence==='unsure'?'●':'○'}</span></button>`).join('')}</div>`;
+    list.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{activeTopic=b.dataset.topic;view='topic';home()});
+  }).catch(e=>{const list=$('topicList');if(list)list.innerHTML=`<p class="bad">${esc(e.message)}</p><p class="mut">If this is your first update, make sure the new revision tables have been created in Supabase.</p>`});
+}
+function noteHtml(content){return String(content||'').split(/\n+/).map(line=>line.trim()).filter(Boolean).map(line=>line.startsWith('## ')?`<h2>${esc(line.slice(3))}</h2>`:`<p>${esc(line)}</p>`).join('')}
+async function topicDetailView(){
+  if(!me){view='auth';mode='in';return home()}
+  app.innerHTML=`<button class="back" id="bk">← Back to ${esc(activeSubject)}</button><p class="mut">Loading topic…</p>`;
+  $('bk').onclick=()=>{view='subject';home()};
+  try{
+    const j=await api(`/api/revision/topic?id=${encodeURIComponent(activeTopic)}`,null,true);
+    if(view!=='topic')return;
+    const t=j.topic, n=j.note, questions=j.questions||[];
+    app.innerHTML=`<button class="back" id="bk">← ${esc(t.subject)}</button><div class="eyebrow">${esc(t.qualification)} · ${esc(t.board)}</div><h1>${esc(t.title)}</h1>
+    <div class="card"><div class="section-head" style="margin-top:0"><h2>Revision notes</h2><span class="mut">Read and review</span></div>${n?noteHtml(n.content):'<p class="mut">Notes for this topic are being prepared.</p>'}${n&&n.key_terms&&n.key_terms.length?`<h2 style="margin-top:18px">Key terms</h2><div class="chips">${n.key_terms.map(k=>`<span class="chip">${esc(k)}</span>`).join('')}</div>`:''}</div>
+    <div class="card"><h2>How confident are you?</h2><p class="mut">You can change this whenever you revisit the topic.</p><div class="confidence-options"><button class="confidence-choice good ${j.confidence==='confident'?'selected':''}" data-confidence="confident">🟢 Confident</button><button class="confidence-choice mid ${j.confidence==='somewhat'?'selected':''}" data-confidence="somewhat">🟡 Sort of confident</button><button class="confidence-choice low ${j.confidence==='unsure'?'selected':''}" data-confidence="unsure">🔴 Not sure</button></div><p id="confidenceMsg" class="mut" aria-live="polite">${j.confidence?`Saved: ${confidenceLabel(j.confidence)}`:'Not rated yet'}</p></div>
+    <div class="section-head"><h2>Exam practice</h2><span class="mut">${questions.length} question${questions.length===1?'':'s'}</span></div>
+    ${questions.length?questions.map((q,i)=>`<div class="card exam-question"><p class="eyebrow">Question ${i+1} · ${q.marks} marks</p><h2>${esc(q.prompt)}</h2><button class="ghost" data-reveal="${esc(q.id)}">Show model answer</button><div id="answer-${esc(q.id)}" class="model-answer" hidden><h3>Model answer</h3><p>${esc(q.model_answer)}</p>${q.explanation?`<p class="mut"><b>Marking guidance:</b> ${esc(q.explanation)}</p>`:''}<label class="mark-entry">How many marks would you give yourself? <input type="number" min="0" max="${q.marks}" step="1" id="marks-${esc(q.id)}" placeholder="0–${q.marks}"></label><button data-record="${esc(q.id)}" style="margin-top:8px">Save my mark</button><p id="saved-${esc(q.id)}" class="mut" aria-live="polite"></p></div></div>`).join(''):'<div class="card"><p class="mut">Exam questions for this topic are being prepared.</p></div>'}`;
+    $('bk').onclick=()=>{view='subject';home()};
+    app.querySelectorAll('[data-confidence]').forEach(b=>b.onclick=async()=>{
+      const msg=$('confidenceMsg');msg.textContent='Saving…';
+      try{await api('/api/revision/confidence',{topicId:activeTopic,confidence:b.dataset.confidence},true);app.querySelectorAll('[data-confidence]').forEach(x=>x.classList.toggle('selected',x===b));msg.textContent=`Saved: ${confidenceLabel(b.dataset.confidence)}`}
+      catch(e){msg.textContent=e.message}
+    });
+    app.querySelectorAll('[data-reveal]').forEach(b=>b.onclick=()=>{const a=$('answer-'+b.dataset.reveal);a.hidden=!a.hidden;b.textContent=a.hidden?'Show model answer':'Hide model answer'});
+    app.querySelectorAll('[data-record]').forEach(b=>b.onclick=async()=>{
+      const qid=b.dataset.record, input=$('marks-'+qid), msg=$('saved-'+qid), value=Number(input.value);
+      if(input.value===''||!Number.isInteger(value)||value<0||value>Number(input.max)){msg.textContent=`Enter a mark between 0 and ${input.max}.`;return}
+      b.disabled=true;msg.textContent='Saving…';
+      try{await api('/api/revision/attempt',{questionId:qid,marksAwarded:value},true);msg.textContent=`Saved: ${value}/${input.max} marks`}
+      catch(e){msg.textContent=e.message;b.disabled=false}
+    });
+  }catch(e){if(view==='topic')app.innerHTML=`<button class="back" id="bk">← Back</button><div class="card"><p class="bad">${esc(e.message)}</p><p class="mut">If you haven't run the revision database setup yet, run the updated schema.sql in Supabase.</p></div>`;$('bk').onclick=()=>{view='subject';home()}}
 }
 function revisionView(){
   if(!me){view='auth';mode='in';return home()}
-  app.innerHTML=`<button class="back" id="bk">← Home</button><h1>Revision</h1><p class="mut">Choose a subject to open its revision space.</p>
+  app.innerHTML=`<button class="back" id="bk">← Home</button><h1>My revision</h1><p class="mut">Choose a subject to open your notes, topic confidence and exam practice.</p>
   <div class="subject-grid">${(me.subjects||[]).map(x=>`<button class="subject-tile" data-subject="${esc(x)}">📘 ${esc(x)}<small>${esc((me.subjectBoards||{})[x]||'Exam board to be confirmed')}</small></button>`).join('')}</div>
-  <div class="card"><h2>Your confidence key</h2><div class="progress-legend"><span>🟢 Confident</span><span>🟡 Sort of confident</span><span>🔴 Not sure</span></div><p class="mut">Your topic confidence and exam practice history will be tracked here as the revision library is added.</p></div>`;
+  <div class="card" id="revisionProgress"><h2>Your progress</h2><p class="mut">Loading your topic confidence and exam practice…</p></div>
+  <div class="card"><h2>Your confidence key</h2><div class="progress-legend"><span>🟢 Confident</span><span>🟡 Sort of confident</span><span>🔴 Not sure</span></div><p class="mut">Rate each topic after studying it. You can update your rating at any time.</p></div>`;
   $('bk').onclick=()=>{view='menu';home()};app.querySelectorAll('[data-subject]').forEach(b=>b.onclick=()=>{activeSubject=b.dataset.subject;view='subject';home()});
+  api('/api/revision/summary',null,true).then(j=>{
+    if(view!=='revision')return;const box=$('revisionProgress');if(!box)return;
+    const counts={confident:0,somewhat:0,unsure:0};j.progress.forEach(p=>{if(counts[p.confidence]!==undefined)counts[p.confidence]++});
+    const attempts=j.attempts||[],earned=attempts.reduce((a,x)=>a+Number(x.marks_awarded||0),0),possible=attempts.reduce((a,x)=>a+Number(x.marks_available||0),0),pct=possible?Math.round(earned/possible*100):null;
+    box.innerHTML=`<h2>Your progress</h2><p><b>${j.topics}</b> revision topics available · <b>${j.progress.length}</b> rated</p><div class="progress-stats"><div><b>${counts.confident}</b><small>Confident</small></div><div><b>${counts.somewhat}</b><small>Sort of confident</small></div><div><b>${counts.unsure}</b><small>Not sure</small></div></div><p class="mut">Exam practice: ${attempts.length} saved attempt${attempts.length===1?'':'s'}${pct===null?'':` · ${pct}% of available marks`}</p>${j.topics?'':'<p class="mut">Revision topics will appear here as the library is published.</p>'}`;
+  }).catch(e=>{const box=$('revisionProgress');if(box)box.innerHTML=`<h2>Your progress</h2><p class="bad">${esc(e.message)}</p>`});
 }
 
 function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${s.solo?'':[...Array(s.set.lives).keys()].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
