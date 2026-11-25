@@ -91,6 +91,54 @@ module.exports = async function api(req, res) {
       if (!ys.year || !ys.subjects.length) return out(res, 400, { error: 'Choose your year group and at least one subject.' });
       return (await db.updateProfile(id, ys.year, ys.subjects, ys.qualification, ys.subjectBoards)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not save. Try again.' });
     }
+    if (p.startsWith('/api/revision/')) {
+      const profile = await db.getProfile(id);
+      if (!profile) return out(res, 404, { error: 'Profile not found.' });
+      const qualification = profile.qualification || ([9,10,11].includes(profile.year) ? 'GCSE' : 'A-level');
+      if (p === '/api/revision/topics' && req.method === 'GET') {
+        const subject = String(u.searchParams.get('subject') || '');
+        const board = String(u.searchParams.get('board') || (profile.subject_boards || {})[subject] || 'AQA');
+        if (!(profile.subjects || []).includes(subject)) return out(res, 403, { error: 'That subject is not on your account.' });
+        const topics = await db.listRevisionTopics(qualification, subject, board);
+        if (topics === null) return out(res, 500, { error: 'Could not load revision topics. Check that the revision database tables have been added.' });
+        const progress = await db.getTopicProgress(id, topics.map(t => t.id));
+        if (progress === null) return out(res, 500, { error: 'Could not load your topic progress.' });
+        const byTopic = Object.fromEntries(progress.map(x => [x.topic_id, x.confidence]));
+        return out(res, 200, { qualification, subject, board, topics: topics.map(t => ({ ...t, confidence: byTopic[t.id] || null })) });
+      }
+      if (p === '/api/revision/topic' && req.method === 'GET') {
+        const topicId = String(u.searchParams.get('id') || '');
+        const topic = await db.getRevisionTopic(topicId);
+        if (!topic || topic.qualification !== qualification || !(profile.subjects || []).includes(topic.subject)) return out(res, 404, { error: 'Revision topic not found for your subjects.' });
+        const [note, questions, progress] = await Promise.all([db.getRevisionNote(topicId), db.getRevisionQuestions(topicId), db.getTopicProgress(id, [topicId])]);
+        if (questions === null || progress === null) return out(res, 500, { error: 'Could not load this revision topic.' });
+        return out(res, 200, { topic, note, questions, confidence: progress[0] ? progress[0].confidence : null });
+      }
+      if (p === '/api/revision/confidence' && req.method === 'POST') {
+        const b = await body(req), topicId = String(b.topicId || ''), confidence = String(b.confidence || '');
+        if (!['confident','somewhat','unsure'].includes(confidence)) return out(res, 400, { error: 'Choose one of the confidence options.' });
+        const topic = await db.getRevisionTopic(topicId);
+        if (!topic || topic.qualification !== qualification || !(profile.subjects || []).includes(topic.subject)) return out(res, 404, { error: 'Revision topic not found for your subjects.' });
+        return (await db.saveTopicConfidence(id, topicId, confidence)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not save your confidence rating.' });
+      }
+      if (p === '/api/revision/attempt' && req.method === 'POST') {
+        const b = await body(req), questionId = String(b.questionId || ''), awarded = Number(b.marksAwarded);
+        const question = await db.getExamQuestion(questionId);
+        if (!question || !Number.isInteger(awarded) || awarded < 0 || awarded > question.marks) return out(res, 400, { error: 'Enter a valid mark for this question.' });
+        const topic = await db.getRevisionTopic(question.topic_id);
+        if (!topic || topic.qualification !== qualification || !(profile.subjects || []).includes(topic.subject)) return out(res, 403, { error: 'That question is not in your subjects.' });
+        return (await db.recordExamAttempt(id, questionId, awarded, question.marks)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not save your exam result.' });
+      }
+      if (p === '/api/revision/summary' && req.method === 'GET') {
+        const subjects = profile.subjects || [], boardMap = profile.subject_boards || {}, all = [];
+        for (const subject of subjects) {
+          const rows = await db.listRevisionTopics(qualification, subject, boardMap[subject] || 'AQA');
+          if (rows) all.push(...rows);
+        }
+        const summary = await db.getRevisionSummary(id, all.map(t => t.id));
+        return out(res, 200, { topics: all.length, progress: summary.progress, attempts: summary.attempts });
+      }
+    }
     if (p === '/api/delete' && req.method === 'POST') return (await db.deleteUser(id)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not delete the account. Try again.' });
     return out(res, 404, { error: 'Not found.' });
   } catch (e) { return out(res, 500, { error: 'Something went wrong. Please try again.' }); }
