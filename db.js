@@ -57,5 +57,48 @@ module.exports = {
   async doneToday(id, date) { const r = await call(`/rest/v1/daily_scores?user_id=eq.${enc(id)}&play_date=eq.${date}&select=subject,board,score`); return (r.ok && r.json) || []; },
   async recordDaily(o) { const r = await call('/rest/v1/rpc/record_daily', { method: 'POST', body: o }); if (!r.ok) throw new Error(errMsg(r.json)); return r.json; },
   async leaderboard(o) { const r = await call('/rest/v1/rpc/leaderboard', { method: 'POST', body: o }); return (r.ok && r.json) || []; },
+  async listRevisionTopics(qualification, subject, board) {
+    const q = `/rest/v1/revision_topics?qualification=eq.${enc(qualification)}&subject=eq.${enc(subject)}&board=eq.${enc(board)}&select=id,title,slug,sort_order&order=sort_order.asc,title.asc`;
+    const r = await call(q); return r.ok ? (r.json || []) : null;
+  },
+  async getRevisionTopic(id) {
+    const r = await call(`/rest/v1/revision_topics?id=eq.${enc(id)}&select=id,qualification,subject,board,title,slug`);
+    return r.ok && r.json && r.json[0] ? r.json[0] : null;
+  },
+  async getRevisionNote(topicId) {
+    const r = await call(`/rest/v1/revision_notes?topic_id=eq.${enc(topicId)}&select=content,key_terms`);
+    return r.ok && r.json && r.json[0] ? r.json[0] : null;
+  },
+  async getRevisionQuestions(topicId) {
+    const r = await call(`/rest/v1/exam_questions?topic_id=eq.${enc(topicId)}&select=id,prompt,marks,model_answer,explanation,sort_order&order=sort_order.asc`);
+    return r.ok ? (r.json || []) : null;
+  },
+  async getTopicProgress(userId, topicIds) {
+    if (!topicIds.length) return [];
+    const ids = topicIds.map(x => String(x)).join(',');
+    const r = await call(`/rest/v1/topic_progress?user_id=eq.${enc(userId)}&topic_id=in.(${enc(ids)})&select=topic_id,confidence,updated_at`);
+    return r.ok ? (r.json || []) : null;
+  },
+  async saveTopicConfidence(userId, topicId, confidence) {
+    const r = await call('/rest/v1/topic_progress?on_conflict=user_id,topic_id', { method: 'POST', body: { user_id: userId, topic_id: topicId, confidence, updated_at: new Date().toISOString() }, prefer: 'resolution=merge-duplicates,return=minimal' });
+    return r.ok;
+  },
+  async getExamQuestion(id) {
+    const r = await call(`/rest/v1/exam_questions?id=eq.${enc(id)}&select=id,topic_id,marks`);
+    return r.ok && r.json && r.json[0] ? r.json[0] : null;
+  },
+  async recordExamAttempt(userId, questionId, marksAwarded, marksAvailable) {
+    const r = await call('/rest/v1/exam_attempts', { method: 'POST', body: { user_id: userId, question_id: questionId, marks_awarded: marksAwarded, marks_available: marksAvailable }, prefer: 'return=minimal' });
+    return r.ok;
+  },
+  async getRevisionSummary(userId, topicIds) {
+    if (!topicIds.length) return { progress: [], attempts: [] };
+    const ids = topicIds.map(x => String(x)).join(',');
+    const [progress, attempts] = await Promise.all([
+      call(`/rest/v1/topic_progress?user_id=eq.${enc(userId)}&topic_id=in.(${enc(ids)})&select=topic_id,confidence`),
+      call(`/rest/v1/exam_attempts?user_id=eq.${enc(userId)}&select=question_id,marks_awarded,marks_available,created_at&order=created_at.desc&limit=100`)
+    ]);
+    return { progress: progress.ok ? (progress.json || []) : [], attempts: attempts.ok ? (attempts.json || []) : [] };
+  },
   async deleteUser(id) { return (await call('/auth/v1/admin/users/' + enc(id), { method: 'DELETE' })).ok; }
 };
