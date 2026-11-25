@@ -6,8 +6,20 @@ setInterval(() => hits.clear(), 600000).unref();
 const out = (res, code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(obj)); };
 const body = req => new Promise((ok, no) => { let d = ''; req.on('data', c => { d += c; if (d.length > 10000) { no(new Error('too big')); req.destroy(); } }); req.on('end', () => { try { ok(d ? JSON.parse(d) : {}); } catch { no(new Error('bad json')); } }); });
 const subjects = () => BANK.map(s => ({ subject: s.subject, boards: s.boards.filter(b => b.topics.some(t => t.qs.length)).map(b => ({ board: b.board })) })).filter(s => s.boards.length);
-const SUBJECTS = BANK.map(s => s.subject);
-const cleanYS = b => { const year = Number(b.year), subs = Array.isArray(b.subjects) ? [...new Set(b.subjects.map(String))].filter(s => SUBJECTS.includes(s)) : []; return { year: [9, 10, 11, 12, 13].includes(year) ? year : null, subjects: subs }; };
+const CURRICULUM = {
+  GCSE: ['Maths','English Language','English Literature','Combined Science','Biology','Chemistry','Physics','Geography','History','French','Spanish','Computer Science','Business Studies','PE','RS','Music'],
+  'A-level': ['Maths','English Literature','English Language','Chemistry','Biology','Physics','Psychology','History','Geography','Politics','Economics','French','Spanish','Business','Sociology']
+};
+const EXAM_BOARDS = ['AQA','Pearson Edexcel','OCR','Eduqas','WJEC','CCEA'];
+const cleanYS = b => {
+  const year = Number(b.year), qualification = [9,10,11].includes(year) ? 'GCSE' : [12,13].includes(year) ? 'A-level' : null;
+  const allowed = qualification ? CURRICULUM[qualification] : [];
+  const subs = Array.isArray(b.subjects) ? [...new Set(b.subjects.map(String))].filter(s => allowed.includes(s)) : [];
+  const rawBoards = b.subjectBoards && typeof b.subjectBoards === 'object' && !Array.isArray(b.subjectBoards) ? b.subjectBoards : {};
+  const subjectBoards = {};
+  for (const subject of subs) if (EXAM_BOARDS.includes(rawBoards[subject])) subjectBoards[subject] = rawBoards[subject];
+  return { year: qualification ? year : null, qualification, subjects: subs, subjectBoards };
+};
 const authId = req => db.userFromToken((req.headers.authorization || '').replace(/^Bearer /i, ''));
 
 module.exports = async function api(req, res) {
@@ -15,6 +27,7 @@ module.exports = async function api(req, res) {
   try {
     if (p === '/api/config') return out(res, 200, { accounts: db.enabled() });
     if (p === '/api/subjects') return out(res, 200, subjects());
+    if (p === '/api/curriculum') return out(res, 200, { curriculum: CURRICULUM, examBoards: EXAM_BOARDS });
     if (p === '/api/diag') { if (limited(ip, 'diag', 20)) return out(res, 429, { error: 'Slow down.' }); return out(res, 200, { accounts: db.enabled(), ...(await db.diag()) }); }
     if (!db.enabled()) return out(res, 503, { error: 'Accounts are not set up on this server yet.' });
 
@@ -32,7 +45,7 @@ module.exports = async function api(req, res) {
       if (nt.taken) return out(res, 409, { error: 'That display name is taken. Try another.' });
       const r = await db.signUp(email, pw);
       if (!r.ok) return out(res, 400, { error: r.error });
-      const cp = await db.createProfile(r.id, name, ys.year, ys.subjects);
+      const cp = await db.createProfile(r.id, name, ys.year, ys.subjects, ys.qualification, ys.subjectBoards);
       if (!cp.ok) return out(res, 200, { session: r.session, needsProfile: true, message: 'Your login was created but your profile still needs finishing. Confirm your email if asked, then sign in.' });
       return out(res, 200, { session: r.session, message: 'Account created. Check your email to confirm it, then sign in.' });
     }
@@ -59,7 +72,7 @@ module.exports = async function api(req, res) {
       const pr = await db.getProfile(id); if (!pr) return out(res, 404, { error: 'Profile not found.', code: 'no_profile' });
       const today = db.ukDate(), yest = new Date(Date.parse(today + 'T12:00:00Z') - 864e5).toISOString().slice(0, 10);
       const live = pr.last_daily === today || pr.last_daily === yest;
-      return out(res, 200, { display_name: pr.display_name, streak: live ? pr.current_streak : 0, year: pr.year, subjects: pr.subjects || [], best: pr.best_streak, total: pr.total_points, games: pr.games_played, doneToday: await db.doneToday(id, today) });
+      return out(res, 200, { display_name: pr.display_name, streak: live ? pr.current_streak : 0, year: pr.year, qualification: pr.qualification || ([9,10,11].includes(pr.year) ? 'GCSE' : 'A-level'), subjects: pr.subjects || [], subjectBoards: pr.subject_boards || {}, best: pr.best_streak, total: pr.total_points, games: pr.games_played, doneToday: await db.doneToday(id, today) });
     }
     if (p === '/api/setup' && req.method === 'POST') {
       if (await db.getProfile(id)) return out(res, 409, { error: 'Your profile already exists.' });
@@ -70,13 +83,13 @@ module.exports = async function api(req, res) {
       const nt = await db.nameTaken(name);
       if (nt.error) return out(res, 500, { error: `Database problem (HTTP ${nt.error}: ${nt.message}). Run schema.sql in Supabase, then try again.` });
       if (nt.taken) return out(res, 409, { error: 'That display name is taken. Try another.' });
-      const cp = await db.createProfile(id, name, ys.year, ys.subjects);
+      const cp = await db.createProfile(id, name, ys.year, ys.subjects, ys.qualification, ys.subjectBoards);
       return cp.ok ? out(res, 200, { ok: true }) : out(res, 500, { error: `Could not save your profile (HTTP ${cp.status}). If you ran schema.sql before the year and subjects update, run update.sql in Supabase.` });
     }
     if (p === '/api/profile' && req.method === 'POST') {
       const ys = cleanYS(await body(req));
       if (!ys.year || !ys.subjects.length) return out(res, 400, { error: 'Choose your year group and at least one subject.' });
-      return (await db.updateProfile(id, ys.year, ys.subjects)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not save. Try again.' });
+      return (await db.updateProfile(id, ys.year, ys.subjects, ys.qualification, ys.subjectBoards)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not save. Try again.' });
     }
     if (p === '/api/delete' && req.method === 'POST') return (await db.deleteUser(id)) ? out(res, 200, { ok: true }) : out(res, 500, { error: 'Could not delete the account. Try again.' });
     return out(res, 404, { error: 'Not found.' });
