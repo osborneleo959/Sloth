@@ -1,757 +1,444 @@
 <!DOCTYPE html>
-<html lang="en-GB"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ReviseRush – GCSE revision party game</title>
-<meta name="description" content="ReviseRush is a free GCSE revision party game. Play solo or with friends: name answers for GCSE Science, Geography, History, Music, Computer Science, Business Studies, French and Religious Studies before the clock runs out.">
-<meta property="og:title" content="ReviseRush – GCSE revision party game">
-<meta property="og:description" content="Play solo or with friends. Name answers for GCSE Science, Geography, History, Music, Computer Science, Business Studies, French and Religious Studies.">
-<meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231f9d6b'/%3E%3Cpath d='M20 34l9 9 16-19' fill='none' stroke='white' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap">
-<style>
-:root{--bg:#e9f6ef;--card:#fff;--ink:#14324a;--mut:#58717f;--g:#1f9d6b;--on:#fff;--blue:#3a7bd5;--pur:#7c5cd6;--sun:#e8a712;--bad:#e8573f;--line:#cfe3da}
-@media (prefers-color-scheme:dark){:root{--bg:#0e2230;--card:#163247;--ink:#e8f3ee;--mut:#9fb8c6;--g:#34c58a;--on:#08301f;--blue:#6aa3f0;--pur:#a58cf2;--sun:#f4c04d;--bad:#ff7a60;--line:#2a4a60}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Figtree,system-ui,sans-serif;min-height:100vh;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-main{max-width:660px;margin:0 auto;padding:20px 16px 48px}
-h1,h2,.big,.pts,.turn,.brand{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;margin:0}
-h1{font-size:2.3rem;line-height:1.1}h2{font-size:1.35rem}p{margin:.4em 0}
-.mut{color:var(--mut)}.bad{color:var(--bad)}
-.logo{display:flex;align-items:center;gap:12px;margin-bottom:6px}.brand{font-size:2.4rem}.brand span{color:var(--g)}
-.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
-button{font:600 1rem Figtree,system-ui,sans-serif;border:0;border-radius:12px;padding:12px 18px;background:var(--g);color:var(--on);cursor:pointer}
-button:disabled{opacity:.4;cursor:default}
-button.ghost,.back,.lnk{background:transparent;color:var(--ink);border:2px solid var(--line)}
-.back{border:0;padding:6px 0;margin-bottom:8px}.lnk{padding:4px 10px;font-size:.9rem;color:var(--mut)}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
-input:not([type=checkbox]){font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
-select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
-.menu{display:grid;gap:12px;margin:18px 0}
-.mb{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:16px 18px;font:800 1.3rem "Bricolage Grotesque",Figtree,sans-serif;background:var(--card);color:var(--ink);border:2px solid var(--line);border-left:10px solid var(--g);border-radius:16px;width:100%}
-.mb span{font:400 1rem Figtree,system-ui,sans-serif;color:var(--mut)}
-.mb.b{border-left-color:var(--blue)}.mb.p{border-left-color:var(--pur)}
-.sets{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sets label{display:flex;flex-direction:column;font-size:.9rem;color:var(--mut)}.sets select{margin-top:4px;color:var(--ink)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}.chipb{background:var(--card);color:var(--ink);border:2px solid var(--line);padding:8px 14px;border-radius:20px}.chipb.on{border-color:var(--g);background:var(--g);color:var(--on)}.chipb:disabled{opacity:.45}
-.mb.a{border-left-color:var(--sun)}.acct{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0 10px}.lb{width:100%;border-collapse:collapse}.lb th,.lb td{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}.lb tr.me td{font-weight:800;color:var(--g)}
-.sub{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
-.tps{padding:0 0 8px 8px;display:grid;gap:2px}label.c{display:block;padding:2px 0}
-.row{display:flex;gap:10px;align-items:center}.row>input{flex:1}
-.scores{display:flex;gap:8px;overflow-x:auto;padding:2px}
-.pl{flex:1 0 110px;border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:var(--card)}
-.pl.on{border-color:var(--g);transform:translateY(-3px)}.pl.out{opacity:.4}
-.pl b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pts{font-size:1.4rem}.heart{color:var(--bad)}.heart.lost{opacity:.2}
-.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0}
-.bar i{display:block;height:100%;background:var(--g);width:100%}#tb i{background:var(--bad)}
-.q{font-size:1.8rem;margin:6px 0 10px}.turn{font-size:1.2rem}#msg{min-height:1.6em;font-weight:600}
-.code{font:800 3rem "Bricolage Grotesque",sans-serif;letter-spacing:.15em;color:var(--g)}
-.chip{display:inline-block;border:2px solid var(--g);color:var(--g);border-radius:20px;padding:2px 12px;margin:3px 4px 3px 0;font-weight:600}
-.chip.hi{border-color:var(--sun);color:var(--sun)}.chip.miss{border-style:dashed;opacity:.85}
-@media (prefers-reduced-motion:reduce){.pl.on{transform:none}}
-
-header.nav{background:var(--card);border-bottom:2px solid var(--line);position:sticky;top:0;z-index:10}
-.nav-in{max-width:920px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
-.nav-links{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.nbtn{background:transparent;color:var(--ink);border:2px solid transparent;padding:7px 12px;border-radius:10px;font-weight:600}
-.nbtn.on{background:var(--bg);border-color:var(--line);color:var(--g)}
-.nbtn.play{background:var(--g);color:var(--on)}
-main.wide{max-width:920px}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
-.badge{display:inline-block;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-size:.82rem;font-weight:600;color:var(--mut);margin-right:6px}
-.ms{background:var(--bg);border-left:4px solid var(--g);padding:10px 14px;border-radius:8px;margin-top:10px}
-.countdown{font:800 1.35rem "Bricolage Grotesque",sans-serif;color:var(--g);margin-top:6px}
-
-.sb-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
-.sb-row:last-child{border-bottom:0}
-.sb-row label{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1}
-.sb-row select{width:auto;min-width:110px;padding:5px 8px;font-size:.9rem}
-.acct-card{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 16px;margin-bottom:14px}
-</style></head><body><header id="topnav" class="nav"></header><main id="app"></main>
-<script>
-const $=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const LOGO='<svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="ReviseRush logo"><rect width="64" height="64" rx="16" fill="var(--g)"/><rect x="9" y="13" width="46" height="31" rx="9" fill="#fff"/><path d="M19 43v11l12-11z" fill="#fff"/><path d="M21 29l8 8 14-17" fill="none" stroke="var(--g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="12" r="8" fill="var(--sun)"/></svg>';
-let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},needsProfile=false,sess=null,me=null,cfgSrv={accounts:false},meta=null,allMeta=null,mode='in',msgA='',dsub=null,dbd={},lbp='daily',lbs=null,lbb=null,cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
-const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
-const isHost=()=>s.host===s.you;
-
-function connect(first){
-  ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host);
-  ws.onopen=()=>send(first);
-  ws.onmessage=e=>{const m=JSON.parse(e.data);
-    if(m.t==='state'){s=m;off=m.serverNow-Date.now();render()}
-    else if(m.t==='toast')toast(m);
-    else if(m.t==='err'){err=m.text;if(!s)home()}};
-  ws.onclose=()=>{if(s)app.insertAdjacentHTML('afterbegin','<p class="bad">Connection lost. Refresh the page to rejoin.</p>')};
-}
-function leave(){const w=ws;s=null;sel=null;act=null;board={};ws=null;view='menu';err='';if(w)w.close();home();if(sess&&cfgSrv.accounts)loadMe().then(()=>{if(view==='menu'&&!s)home()})}
-function leaveGame(){if(confirm('Leave this game and go back to the home page?'))leave()}
-
-async function ensureFresh(){if(sess&&sess.expires_at-Date.now()/1000<120){try{const j=await api('/api/refresh',{refresh_token:sess.refresh_token});store(j.session)}catch{store(null);me=null}}}
-const store=v=>{sess=v;try{v?localStorage.setItem('rr_sess',JSON.stringify(v)):localStorage.removeItem('rr_sess')}catch{}};
-async function api(path,body,auth){
-  const h={'Content-Type':'application/json'};
-  if(auth){await ensureFresh();if(!sess)throw new Error('Please sign in again.');h.Authorization='Bearer '+sess.access_token}
-  const r=await fetch(path,{method:body===null||body===undefined?'GET':'POST',headers:h,body:body===null||body===undefined?undefined:JSON.stringify(body)});
-  const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error||'Something went wrong.');e.code=j.code;throw e}return j}
-async function loadMe(){me=null;needsProfile=false;if(!sess)return;try{me=await api('/api/me',null,true)}catch(e){me=null;if(e.code==='no_profile')needsProfile=true}}
-async function loadMeta(){if(!meta){try{meta=await api('/api/subjects')}catch{meta=[]}}if(!allMeta){try{allMeta=await api('/api/subjects?all=1')}catch{allMeta=[]}}}
-async function boot(){try{sess=JSON.parse(localStorage.getItem('rr_sess')||'null')}catch{sess=null}
-  try{cfgSrv=await api('/api/config')}catch{}
-  if(sess&&cfgSrv.accounts){await loadMe();if(needsProfile){view='setup';pageTab='game'}}renderShell()}
-function acctBar(){if(!cfgSrv.accounts)return '';
-  if(needsProfile)return '<div class="acct"><span class="bad">Finish setting up your account</span><button class="lnk" id="su">Finish</button></div>';
-  return me?`<div class="acct"><span>Hi <b>${esc(me.display_name)}</b> · 🔥 ${me.streak}-day streak</span><button class="lnk" id="pf">Profile</button></div>`
-  :`<div class="acct"><span class="mut">Sign in to keep streaks and join leaderboards</span><button class="lnk" id="si">Sign in</button></div>`}
-function dailyCard(){const r=s.result;
-  if(!r)return '<div class="card"><p>Saving your score…</p></div>';
-  if(r.error)return '<div class="card"><p class="bad">Could not save your score. Check your connection and try again.</p></div>';
-  return `<div class="card"><h2>Daily challenge complete</h2><p><b>${s.players[0].pts}</b> points · ranked <b>#${r.rank}</b> today</p><p>🔥 <b>${r.streak}</b>-day streak (best ${r.best})</p><button id="lbx" style="margin-top:8px">View leaderboard</button></div>`}
-
-function home(){
-  if(view==='menu'){
-    app.innerHTML=`<div class="logo">${LOGO}<div class="brand">Revise<span>Rush</span></div></div>
-    <p class="mut">The GCSE revision party game. Name answers before the clock runs out. Higher-level answers score more.</p>${acctBar()}
-    <div class="menu">${cfgSrv.accounts?'<button class="mb a" id="m4">Daily challenge<span>New questions every day. Build your streak.</span></button>':''}
-    <button class="mb" id="m1">Play solo<span>Practise on your own</span></button>
-    <button class="mb b" id="m2">Host a game<span>Create a room for friends or your class</span></button>
-    <button class="mb p" id="m3">Join a game<span>Enter a room code</span></button>
-    ${cfgSrv.accounts?'<button class="mb" id="m5">Leaderboards<span>See who is top today</span></button>':''}</div>
-    <div class="card"><h2>How to play</h2><p>Take turns naming answers to the question. Run out of time on your turn and you lose a life.</p><p>A correct answer is worth 10 points. A grade 7–9 answer is worth 50. In a hosted game you can skip the current question a limited number of times, for −10 points. Solo mode has no timer: name enough different answers to move on to the next question.</p><p class="mut">Covers GCSE Biology, Chemistry, Physics, Geography, History, Music, Computer Science, Business Studies, French and Religious Studies. Choose your subject, exam board and topics.</p></div>`;
-    [['m1','solo'],['m2','host'],['m3','join']].forEach(([id,v])=>$(id).onclick=()=>{view=v;err='';home()});
-    if($('m4'))$('m4').onclick=()=>{err='';view=me?'daily':'auth';mode='in';home()};
-    if($('m5'))$('m5').onclick=()=>{view='lb';home()};
-    if($('su'))$('su').onclick=()=>{view='setup';home()};
-    if($('pf'))$('pf').onclick=()=>{err='';view='profile';home()};
-    if($('si'))$('si').onclick=()=>{view='auth';mode='in';msgA='';home()};
-    return;
-  }
-  if(view==='auth')return authView();
-  if(view==='daily')return dailyView();
-  if(view==='lb')return lbView();
-  if(view==='profile')return profileView();
-  if(view==='setup')return setupView();
-  const j=view==='join',title={solo:'Play solo',host:'Host a game',join:'Join a game'}[view];
-  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${title}</h1>
-  <div class="card"><input id="nm" maxlength="16" placeholder="Your name" aria-label="Your name" value="${me&&!j?esc(me.display_name):''}">${j?'<input id="cd" maxlength="4" placeholder="Room code" aria-label="Room code" style="text-transform:uppercase;margin-top:8px">':''}
-  <button id="go" style="width:100%;margin-top:10px">${j?'Join':'Continue'}</button></div><p class="bad">${esc(err)}</p>`;
-  $('bk').onclick=()=>{view='menu';err='';home()};
-  const go=()=>{err='';connect({t:j?'join':'create',name:$('nm').value,code:j?$('cd').value:undefined,solo:view==='solo'})};
-  $('go').onclick=go;app.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')go()});$('nm').focus();
-}
-function yearSelect(v){return `<select id="yr" aria-label="Year group" style="width:100%"><option value="">Choose your year</option>${[9,10,11,12,13].map(y=>`<option value="${y}" ${+v===y?'selected':''}>Year ${y}</option>`).join('')}</select>`}
-function subjectBoxes(sel,sbMap={}){
-  const list=(allMeta&&allMeta.length)?allMeta:meta;
-  return list.map(x=>{
-    const on=sel.includes(x.subject);
-    const chosen=sbMap[x.subject]||x.boards[0]||'AQA';
-    return `<div class="sb-row">
-      <label><input type="checkbox" data-sj value="${esc(x.subject)}" ${on?'checked':''} onchange="const selEl=this.closest('.sb-row').querySelector('select');if(selEl)selEl.disabled=!this.checked"> <span>${esc(x.subject)}</span></label>
-      <select data-sb="${esc(x.subject)}" aria-label="${esc(x.subject)} exam board" ${on?'':'disabled'}>${x.boards.map(b=>`<option value="${esc(b)}" ${b===chosen?'selected':''}>${esc(b)}</option>`).join('')}</select>
-    </div>`;
-  }).join('');
-}
-function picked(){
-  const subjects=[],subjectBoards={};
-  app.querySelectorAll('[data-sj]:checked').forEach(c=>{
-    const sub=c.value;
-    subjects.push(sub);
-    const selEl=app.querySelector(`[data-sb="${CSS.escape(sub)}"]`);
-    subjectBoards[sub]=selEl?selEl.value:'AQA';
-  });
-  return {year:+$('yr').value||null,subjects,subjectBoards};
-}
-function setupView(){
-  if(!sess){view='auth';return home()}
-  if(!meta){app.innerHTML='<p class="mut">Loading…</p>';loadMeta().then(()=>{if(view==='setup')home()});return}
-  app.innerHTML=`<h1>Finish setting up</h1><p class="mut">Your login works. Choose a display name, your year and your subjects to finish your profile.</p>
-  <div class="card"><input id="dn" maxlength="16" placeholder="Display name (shown on leaderboards)" aria-label="Display name"></div>
-  <div class="card"><h2>About you</h2><p class="mut">Your year group</p>${yearSelect('')}<p class="mut" style="margin-top:12px">Subjects you study</p>${subjectBoxes([],{})}</div>
-  <button id="go" style="width:100%">Save and continue</button><button class="lnk" id="out" style="margin-top:8px">Sign out</button><p class="bad">${esc(err)}</p>`;
-  $('out').onclick=()=>{store(null);me=null;needsProfile=false;view='menu';err='';home()};
-  $('go').onclick=async()=>{try{err='';await api('/api/setup',{displayName:$('dn').value,...picked()},true);needsProfile=false;await loadMe();view='menu';home()}catch(e){err=e.message;home()}};
-}
-function authView(){
-  const up=mode==='up';
-  if(up&&!meta){app.innerHTML='<p class="mut">Loading…</p>';loadMeta().then(()=>{if(view==='auth')home()});return}
-  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${up?'Create account':'Sign in'}</h1>
-  <div class="card">${up?'<input id="dn" maxlength="16" placeholder="Display name (shown on leaderboards)" aria-label="Display name" style="margin-bottom:8px">':''}
-  <input id="em" type="email" placeholder="Email" aria-label="Email" autocomplete="email"><input id="pw" type="password" placeholder="Password (8+ characters)" aria-label="Password" autocomplete="${up?'new-password':'current-password'}" style="margin-top:8px"></div>
-  ${up?`<div class="card"><h2>About you</h2><p class="mut">Your year group</p>${yearSelect('')}<p class="mut" style="margin-top:12px">Subjects you study (choose all that apply)</p>${subjectBoxes([],{})}</div>`:''}
-  <button id="go" style="width:100%">${up?'Create account':'Sign in'}</button>
-  ${up?'<p class="mut" style="margin-top:10px">Use a nickname, not your real name. Your email is never shown to other players. You must be 13 or over. <a href="/privacy" target="_blank">Privacy notice</a></p>':''}
-  <button class="lnk" id="sw" style="margin-top:8px">${up?'I already have an account':'Create an account'}</button>
-  <p class="${msgA.startsWith('✓')?'':'bad'}">${esc(msgA)}</p>`;
-  $('bk').onclick=()=>{view='menu';msgA='';renderShell()};
-  $('sw').onclick=()=>{mode=up?'in':'up';msgA='';home()};
-  $('go').onclick=async()=>{
-    try{msgA='';const j=await api(up?'/api/signup':'/api/login',{email:$('em').value,password:$('pw').value,displayName:up?$('dn').value:undefined,...(up?picked():{})});
-      if(j.session){store(j.session);await loadMe();view=needsProfile||j.needsProfile?'setup':(me&&!me.year)?'profile':'menu';home()}else{msgA='✓ '+(j.message||'Check your email to confirm, then sign in.');mode='in';home()}}
-    catch(e){msgA=e.message;home()}};
-}
-async function dailyView(){
-  await loadMeta();if(view!=='daily')return;
-  if(!me){view='auth';return home()}
-  if(!meta.length){app.innerHTML='<button class="back" id="bk">← Back</button><p>No questions available yet.</p>';$('bk').onclick=()=>{view='menu';home()};return}
-  const mine=me.subjects||[],ordered=[...meta].sort((a,b)=>mine.includes(b.subject)-mine.includes(a.subject));if(!dsub)dsub=ordered[0].subject;const S=meta.find(x=>x.subject===dsub)||ordered[0];dsub=S.subject;
-  const bd=S.boards.some(b=>b.board===dbd[dsub])?dbd[dsub]:S.boards[0].board;
-  const done=me.doneToday.find(d=>d.subject===dsub&&d.board===bd);
-  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>Daily challenge</h1><p class="mut">🔥 ${me.streak}-day streak · best ${me.best}</p>
-  <div class="card"><h2>1. Subject</h2><div class="chips">${ordered.map(x=>`<button class="chipb ${x.subject===dsub?'on':''}" data-s="${esc(x.subject)}">${mine.includes(x.subject)?'★ ':''}${esc(x.subject)}${me.doneToday.some(d=>d.subject===x.subject)?' ✓':''}</button>`).join('')}</div>
-  <h2 style="margin-top:16px">2. Exam board</h2><div class="chips">${S.boards.map(b=>`<button class="chipb ${b.board===bd?'on':''}" data-b="${esc(b.board)}">${esc(b.board)}</button>`).join('')}</div>
-  <p class="mut" style="margin-top:12px">5 questions, no timer. Name 3 different answers for each. Everyone gets the same questions today.</p></div>
-  ${done?`<div class="card"><p>✓ Done today: <b>${done.score}</b> points. Come back tomorrow, or try another subject.</p></div>`:'<button id="st" style="width:100%;font-size:1.2rem">Start today’s challenge</button>'}
-  ${err?`<p class="bad">${esc(err)}</p>`:''}`;
-  $('bk').onclick=()=>{view='menu';err='';home()};
-  app.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{dsub=b.dataset.s;err='';dailyView()});
-  app.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{dbd[dsub]=b.dataset.b;err='';dailyView()});
-  if($('st'))$('st').onclick=async()=>{err='';await ensureFresh();if(!sess){view='auth';return home()}connect({t:'create',solo:true,daily:{subject:dsub,board:bd},token:sess.access_token})};
-}
-async function lbView(){
-  await loadMeta();if(view!=='lb')return;
-  if(!meta.length){app.innerHTML='<button class="back" id="bk">← Back</button><p>No questions available yet.</p>';$('bk').onclick=()=>{view='menu';home()};return}
-  const S=meta.find(x=>x.subject===lbs)||meta[0];lbs=S.subject;const bd=S.boards.some(b=>b.board===lbb)?lbb:S.boards[0].board;lbb=bd;
-  const tabs=[['daily','Today'],['weekly','This week'],['alltime','All time'],['streak','Streaks']];
-  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>Leaderboards</h1>
-  <div class="chips">${tabs.map(([k,t])=>`<button class="chipb ${k===lbp?'on':''}" data-p="${k}">${t}</button>`).join('')}</div>
-  ${lbp==='streak'?'':`<div class="sets" style="margin:12px 0"><label>Subject<select id="ls">${meta.map(x=>`<option ${x.subject===lbs?'selected':''}>${esc(x.subject)}</option>`).join('')}</select></label><label>Exam board<select id="lbd">${S.boards.map(b=>`<option ${b.board===bd?'selected':''}>${esc(b.board)}</option>`).join('')}</select></label></div>`}
-  <div class="card" id="lbt"><p class="mut">Loading…</p></div>`;
-  $('bk').onclick=()=>{view='menu';home()};
-  app.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{lbp=b.dataset.p;lbView()});
-  if($('ls'))$('ls').onchange=e=>{lbs=e.target.value;lbView()};
-  if($('lbd'))$('lbd').onchange=e=>{lbb=e.target.value;lbView()};
-  try{const j=await api(`/api/leaderboard?period=${lbp}&subject=${encodeURIComponent(lbs)}&board=${encodeURIComponent(bd)}`);if(!$('lbt'))return;
-    $('lbt').innerHTML=j.rows.length?`<table class="lb"><tr><th>#</th><th>Player</th><th>${lbp==='streak'?'Days':'Points'}</th></tr>${j.rows.map((r,i)=>`<tr class="${me&&r.name===me.display_name?'me':''}"><td>${i+1}</td><td>${esc(r.name)}</td><td>${r.score}</td></tr>`).join('')}</table>`:'<p class="mut">No scores yet. Be the first!</p>'}
-  catch(e){if($('lbt'))$('lbt').innerHTML='<p class="bad">'+esc(e.message)+'</p>'}
-}
-function profileView(){
-  if(!me){view='auth';return home()}
-  if(!meta){app.innerHTML='<p class="mut">Loading…</p>';loadMeta().then(()=>{if(view==='profile')home()});return}
-  app.innerHTML=`<button class="back" id="bk">← Back</button><h1>${esc(me.display_name)}</h1>${me.year?'':'<p class="bad">Please add your year group and subjects.</p>'}
-  <div class="card"><p>🔥 <b>${me.streak}</b>-day streak</p><p>Best streak: <b>${me.best}</b> days</p><p>Daily challenges completed: <b>${me.games}</b></p><p>Total daily points: <b>${me.total}</b></p></div>
-  <div class="card"><h2>Today</h2>${me.doneToday.length?me.doneToday.map(d=>`<p>✓ ${esc(d.subject)} (${esc(d.board)}): ${d.score} points</p>`).join(''):'<p class="mut">No daily challenge completed yet today.</p>'}</div>
-  <div class="card"><h2>About you</h2><p class="mut">Your year group</p>${yearSelect(me.year)}<p class="mut" style="margin-top:12px">Subjects you study</p>${subjectBoxes(me.subjects||[],me.subject_boards||{})}<button id="sv" style="margin-top:10px">Save</button>${msgA?`<p style="color:var(--g)">${esc(msgA)}</p>`:''}</div>
-  <button id="out" class="ghost" style="width:100%">Sign out</button>
-  <button id="del" class="lnk" style="margin-top:14px">Delete my account and data</button><p class="bad">${esc(err)}</p>`;
-  $('bk').onclick=()=>{view='menu';err='';msgA='';renderShell()};
-  $('sv').onclick=async()=>{try{err='';await api('/api/profile',picked(),true);await loadMe();examFilterMode='mine';msgA='✓ Saved! Your exam dates are now filtered to your subjects and boards.';renderShell()}catch(e){err=e.message;msgA='';renderShell()}};
-  $('out').onclick=()=>{store(null);me=null;view='menu';msgA='';home()};
-  $('del').onclick=()=>{if(confirm('Delete your account, streak and scores permanently? This cannot be undone.'))api('/api/delete',{},true).then(()=>{store(null);me=null;view='menu';home()}).catch(e=>{err=e.message;home()})};
-}
-
-function scores(){return `<div class="scores">${s.players.map(p=>`<div class="pl ${p.id===s.turn?'on':''} ${p.lives<=0?'out':''}"><b>${esc(p.name)}${p.id===s.you?' (you)':''}${p.on?'':' ⚠'}</b><span class="pts">${p.pts}</span> ${s.solo?'':[...Array(s.set.lives).keys()].map(k=>`<span class="heart ${k>=p.lives?'lost':''}">♥</span>`).join('')}</div>`).join('')}</div>`}
-
-function lobby(){
-  const y=window.scrollY;
-  if(!sel)sel=new Set();
-  if(pendingTopic){
-    act=pendingTopic.subject;
-    board[pendingTopic.subject]=pendingTopic.board;
-    sel.add(pendingTopic.subject+'|'+pendingTopic.board+'|'+pendingTopic.topic);
-    pendingTopic=null;
-  }
-  if(!act)act=s.bank[0].subject;
-  const opt=(k,vals,lab)=>`<label>${lab}<select data-k="${k}">${vals.map(v=>`<option ${cfg[k]===v?'selected':''}>${v}</option>`).join('')}</select></label>`;
-  const cnt=sb=>[...sel].filter(k=>k.startsWith(sb+'|')).length;
-  const S=s.bank.find(x=>x.subject===act);
-  const bd=board[act]||(S.boards.find(b=>b.topics.length)||S.boards[0]).board;
-  const B=S.boards.find(b=>b.board===bd);
-  const key=n=>act+'|'+bd+'|'+n;
-  const subs=s.bank.map(x=>`<button class="chipb ${x.subject===act?'on':''}" data-s="${esc(x.subject)}">${esc(x.subject)}${cnt(x.subject)?` (${cnt(x.subject)})`:''}</button>`).join('');
-  const boards=S.boards.map(b=>`<button class="chipb ${b.board===bd?'on':''}" data-b="${esc(b.board)}" ${b.topics.length?'':'disabled'}>${esc(b.board)}${b.topics.length?'':' (coming soon)'}</button>`).join('');
-  const tps=B.topics.length?B.topics.map(n=>`<label class="c"><input type="checkbox" data-t="${esc(n)}" ${sel.has(key(n))?'checked':''}> ${esc(n)}</label>`).join(''):'<p class="mut">No questions for this board yet.</p>';
-  app.innerHTML=`<button class="back" id="lv">← Leave</button><h1>${s.solo?'Solo practice':'Lobby'}</h1>
-  ${s.solo?'':`<div class="card"><p class="mut">Share this code:</p><div class="code">${s.code}</div></div><div class="card"><h2>Players (${s.players.length}/8)</h2>${s.players.map(p=>`<p>${esc(p.name)}${p.id===s.host?' (host)':''}</p>`).join('')}</div>`}
-  ${isHost()?`<div class="card"><h2>Settings</h2><div class="sets">${s.solo?opt('rounds',[3,5,8,10,15],'Questions')+opt('need',[3,5,8,10],'Answers needed per question'):opt('lives',[1,2,3,4,5],'Lives')+opt('turn',[10,15,20,30,45],'Seconds per turn')+opt('round',[30,60,90,120],'Seconds per round')+opt('rounds',[3,5,8,10,15],'Rounds')+opt('skips',[0,1,2,3],'Skips each')}</div></div>
-  <div class="card"><h2>1. Subject</h2><div class="chips">${subs}</div>
-  <h2 style="margin-top:16px">2. Exam board</h2><div class="chips">${boards}</div>
-  <h2 style="margin-top:16px">3. Topics</h2><div class="row" style="margin-bottom:6px"><button class="lnk" id="all">Select all</button><button class="lnk" id="none">Clear</button></div><div class="tps">${tps}</div>
-  <p class="mut" style="margin-top:10px">${sel.size} topic${sel.size===1?'':'s'} selected. You can mix subjects: pick a subject, choose its topics, then pick another.</p></div>
-  <button id="st" style="width:100%;font-size:1.2rem" ${sel.size?'':'disabled'}>Start game</button>`:'<p class="mut">Waiting for the host to start…</p>'}`;
-  $('lv').onclick=leave;if(!isHost())return;
-  app.querySelectorAll('select').forEach(e=>e.onchange=()=>{cfg[e.dataset.k]=+e.value});
-  app.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{act=b.dataset.s;lobby()});
-  app.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{const nb=b.dataset.b;[...sel].forEach(k=>{if(k.startsWith(act+'|')&&!k.startsWith(act+'|'+nb+'|'))sel.delete(k)});board[act]=nb;lobby()});
-  app.querySelectorAll('[data-t]').forEach(c=>c.onchange=()=>{c.checked?sel.add(key(c.dataset.t)):sel.delete(key(c.dataset.t));lobby()});
-  $('all').onclick=()=>{B.topics.forEach(n=>sel.add(key(n)));lobby()};$('none').onclick=()=>{B.topics.forEach(n=>sel.delete(key(n)));lobby()};
-  $('st').onclick=()=>send({t:'start',topics:[...sel],set:cfg});
-  window.scrollTo(0,y);
-}
-
-function render(){
-  const v=$('ans')?$('ans').value:'';
-  if(s.phase==='lobby')return lobby();
-  const top=s.players.slice().sort((a,b)=>b.pts-a.pts);
-  if(s.phase==='play'){
-    const mine=s.turn===s.you,who=s.players.find(p=>p.id===s.turn),me=s.players.find(p=>p.id===s.you);
-    app.innerHTML=`<button class="back" id="hm">← Home</button>${scores()}<div class="card"><p class="mut">Round ${s.ri+1} of ${s.n} · ${esc(s.topic)}</p><div class="q big">${esc(s.q)}</div>
-    ${s.solo?`<p class="turn">Found ${s.log.length} of ${s.set.need} different answers</p><div class="bar"><i style="width:${Math.min(100,s.log.length/s.set.need*100)}%"></i></div><p class="mut">No timer. Take your time and name ${s.set.need} to move on.</p>`:`<div class="bar" id="rb"><i></i></div><p class="mut" id="rt"></p>
-    <div class="turn">${mine?'Your turn!':esc(who.name)+'’s turn'}</div><div class="bar" id="tb"><i></i></div>`}
-    <div class="row"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${mine?'Type your answer':'Wait for your turn'}" aria-label="Your answer" ${mine?'':'disabled'}><button id="sub" ${mine?'':'disabled'}>Answer</button></div>
-    ${s.solo?'<button class="ghost" id="sk" style="margin-top:8px">Skip question</button>':s.set.skips?`<button class="ghost" id="sk" style="margin-top:8px" ${mine&&me.skips>0?'':'disabled'}>Skip question (${me.skips} left, −10 points)</button>`:''}
-    <p id="msg"></p><div>${s.log.map(l=>`<span class="chip ${l.tier===50?'hi':''}">${esc(l.text)} (${esc(l.by)})</span>`).join('')}</div></div>`;
-    const go=()=>{const a=$('ans');if(a.value.trim()){send({t:'answer',text:a.value});a.value=''}};
-    $('sub').onclick=go;$('ans').onkeydown=e=>{if(e.key==='Enter')go()};if($('sk'))$('sk').onclick=()=>send({t:'skip'});$('hm').onclick=leaveGame;
-    if(mine){$('ans').value=v;$('ans').focus()}
-  }else if(s.phase==='between'){
-    app.innerHTML=`<button class="back" id="hm">← Home</button><div class="card"><h2>Round over</h2><p class="mut">${esc(s.q)}</p><p><b>${s.solo?'Answers you missed':'Answers nobody found'}</b> (gold = grade 7–9):</p>
-    <div>${s.missed.map(m=>`<span class="chip miss ${m.tier===50?'hi':''}">${esc(m.text)}</span>`).join('')||'You found every answer!'}</div></div>
-    <div class="card">${top.map(p=>`<p><b>${esc(p.name)}</b>: ${p.pts} points ${p.lives>0?'':'(out)'}${s.rpts[p.name]?' · +'+s.rpts[p.name]+' this round':''}</p>`).join('')}</div>
-    ${isHost()?`<button id="nx" style="width:100%">${s.last?'See results':'Next round'}</button>`:'<p class="mut">Waiting for the host…</p>'}`;
-    if(isHost())$('nx').onclick=()=>send({t:'next'});$('hm').onclick=leaveGame;
-  }else{
-    app.innerHTML=`<h1>${s.daily?'Daily challenge':s.solo?'Game over!':esc(top[0].name)+' wins!'}</h1>${s.daily?dailyCard():''}<div class="card">${top.map((p,i)=>`<p>${i+1}. <b>${esc(p.name)}</b>: ${p.pts} points</p>`).join('')}</div>
-    <h2 style="margin-top:22px">Revision summary</h2><p class="mut">Every answer from your game. <span class="chip">✓ You said it</span> <span class="chip miss">You missed it</span> <span class="chip hi">Grade 7–9</span></p>
-    ${(s.review||[]).map(r=>`<div class="card"><p class="mut">${esc(r.topic)}</p><p><b>${esc(r.q)}</b></p>${r.answers.map(a=>`<span class="chip ${a.tier===50?'hi':''} ${a.by===s.you?'':'miss'}">${a.by===s.you?'✓ ':''}${esc(a.text)}</span>`).join('')}</div>`).join('')}
-    ${s.daily?'':isHost()?`<button id="ag" style="width:100%">${s.solo?'Play again':'Back to lobby'}</button>`:'<p class="mut">Waiting for the host…</p>'}<button class="back" id="hm" style="margin-top:10px">Back to home</button>`;
-    if($('ag'))$('ag').onclick=()=>send({t:'again'});$('hm').onclick=leave;if($('lbx')){const dd=s.daily;$('lbx').onclick=()=>{leave();lbp='daily';lbs=dd.subject;lbb=dd.board;view='lb';home()}}
-  }
-}
-function toast(m){const e=$('msg');if(!e)return;e.textContent=m.text;e.style.color=m.kind==='bad'?'var(--bad)':m.kind==='hi'?'var(--sun)':'var(--g)';clearTimeout(mt);mt=setTimeout(()=>{if($('msg'))$('msg').textContent=''},2500)}
-setInterval(()=>{if(!s||s.phase!=='play'||!$('tb'))return;const now=Date.now()+off;
-  $('tb').firstChild.style.width=Math.max(0,(s.turnEnd-now)/(s.set.turn*10))+'%';
-  $('rb').firstChild.style.width=Math.max(0,(s.roundEnd-now)/(s.set.round*10))+'%';
-  $('rt').textContent='Round time left: '+Math.max(0,Math.ceil((s.roundEnd-now)/1000))+'s'},150);
-
-const STUDY_DATA = {
-  exams: [
-    { subject: 'Biology', board: 'AQA', paper: 'Paper 1: Cell Biology, Organisation, Infection & Bioenergetics', date: '2027-05-11T13:30:00', duration: '1h 45m' },
-    { subject: 'Biology', board: 'Edexcel', paper: 'Paper 1 (1BI0/1H): Key Concepts & Cells', date: '2027-05-11T13:30:00', duration: '1h 45m' },
-    { subject: 'Geography', board: 'AQA', paper: 'Paper 1: Living with the Physical Environment', date: '2027-05-12T09:00:00', duration: '1h 30m' },
-    { subject: 'Geography', board: 'Edexcel', paper: 'Paper 1 (1GA0/01): The Physical Environment', date: '2027-05-12T09:00:00', duration: '1h 30m' },
-    { subject: 'Computer Science', board: 'OCR', paper: 'Paper 01 (J277/01): Computer Systems', date: '2027-05-13T13:30:00', duration: '1h 30m' },
-    { subject: 'Computer Science', board: 'AQA', paper: 'Paper 1 (8525/1): Computational Thinking & Programming', date: '2027-05-13T13:30:00', duration: '2h 00m' },
-    { subject: 'History', board: 'Edexcel', paper: 'Paper 1 (1HI0/10): Crime and Punishment in Britain', date: '2027-05-14T09:00:00', duration: '1h 15m' },
-    { subject: 'History', board: 'AQA', paper: 'Paper 1 (8145/1): Understanding the Modern World', date: '2027-05-14T09:00:00', duration: '2h 00m' },
-    { subject: 'Chemistry', board: 'AQA', paper: 'Paper 1: Atomic Structure, Bonding, Quantitative & Energy', date: '2027-05-17T09:00:00', duration: '1h 45m' },
-    { subject: 'Chemistry', board: 'Edexcel', paper: 'Paper 1 (1CH0/1H): States of Matter, Bonding & Acids', date: '2027-05-17T09:00:00', duration: '1h 45m' },
-    { subject: 'Religious Studies', board: 'AQA', paper: 'Paper 1: The Study of Religions (Beliefs & Practices)', date: '2027-05-18T13:30:00', duration: '1h 45m' },
-    { subject: 'Religious Studies', board: 'Edexcel', paper: 'Paper 1 (1RB0/1): Religion and Ethics', date: '2027-05-18T13:30:00', duration: '1h 45m' },
-    { subject: 'Physics', board: 'AQA', paper: 'Paper 1: Energy, Electricity, Particle Model & Atomic Structure', date: '2027-05-20T09:00:00', duration: '1h 45m' },
-    { subject: 'Physics', board: 'Edexcel', paper: 'Paper 1 (1PH0/1H): Motion, Forces, Energy & Waves', date: '2027-05-20T09:00:00', duration: '1h 45m' },
-    { subject: 'Business Studies', board: 'Edexcel', paper: 'Paper 1 (1BS0/01): Investigating Small Business', date: '2027-05-21T13:30:00', duration: '1h 45m' },
-    { subject: 'Business Studies', board: 'AQA', paper: 'Paper 1 (8132/1): Influences of Operations & HRM', date: '2027-05-21T13:30:00', duration: '1h 45m' },
-    { subject: 'French', board: 'AQA', paper: 'Paper 1 & 3 (8652): Listening and Reading', date: '2027-05-24T09:00:00', duration: '1h 45m' },
-    { subject: 'French', board: 'Edexcel', paper: 'Paper 1 & 3 (1FR0): Listening and Reading', date: '2027-05-24T09:00:00', duration: '1h 45m' },
-    { subject: 'Music', board: 'OCR', paper: 'Listening & Appraising Exam (J536/05)', date: '2027-06-08T13:30:00', duration: '1h 30m' },
-    { subject: 'Music', board: 'Edexcel', paper: 'Appraising Music (1MU0/03)', date: '2027-06-08T13:30:00', duration: '1h 45m' }
-  ],
-  resources: [
-    {
-      subject: 'Biology', board: 'AQA', topic: 'Cell biology',
-      summary: 'Eukaryotic vs prokaryotic cells, microscopy magnification, mitosis, and transport across membranes.',
-      keyPoints: [
-        'Magnification = Image size ÷ Actual size (keep units consistent: 1 mm = 1,000 µm).',
-        'Osmosis is the diffusion of water from a dilute to a concentrated solution across a partially permeable membrane.',
-        'Active transport moves substances against a concentration gradient using energy released by respiration.'
-      ]
-    },
-    {
-      subject: 'Chemistry', board: 'AQA', topic: 'Bonding, structure and properties of matter',
-      summary: 'Ionic, covalent, and metallic bonding, giant lattices vs simple molecules, and carbon allotropes.',
-      keyPoints: [
-        'Ionic compounds conduct electricity only when molten or dissolved in water because ions are free to move.',
-        'Simple molecular substances have low melting/boiling points due to weak intermolecular forces—covalent bonds do NOT break on boiling.',
-        'Graphite conducts electricity because each carbon forms 3 covalent bonds, leaving 1 delocalised electron per atom.'
-      ]
-    },
-    {
-      subject: 'Physics', board: 'AQA', topic: 'Energy',
-      summary: 'Energy stores, energy transfers, efficiency calculations, and non-renewable vs renewable resources.',
-      keyPoints: [
-        'Kinetic Energy: Ek = 0.5 × mass × speed² (J).',
-        'Gravitational Potential Energy: Ep = mass × gravitational field strength × height (J).',
-        'Efficiency = Useful output energy transfer ÷ Total input energy transfer.'
-      ]
-    },
-    {
-      subject: 'Geography', board: 'AQA', topic: 'Natural hazards',
-      summary: 'Tectonic plate boundaries, earthquakes (Haiti vs Japan), tropical storms (Typhoon Haiyan), and climate change.',
-      keyPoints: [
-        'Constructive (divergent), destructive (convergent), and conservative (transform) plate margins.',
-        'Tropical storms need warm sea temperatures (27°C+), low pressure, and sufficient distance from the equator (Coriolis effect).'
-      ]
-    },
-    {
-      subject: 'History', board: 'Edexcel', topic: 'Cold War',
-      summary: 'Origins of the Cold War, Berlin Blockade & Wall, Cuban Missile Crisis, détente, and collapse of the USSR.',
-      keyPoints: [
-        'Truman Doctrine (1947) aimed to contain communism; Marshall Plan provided economic aid to rebuild Western Europe.',
-        'Cuban Missile Crisis (October 1962) led to the Hotline, Limited Test Ban Treaty (1963), and secret removal of US missiles from Turkey.'
-      ]
-    },
-    {
-      subject: 'Music', board: 'OCR', topic: 'Music theory',
-      summary: 'Dynamics, tempo, articulation, texture, tonality, cadences, structure, and orchestral instruments.',
-      keyPoints: [
-        'Texture terms: monophonic (single line), homophonic (melody + accompaniment), polyphonic (interweaving lines).',
-        'Main cadences: perfect (V–I), plagal (IV–I), imperfect (ending on V), interrupted (V–vi).'
-      ]
-    },
-    {
-      subject: 'Computer Science', board: 'OCR', topic: 'Systems architecture',
-      summary: 'CPU components (ALU, CU, registers, cache), fetch-execute cycle, and factors affecting CPU performance.',
-      keyPoints: [
-        'Clock speed, cache size, and number of cores are key factors affecting CPU performance.',
-        'Key registers include Program Counter (PC), Memory Address Register (MAR), Memory Data Register (MDR), and Accumulator.'
-      ]
-    },
-    {
-      subject: 'Business Studies', board: 'Edexcel', topic: '1.3 Putting a business idea into practice',
-      summary: 'Financial and non-financial aims, break-even diagrams, and sources of finance for start-ups.',
-      keyPoints: [
-        'Break-even output = Fixed Costs ÷ (Selling Price per unit − Variable Cost per unit).',
-        'Margin of Safety shows how far sales can fall before a business makes a loss.'
-      ]
-    },
-    {
-      subject: 'French', board: 'AQA', topic: 'French grammar',
-      summary: 'Key tenses, negatives, question words, and connectives for speaking, listening, reading, and writing.',
-      keyPoints: [
-        'Core tenses to master: présent, passé composé, imparfait, futur proche, futur simple, and conditionnel.',
-        'High-value connectives: cependant, pourtant, bien que, alors que, en revanche.'
-      ]
-    },
-    {
-      subject: 'Religious Studies', board: 'AQA', topic: 'Islam',
-      summary: 'Five Pillars of Islam, Six Articles of Faith (Sunni), Five Roots of Faith (Shia), festivals, and Hajj.',
-      keyPoints: [
-        'Five Pillars: Shahadah, Salah, Zakah, Sawm, and Hajj.',
-        'Tawhid is the belief in the oneness and unity of God.'
-      ]
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReviseRush — Summer 2027 Exam Dates &amp; Maths Revision Hub</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-alt: #273549;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-dark: #0284c7;
+      --warn-bg: #451a03;
+      --warn-border: #f59e0b;
+      --warn-text: #fde68a;
+      --border: #334155;
+      --success: #22c55e;
     }
-  ],
-  examQuestions: [
-    {
-      subject: 'Biology', board: 'AQA', topic: 'Cell biology', marks: 4,
-      question: 'Explain how root hair cells are adapted for the efficient uptake of water and mineral ions from the soil. (4 marks)',
-      markScheme: [
-        '1 mark: Large surface area (long hair-like projection) to speed up absorption.',
-        '1 mark: Thin cell wall gives a short diffusion distance.',
-        '1 mark: Many mitochondria release energy via respiration for active transport.',
-        '1 mark: Active transport takes up mineral ions against a concentration gradient.'
-      ],
-      tip: 'Link mitochondria to respiration releasing energy for active transport—avoid saying mitochondria "produce" energy.'
-    },
-    {
-      subject: 'Chemistry', board: 'AQA', topic: 'Bonding, structure and properties of matter', marks: 4,
-      question: 'Explain why sodium chloride has a high melting point and conducts electricity when molten, but not when solid. (4 marks)',
-      markScheme: [
-        '1 mark: Giant ionic lattice with strong electrostatic forces of attraction between oppositely charged ions.',
-        '1 mark: Lots of energy is required to overcome these strong forces (high melting point).',
-        '1 mark: When solid, ions are fixed in place and cannot move.',
-        '1 mark: When molten, ions are free to move and carry charge.'
-      ],
-      tip: 'Refer to moving ions carrying charge in molten ionic compounds rather than electrons.'
-    },
-    {
-      subject: 'Physics', board: 'AQA', topic: 'Energy', marks: 3,
-      question: 'State three renewable energy resources and give one limitation of wind power. (3 marks)',
-      markScheme: [
-        '2 marks: Any two or three renewable resources such as solar, wind, hydroelectric, geothermal, tidal, or biofuel.',
-        '1 mark: Wind power is unreliable / weather-dependent (or visually/noise intrusive).'
-      ],
-      tip: 'Remember nuclear fuel is non-renewable on the GCSE specification.'
-    },
-    {
-      subject: 'Geography', board: 'AQA', topic: 'Natural hazards', marks: 4,
-      question: 'Give two reasons why Japan experienced fewer deaths than Haiti following major earthquakes. (4 marks)',
-      markScheme: [
-        '2 marks: Earthquake-resistant / earthquake-proof buildings and strict building codes prevented collapse.',
-        '2 marks: Stronger economy, early warning systems, earthquake drills, and faster emergency response.'
-      ],
-      tip: 'Make two distinct points and develop each with specific detail rather than listing single words.'
-    },
-    {
-      subject: 'History', board: 'Edexcel', topic: 'Cold War', marks: 4,
-      question: 'Give two consequences of the Berlin Blockade (1948–49). (4 marks)',
-      markScheme: [
-        '2 marks: Formal division of Germany in 1949 into West Germany (FRG) and East Germany (GDR).',
-        '2 marks: Creation of NATO in 1949 as a collective defence alliance of Western powers.'
-      ],
-      tip: 'Keep each consequence in its own clear sentence with accurate dates or names.'
-    },
-    {
-      subject: 'Music', board: 'OCR', topic: 'Music theory', marks: 3,
-      question: 'Name three types of cadence used in Western classical music. (3 marks)',
-      markScheme: [
-        '1 mark each (up to 3): Perfect (authentic), plagal, imperfect, or interrupted cadence.'
-      ],
-      tip: 'Know both the names and the chord progressions (e.g., V–I for a perfect cadence).'
-    },
-    {
-      subject: 'Computer Science', board: 'OCR', topic: 'Systems architecture', marks: 3,
-      question: 'State three components of a CPU. (3 marks)',
-      markScheme: [
-        '1 mark each (up to 3): Control Unit (CU), Arithmetic Logic Unit (ALU), cache, or registers (e.g., PC, MAR, MDR, Accumulator).'
-      ],
-      tip: 'Write out full names alongside abbreviations like ALU and CU.'
-    },
-    {
-      subject: 'Business Studies', board: 'Edexcel', topic: '1.3 Putting a business idea into practice', marks: 3,
-      question: 'A café has fixed costs of £1,200 per month, sells coffees for £3.50, and has variable costs of £1.50 per cup. Calculate the monthly break-even output. (3 marks)',
-      markScheme: [
-        '1 mark: Contribution per unit = £3.50 − £1.50 = £2.00.',
-        '1 mark: Break-even = Fixed Costs ÷ Contribution (£1,200 ÷ £2.00).',
-        '1 mark: 600 coffees per month.'
-      ],
-      tip: 'Always include the units ("600 coffees") in your final answer.'
-    },
-    {
-      subject: 'French', board: 'AQA', topic: 'French grammar', marks: 3,
-      question: 'Name three French tenses studied at GCSE. (3 marks)',
-      markScheme: [
-        '1 mark each (up to 3): présent, passé composé, imparfait, futur proche, futur simple, conditionnel, or plus-que-parfait.'
-      ],
-      tip: 'Practise spotting time markers (hier, demain, d\'habitude) to pick the right tense quickly.'
-    },
-    {
-      subject: 'Religious Studies', board: 'AQA', topic: 'Islam', marks: 3,
-      question: 'Name three of the Five Pillars of Islam. (3 marks)',
-      markScheme: [
-        '1 mark each (up to 3): Shahadah, Salah, Zakah, Sawm, or Hajj.'
-      ],
-      tip: 'Be ready to explain how each pillar supports a Muslim\'s everyday duty and community life.'
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
     }
-  ]
-};
-
-let pageTab = location.pathname === '/game' ? 'game' : (location.pathname.slice(1) || 'hub');
-if (!['hub', 'resources', 'questions', 'exams', 'game'].includes(pageTab)) pageTab = 'hub';
-let fSub = 'All', fBoard = 'All';
-let pendingTopic = null;
-
-function practiceTopic(subject, board, topic) {
-  pendingTopic = { subject, board, topic };
-  if (s && s.phase === 'lobby') {
-    act = subject;
-    board[subject] = board;
-    if (!sel) sel = new Set();
-    sel.add(subject + '|' + board + '|' + topic);
-    pendingTopic = null;
-    pageTab = 'game';
-    history.pushState(null, '', '/game');
-    renderShell();
-    return;
-  }
-  if (s) {
-    if (!confirm('Leave your current game to start a solo practice session on this topic?')) {
-      pendingTopic = null;
-      return;
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
     }
-    leave();
-  }
-  pageTab = 'game';
-  view = 'solo';
-  err = '';
-  history.pushState(null, '', '/game');
-  renderShell();
-}
+    header h1 { margin: 0; font-size: 1.4rem; color: var(--accent); }
+    nav { display: flex; gap: 0.5rem; }
+    nav button {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    nav button.active {
+      background: var(--accent-dark);
+      border-color: var(--accent);
+    }
+    main { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem 3rem; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .contingency-box {
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn-border);
+      color: var(--warn-text);
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+    input[type="search"], select {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .btn-secondary {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.5rem;
+      max-height: 260px;
+      overflow-y: auto;
+      background: var(--surface);
+      padding: 0.85rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .subject-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .subject-item:hover { background: var(--surface-alt); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.75rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+    }
+    th { background: var(--surface-alt); color: var(--accent); }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: var(--surface-alt);
+    }
+    .empty-state {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      padding: 2rem;
+      text-align: center;
+      border-radius: 10px;
+      color: var(--muted);
+    }
+    .track-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .track-tabs button {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.6rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .track-tabs button.active {
+      background: var(--accent-dark);
+      border-color: var(--accent);
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card h3, .card h4 { margin-top: 0; color: var(--accent); }
+    .mark-scheme {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      background: var(--bg);
+      border-left: 3px solid var(--success);
+      border-radius: 6px;
+      font-size: 0.92rem;
+      display: none;
+    }
+    .mark-scheme.open { display: block; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ReviseRush • Summer 2027</h1>
+    <nav>
+      <button id="tab-exams" class="active" type="button">My Exam Dates</button>
+      <button id="tab-maths" type="button">Exam Questions &amp; Revision Notes</button>
+    </nav>
+  </header>
 
-function goTab(tab) {
-  if (s && tab !== 'game') {
-    if (!confirm('Leave your active game and switch section?')) return;
-    leave();
-  }
-  pageTab = tab;
-  history.pushState(null, '', tab === 'hub' ? '/' : '/' + tab);
-  renderShell();
-}
-
-let examFilterMode = 'mine'; // 'mine' (default when signed in with subjects) or 'all'
-
-function openAccountFromSite(targetView) {
-  if (s) {
-    if (!confirm('Leave your active game to open your account?')) return;
-    leave();
-  }
-  pageTab = 'game';
-  view = targetView;
-  mode = 'in';
-  err = '';
-  msgA = '';
-  history.pushState(null, '', '/game');
-  renderShell();
-}
-
-function homeAccountBanner() {
-  if (!cfgSrv.accounts) return '';
-  if (needsProfile) {
-    return `<div class="acct-card">
-      <div><b class="bad">Finish setting up your account</b><div class="mut" style="font-size:.92rem">Choose your subjects and exam boards to personalise your exam countdowns.</div></div>
-      <button onclick="openAccountFromSite('setup')">Finish setup</button>
-    </div>`;
-  }
-  if (me) {
-    const count = (me.subjects || []).length;
-    return `<div class="acct-card">
-      <div>
-        <b>Hi, ${esc(me.display_name)}</b> · 🔥 ${me.streak}-day streak
-        <div class="mut" style="font-size:.92rem">${count ? `Tracking ${count} GCSE subject${count === 1 ? '' : 's'} &amp; exam boards` : 'No subjects selected yet'}</div>
+  <main>
+    <!-- TAB 1: MY EXAM DATES -->
+    <section id="panel-exams" class="panel active">
+      <div class="contingency-box" id="contingency-banner">
+        <strong>Contingency Day:</strong> Loading...
       </div>
-      <div class="row" style="flex-wrap:wrap">
-        <button class="ghost" onclick="openAccountFromSite('profile')">My Account &amp; Subjects</button>
-        <button class="ghost" onclick="openAccountFromSite('daily')">Daily Challenge</button>
+
+      <div class="controls">
+        <input type="search" id="subject-search" placeholder="Search subject (e.g. Mathematics, Biology)..." />
+        <select id="board-filter">
+          <option value="ALL">All Boards (OCR, AQA, Edexcel)</option>
+          <option value="OCR">OCR</option>
+          <option value="AQA">AQA</option>
+          <option value="Edexcel">Pearson Edexcel</option>
+        </select>
+        <button type="button" class="btn-secondary" id="clear-subjects-btn">Clear Selected</button>
       </div>
-    </div>`;
-  }
-  return `<div class="acct-card">
-    <div>
-      <b>Sign in or create an account</b>
-      <div class="mut" style="font-size:.92rem">Save your subjects &amp; exam boards for personalised exam countdowns, streaks, and leaderboards.</div>
-    </div>
-    <div class="row" style="flex-wrap:wrap">
-      <button onclick="openAccountFromSite('auth')">Sign in</button>
-      <button class="ghost" onclick="openAccountFromSite('auth');mode='up';renderShell()">Create account</button>
-    </div>
-  </div>`;
-}
 
-function myMatchingExams() {
-  if (!me || !me.subjects || !me.subjects.length) return [];
-  const sbMap = me.subject_boards || {};
-  return STUDY_DATA.exams.filter(ex => {
-    if (!me.subjects.includes(ex.subject)) return false;
-    const chosenBoard = sbMap[ex.subject];
-    return !chosenBoard || ex.board === chosenBoard;
-  });
-}
+      <div id="subject-grid" class="subject-grid"></div>
+      <div id="exams-output"></div>
+    </section>
 
-function renderNav() {
-  const tabs = [
-    ['hub', 'Home'],
-    ['resources', 'Resources'],
-    ['questions', 'Exam Questions'],
-    ['exams', 'Exam Dates'],
-    ['game', '⚡ Play ReviseRush']
-  ];
-  const acctNav = !cfgSrv.accounts ? '' : me
-    ? `<button class="nbtn ${pageTab === 'game' && view === 'profile' ? 'on' : ''}" onclick="openAccountFromSite('profile')">👤 ${esc(me.display_name)}</button>`
-    : `<button class="nbtn ${pageTab === 'game' && view === 'auth' ? 'on' : ''}" onclick="openAccountFromSite('auth')">Sign in</button>`;
-  $('topnav').innerHTML = `<div class="nav-in">
-    <div class="logo" style="margin:0;cursor:pointer" onclick="goTab('hub')">${LOGO}<div class="brand" style="font-size:1.6rem">Revise<span>Rush</span></div></div>
-    <div class="nav-links">${tabs.map(([k, label]) =>
-      `<button class="nbtn ${k === 'game' ? 'play' : ''} ${pageTab === k && (k !== 'game' || !['auth','profile','setup'].includes(view)) ? 'on' : ''}" onclick="if(k==='game')view='menu';goTab('${k}')">${label}</button>`
-    ).join('')}${acctNav}</div>
-  </div>`;
-}
+    <!-- TAB 2: EXAM QUESTIONS & REVISION NOTES (MATHS ONLY) -->
+    <section id="panel-maths" class="panel">
+      <div class="track-tabs" id="maths-track-tabs"></div>
+      <div id="maths-track-body"></div>
+    </section>
+  </main>
 
-function filterBar(items) {
-  const subs = ['All', ...new Set(items.map(x => x.subject))];
-  const boards = ['All', ...new Set(items.map(x => x.board))];
-  return `<div class="sets" style="margin:12px 0">
-    <label>Subject<select onchange="fSub=this.value;renderShell()">${subs.map(x => `<option ${fSub === x ? 'selected' : ''}>${esc(x)}</option>`).join('')}</label>
-    <label>Exam Board<select onchange="fBoard=this.value;renderShell()">${boards.map(x => `<option ${fBoard === x ? 'selected' : ''}>${esc(x)}</option>`).join('')}</label>
-  </div>`;
-}
+  <script>
+    const TOKEN_KEY = "reviserush_session_token";
+    const LOCAL_SUBJECTS_KEY = "reviserush_selected_subjects_2027";
 
-function renderExamCard(ex) {
-  const target = new Date(ex.date);
-  const days = Math.max(0, Math.ceil((target - Date.now()) / 86400000));
-  const niceDate = target.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-  const niceTime = target.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  return `<div class="card">
-    <div><span class="badge">${esc(ex.subject)}</span><span class="badge">${esc(ex.board)}</span></div>
-    <h2 style="margin-top:6px">${esc(ex.paper)}</h2>
-    <p class="mut">${niceDate} at ${niceTime} · Duration: ${esc(ex.duration)}</p>
-    <div class="countdown">${days} day${days === 1 ? '' : 's'} to go</div>
-  </div>`;
-}
+    function getSessionToken() {
+      let token = localStorage.getItem(TOKEN_KEY);
+      if (!token) {
+        token = "rr_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+        localStorage.setItem(TOKEN_KEY, token);
+      }
+      return token;
+    }
 
-function renderShell() {
-  renderNav();
-  app.className = pageTab === 'game' ? '' : 'wide';
-  if (pageTab === 'game') return s ? render() : home();
+    const sessionToken = getSessionToken();
+    let catalogSubjects = [];
+    // Starts empty unless the user explicitly selected subjects previously
+    let selectedKeys = new Set(JSON.parse(localStorage.getItem(LOCAL_SUBJECTS_KEY) || "[]"));
+    let mathsTracks = [];
+    let completedQuestions = new Set();
+    let activeTrackId = "edexcel-maths";
 
-  if (pageTab === 'hub') {
-    const mineExams = myMatchingExams();
-    const hasPersonal = me && me.subjects && me.subjects.length > 0;
-    const nextExams = hasPersonal ? mineExams.slice(0, 3) : STUDY_DATA.exams.slice(0, 3);
-    app.innerHTML = `
-      ${homeAccountBanner()}
-      <div class="card" style="border-left:10px solid var(--g)">
-        <h1>GCSE Revision Hub &amp; Party Game</h1>
-        <p class="mut">Topic notes, exam-style mark schemes, live Summer 2027 exam countdowns, and fast-paced recall battles.</p>
-        <div class="row" style="margin-top:14px;flex-wrap:wrap">
-          <button onclick="view='menu';goTab('game')" style="font-size:1.1rem">⚡ Launch ReviseRush Game</button>
-          <button class="ghost" onclick="goTab('resources')">Browse Revision Notes</button>
-          <button class="ghost" onclick="goTab('questions')">Practise Exam Questions</button>
+    // Tab switching
+    const tabExams = document.getElementById("tab-exams");
+    const tabMaths = document.getElementById("tab-maths");
+    const panelExams = document.getElementById("panel-exams");
+    const panelMaths = document.getElementById("panel-maths");
+
+    tabExams.addEventListener("click", () => {
+      tabExams.classList.add("active");
+      tabMaths.classList.remove("active");
+      panelExams.classList.add("active");
+      panelMaths.classList.remove("active");
+    });
+
+    tabMaths.addEventListener("click", () => {
+      tabMaths.classList.add("active");
+      tabExams.classList.remove("active");
+      panelMaths.classList.add("active");
+      panelExams.classList.remove("active");
+    });
+
+    async function init() {
+      const catRes = await fetch("/api/catalog");
+      const catData = await catRes.json();
+      catalogSubjects = catData.subjects || [];
+      document.getElementById("contingency-banner").innerHTML =
+        `<strong>Contingency Day:</strong> ${catData.contingency.label} — ${catData.contingency.note}`;
+
+      renderSubjectPicker();
+      await syncAndRenderMyExams();
+
+      const mathsRes = await fetch(`/api/maths-revision?token=${encodeURIComponent(sessionToken)}`);
+      const mathsData = await mathsRes.json();
+      mathsTracks = mathsData.tracks || [];
+      completedQuestions = new Set(mathsData.completed || []);
+      if (mathsTracks.length) activeTrackId = mathsTracks[0].id;
+      renderMathsHub();
+    }
+
+    function renderSubjectPicker() {
+      const searchVal = document.getElementById("subject-search").value.trim().toLowerCase();
+      const boardVal = document.getElementById("board-filter").value;
+      const grid = document.getElementById("subject-grid");
+
+      const filtered = catalogSubjects.filter((s) => {
+        const matchBoard = boardVal === "ALL" || s.board === boardVal;
+        const matchText = !searchVal || s.label.toLowerCase().includes(searchVal);
+        return matchBoard && matchText;
+      });
+
+      grid.innerHTML = filtered.map((s) => `
+        <label class="subject-item">
+          <input type="checkbox" value="${s.key}" ${selectedKeys.has(s.key) ? "checked" : ""} />
+          <span>${s.label}</span>
+        </label>
+      `).join("");
+
+      grid.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+        cb.addEventListener("change", async () => {
+          if (cb.checked) selectedKeys.add(cb.value);
+          else selectedKeys.delete(cb.value);
+          localStorage.setItem(LOCAL_SUBJECTS_KEY, JSON.stringify(Array.from(selectedKeys)));
+          await saveAndRenderMyExams();
+        });
+      });
+    }
+
+    async function syncAndRenderMyExams() {
+      const keysArr = Array.from(selectedKeys);
+      if (keysArr.length === 0) {
+        renderExamTable([]);
+        return;
+      }
+      const res = await fetch(`/api/my-exams?token=${encodeURIComponent(sessionToken)}&subjects=${encodeURIComponent(keysArr.join(","))}`);
+      const data = await res.json();
+      renderExamTable(data.exams || []);
+    }
+
+    async function saveAndRenderMyExams() {
+      const keysArr = Array.from(selectedKeys);
+      const res = await fetch("/api/my-exams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: sessionToken, selectedKeys: keysArr })
+      });
+      const data = await res.json();
+      renderExamTable(data.exams || []);
+    }
+
+    function renderExamTable(exams) {
+      const out = document.getElementById("exams-output");
+      if (selectedKeys.size === 0 || exams.length === 0) {
+        out.innerHTML = `<div class="empty-state">No subjects selected yet. Tick your subjects above to display only your personal Summer 2027 exam dates.</div>`;
+        return;
+      }
+      out.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Session</th>
+              <th>Board</th>
+              <th>Subject</th>
+              <th>Paper Code &amp; Title</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${exams.map((e) => `
+              <tr>
+                <td><strong>${e.date}</strong></td>
+                <td><span class="badge">${e.session}</span></td>
+                <td>${e.board}</td>
+                <td>${e.subject}</td>
+                <td><strong>${e.code}</strong> — ${e.paper}</td>
+                <td>${e.duration}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderMathsHub() {
+      const tabsEl = document.getElementById("maths-track-tabs");
+      const bodyEl = document.getElementById("maths-track-body");
+
+      tabsEl.innerHTML = mathsTracks.map((t) => `
+        <button type="button" class="${t.id === activeTrackId ? "active" : ""}" data-track="${t.id}">
+          ${t.label}
+        </button>
+      `).join("");
+
+      tabsEl.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeTrackId = btn.dataset.track;
+          renderMathsHub();
+        });
+      });
+
+      const track = mathsTracks.find((t) => t.id === activeTrackId);
+      if (!track) return;
+
+      bodyEl.innerHTML = `
+        <div class="card">
+          <h3>${track.label} (${track.specCode})</h3>
+          <p style="color: var(--muted); margin-bottom: 0;">${track.structure}</p>
         </div>
-      </div>
-      <div class="grid2">
-        <div class="card"><h2>📚 Revision Resources</h2><p class="mut">Concise topic summaries, key equations, and specification checklists across your GCSE subjects.</p><button class="lnk" onclick="goTab('resources')">Open resources →</button></div>
-        <div class="card"><h2>📝 Exam Questions</h2><p class="mut">Practice questions with step-by-step mark schemes and Grade 7–9 examiner tips.</p><button class="lnk" onclick="goTab('questions')">Try questions →</button></div>
-        <div class="card"><h2>📅 Exam Timetable</h2><p class="mut">Live countdowns to your Summer 2027 GCSE papers filtered to your subjects and exam boards.</p><button class="lnk" onclick="goTab('exams')">View dates →</button></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px">
-        <h2>${hasPersonal ? 'Your Upcoming Exams' : 'Upcoming Exam Countdowns'}</h2>
-        ${hasPersonal ? `<button class="lnk" onclick="openAccountFromSite('profile')">Edit subjects &amp; boards →</button>` : ''}
-      </div>
-      ${nextExams.length
-        ? `<div class="grid2">${nextExams.map(ex => renderExamCard(ex)).join('')}</div>`
-        : `<div class="card"><p class="mut">No exam dates match your saved subject and exam board combinations yet. <button class="lnk" onclick="examFilterMode='all';goTab('exams')">View all exam dates →</button></p></div>`}`;
-    return;
-  }
 
-  if (pageTab === 'resources') {
-    const list = STUDY_DATA.resources.filter(r => (fSub === 'All' || r.subject === fSub) && (fBoard === 'All' || r.board === fBoard));
-    app.innerHTML = `<h1>Revision Resources</h1><p class="mut">Key notes and formulas mapped to your GCSE exam board.</p>${filterBar(STUDY_DATA.resources)}
-      ${list.map(r => `<div class="card">
-        <div><span class="badge">${esc(r.subject)}</span><span class="badge">${esc(r.board)}</span></div>
-        <h2 style="margin-top:6px">${esc(r.topic)}</h2>
-        <p>${esc(r.summary)}</p>
-        <ul>${r.keyPoints.map(pt => `<li>${esc(pt)}</li>`).join('')}</ul>
-        <button class="lnk" onclick="practiceTopic('${esc(r.subject)}','${esc(r.board)}','${esc(r.topic)}')">Practise ${esc(r.topic)} in ReviseRush →</button>
-      </div>`).join('') || '<p class="mut">No resources match that filter yet.</p>'}`;
-    return;
-  }
-
-  if (pageTab === 'questions') {
-    const list = STUDY_DATA.examQuestions.filter(q => (fSub === 'All' || q.subject === fSub) && (fBoard === 'All' || q.board === fBoard));
-    app.innerHTML = `<h1>Exam Practice Questions</h1><p class="mut">Attempt the question first, then reveal the official-style mark scheme.</p>${filterBar(STUDY_DATA.examQuestions)}
-      ${list.map((q, i) => `<div class="card">
-        <div><span class="badge">${esc(q.subject)}</span><span class="badge">${esc(q.board)}</span><span class="badge">${esc(q.topic)}</span><span class="badge">${q.marks} marks</span></div>
-        <p style="font-weight:600;margin-top:10px">${esc(q.question)}</p>
-        <button class="ghost" onclick="const el=$('ms_${i}');el.hidden=!el.hidden">Show / Hide Mark Scheme</button>
-        <div id="ms_${i}" class="ms" hidden>
-          <b>Mark Scheme:</b>
-          <ul>${q.markScheme.map(m => `<li>${esc(m)}</li>`).join('')}</ul>
-          <p class="mut"><b>Examiner Tip:</b> ${esc(q.tip)}</p>
+        <div class="card">
+          <h3>Revision Notes</h3>
+          ${track.notes.map((n) => `<p><strong>${n.title}:</strong> ${n.body}</p>`).join("")}
         </div>
-        <div style="margin-top:10px"><button class="lnk" onclick="practiceTopic('${esc(q.subject)}','${esc(q.board)}','${esc(q.topic)}')">Practise ${esc(q.topic)} in ReviseRush →</button></div>
-      </div>`).join('') || '<p class="mut">No questions match that filter yet.</p>'}`;
-    return;
-  }
 
-  if (pageTab === 'exams') {
-    const hasPersonal = me && me.subjects && me.subjects.length > 0;
-    const useMine = hasPersonal && examFilterMode === 'mine';
-    const baseList = useMine ? myMatchingExams() : STUDY_DATA.exams;
-    const list = baseList.filter(e => (fSub === 'All' || e.subject === fSub) && (fBoard === 'All' || e.board === fBoard));
-    app.innerHTML = `<h1>GCSE Exam Timetable &amp; Countdowns</h1>
-      <p class="mut">Summer 2027 key dates (check your school's individual candidate timetable for exact rooming).</p>
-      ${hasPersonal ? `<div class="acct-card" style="margin:12px 0">
-        <div class="chips">
-          <button class="chipb ${useMine ? 'on' : ''}" onclick="examFilterMode='mine';fSub='All';fBoard='All';renderShell()">My Subjects &amp; Boards (${myMatchingExams().length})</button>
-          <button class="chipb ${!useMine ? 'on' : ''}" onclick="examFilterMode='all';fSub='All';fBoard='All';renderShell()">All Subjects (${STUDY_DATA.exams.length})</button>
-        </div>
-        <button class="lnk" onclick="openAccountFromSite('profile')">Change my subjects &amp; boards</button>
-      </div>` : (cfgSrv.accounts && !me ? `<div class="acct-card" style="margin:12px 0">
-        <span class="mut">Sign in to filter exam dates automatically to your subjects and exam boards.</span>
-        <button class="lnk" onclick="openAccountFromSite('auth')">Sign in →</button>
-      </div>` : '')}
-      ${useMine ? '' : filterBar(STUDY_DATA.exams)}
-      ${list.length
-        ? `<div class="grid2">${list.map(ex => renderExamCard(ex)).join('')}</div>`
-        : `<div class="card"><p class="mut">No exam dates found for that filter. ${useMine ? `<button class="lnk" onclick="examFilterMode='all';renderShell()">Show all subjects</button>` : ''}</p></div>`}`;
-  }
-}
+        <h3>Practice Exam Questions</h3>
+        ${track.questions.map((q, i) => {
+          const compKey = `${track.id}::${q.id}`;
+          const isDone = completedQuestions.has(compKey);
+          return `
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+                <span class="badge">${q.paper} • ${q.marks} marks</span>
+                <label style="font-size:0.85rem; cursor:pointer;">
+                  <input type="checkbox" data-complete="${q.id}" ${isDone ? "checked" : ""} /> Completed
+                </label>
+              </div>
+              <p><strong>Q${i + 1}.</strong> ${q.prompt}</p>
+              <button type="button" class="btn-secondary" data-toggle="ms-${q.id}">Show / Hide Mark Scheme</button>
+              <div id="ms-${q.id}" class="mark-scheme">${q.answer}</div>
+            </div>
+          `;
+        }).join("")}
+      `;
 
-window.onpopstate = () => {
-  pageTab = location.pathname === '/game' ? 'game' : (location.pathname.slice(1) || 'hub');
-  if (!['hub', 'resources', 'questions', 'exams', 'game'].includes(pageTab)) pageTab = 'hub';
-  renderShell();
-};
+      bodyEl.querySelectorAll("button[data-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.getElementById(btn.dataset.toggle).classList.toggle("open");
+        });
+      });
 
-boot();
-</script></body></html>
+      bodyEl.querySelectorAll("input[data-complete]").forEach((cb) => {
+        cb.addEventListener("change", async () => {
+          const res = await fetch("/api/maths-revision/progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token: sessionToken,
+              trackId: track.id,
+              questionId: cb.dataset.complete,
+              completed: cb.checked
+            })
+          });
+          const data = await res.json();
+          completedQuestions = new Set(data.completed || []);
+        });
+      });
+    }
+
+    document.getElementById("subject-search").addEventListener("input", renderSubjectPicker);
+    document.getElementById("board-filter").addEventListener("change", renderSubjectPicker);
+    document.getElementById("clear-subjects-btn").addEventListener("click", async () => {
+      selectedKeys.clear();
+      localStorage.setItem(LOCAL_SUBJECTS_KEY, "[]");
+      renderSubjectPicker();
+      await saveAndRenderMyExams();
+    });
+
+    init();
+  </script>
+</body>
+</html>
