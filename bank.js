@@ -6805,3 +6805,153 @@ module.exports=[
   ]
  }
 ];
+export const CONTINGENCY_2027 = {
+  date: "2027-06-23",
+  label: "Wednesday 23 June 2027",
+  note: "National contingency day (AM & PM). Keep available until this date."
+};
+
+export const SUMMER_2027_EXAMS = [
+  // OCR
+  { id: "ocr-j198-01", board: "OCR", subject: "Ancient History", code: "J198/01", paper: "Greece and Persia", date: "2027-05-14", session: "PM", duration: "2h 00m" },
+  { id: "ocr-j198-02", board: "OCR", subject: "Ancient History", code: "J198/02", paper: "Rome and its neighbours", date: "2027-05-24", session: "PM", duration: "2h 00m" },
+  { id: "ocr-j247-01", board: "OCR", subject: "Biology A", code: "J247/01", paper: "Paper 1 (Foundation)", date: "2027-05-11", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j247-03", board: "OCR", subject: "Biology A", code: "J247/03", paper: "Paper 3 (Higher)", date: "2027-05-11", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j247-02", board: "OCR", subject: "Biology A", code: "J247/02", paper: "Paper 2 (Foundation)", date: "2027-06-10", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j247-04", board: "OCR", subject: "Biology A", code: "J247/04", paper: "Paper 4 (Higher)", date: "2027-06-10", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j204-01", board: "OCR", subject: "Business", code: "J204/01", paper: "Business 1: business activity, marketing and people", date: "2027-05-12", session: "PM", duration: "1h 30m" },
+  { id: "ocr-j204-02", board: "OCR", subject: "Business", code: "J204/02", paper: "Business 2: operations, finance and influences on business", date: "2027-05-21", session: "PM", duration: "1h 30m" },
+  { id: "ocr-j248-01", board: "OCR", subject: "Chemistry A", code: "J248/01", paper: "Paper 1 (Foundation)", date: "2027-05-17", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j248-03", board: "OCR", subject: "Chemistry A", code: "J248/03", paper: "Paper 3 (Higher)", date: "2027-05-17", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j248-02", board: "OCR", subject: "Chemistry A", code: "J248/02", paper: "Paper 2 (Foundation)", date: "2027-06-15", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j248-04", board: "OCR", subject: "Chemistry A", code: "J248/04", paper: "Paper 4 (Higher)", date: "2027-06-15", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j277-01", board: "OCR", subject: "Computer Science", code: "J277/01", paper: "Computer systems", date: "2027-05-10", session: "AM", duration: "1h 30m" },
+  { id: "ocr-j277-02", board: "OCR", subject: "Computer Science", code: "J277/02", paper: "Computational thinking, algorithms and programming", date: "2027-05-19", session: "PM", duration: "1h 30m" },
+  { id: "ocr-j351-01", board: "OCR", subject: "English Language", code: "J351/01", paper: "Communicating information and ideas", date: "2027-05-24", session: "AM", duration: "2h 00m" },
+  { id: "ocr-j351-02", board: "OCR", subject: "English Language", code: "J351/02", paper: "Exploring effects and impact", date: "2027-06-08", session: "AM", duration: "2h 00m" },
+  { id: "ocr-j352-01", board: "OCR", subject: "English Literature", code: "J352/01", paper: "Exploring modern and literary heritage texts", date: "2027-05-12", session: "AM", duration: "2h 00m" },
+  { id: "ocr-j352-02", board: "OCR", subject: "English Literature", code: "J352/02", paper: "Exploring poetry and Shakespeare", date: "2027-05-19", session: "AM", duration: "2h 00m" },
+  { id: "ocr-j383-01", board: "OCR", subject: "Geography A", code: "J383/01", paper: "Living in the UK today", date: "2027-05-18", session: "AM", duration: "1h 00m" },
+  { id: "ocr-j383-02", board: "OCR", subject: "Geography A", code: "J383/02", paper: "The world around us", date: "2027-05-26", session: "PM", duration: "1h 00m" },
+  { id: "ocr-j383-03", board: "OCR", subject: "Geography A", code: "J383/03", paper: "Geographical skills", date: "2027-06-10", session: "PM", duration: "1h 30m" },
+  { id: "ocr-j560-01", board: "OCR", subject: "Mathematics", code: "J560/01 & 04", paper: "Paper 1 (F) / Paper 4 (H) - Calculator", date: "2027-05-14", session: "AM", duration: "1h 30m" },
+  { id: "ocr-j560-02", board: "OCR", subject: "Mathematics", code: "J560/02 & 05", paper: "Paper 2 (F) / Paper 5 (H) - Non-Calculator", date: "2027-05-27", session: "AM", duration: "1h 30m" },
+  { id: "ocr-j560-03", board: "OCR", subject: "Mathematics", code: "J560/03 & 06", paper: "Paper 3 (F) / Paper 6 (H) - Calculator", date: "2027-06-14", session: "AM", duration: "1h 30m" },
+  { id: "ocr-j249-01", board: "OCR", subject: "Physics A", code: "J249/01 & 03", paper: "Paper 1 (F) / Paper 3 (H)", date: "2027-05-25", session: "AM", duration: "1h 45m" },
+  { id: "ocr-j249-02", board: "OCR", subject: "Physics A", code: "J249/02 & 04", paper: "Paper 2 (F) / Paper 4 (H)", date: "2027-06-18", session: "AM", duration: "1h 45m" },
+
+  // AQA
+  { id: "aqa-8461-1", board: "AQA", subject: "Biology", code: "8461/1F & 1H", paper: "Biology Paper 1 (F & H)", date: "2027-05-11", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8461-2", board: "AQA", subject: "Biology", code: "8461/2F & 2H", paper: "Biology Paper 2 (F & H)", date: "2027-06-10", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8132-1", board: "AQA", subject: "Business", code: "8132/1", paper: "Business Paper 1", date: "2027-05-12", session: "PM", duration: "1h 45m" },
+  { id: "aqa-8132-2", board: "AQA", subject: "Business", code: "8132/2", paper: "Business Paper 2", date: "2027-05-21", session: "PM", duration: "1h 45m" },
+  { id: "aqa-8462-1", board: "AQA", subject: "Chemistry", code: "8462/1F & 1H", paper: "Chemistry Paper 1 (F & H)", date: "2027-05-17", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8462-2", board: "AQA", subject: "Chemistry", code: "8462/2F & 2H", paper: "Chemistry Paper 2 (F & H)", date: "2027-06-15", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8464-b1", board: "AQA", subject: "Combined Science: Trilogy", code: "8464/B/1F & 1H", paper: "Biology Paper 1 (F & H)", date: "2027-05-11", session: "AM", duration: "1h 15m" },
+  { id: "aqa-8464-c1", board: "AQA", subject: "Combined Science: Trilogy", code: "8464/C/1F & 1H", paper: "Chemistry Paper 1 (F & H)", date: "2027-05-17", session: "AM", duration: "1h 15m" },
+  { id: "aqa-8464-p1", board: "AQA", subject: "Combined Science: Trilogy", code: "8464/P/1F & 1H", paper: "Physics Paper 1 (F & H)", date: "2027-05-25", session: "AM", duration: "1h 15m" },
+  { id: "aqa-8464-b2", board: "AQA", subject: "Combined Science: Trilogy", code: "8464/B/2F & 2H", paper: "Biology Paper 2 (F & H)", date: "2027-06-10", session: "AM", duration: "1h 15m" },
+  { id: "aqa-8464-c2", board: "AQA", subject: "Combined Science: Trilogy", code: "8464/C/2F & 2H", paper: "Chemistry Paper 2 (F & H)", date: "2027-06-15", session: "AM", duration: "1h 15m" },
+  { id: "aqa-8464-p2", board: "AQA", subject: "Combined Science: Trilogy", code: "8464/P/2F & 2H", paper: "Physics Paper 2 (F & H)", date: "2027-06-18", session: "AM", duration: "1h 15m" },
+  { id: "aqa-8525-1", board: "AQA", subject: "Computer Science", code: "8525/1A/1B/1C", paper: "Computational thinking and programming", date: "2027-05-10", session: "AM", duration: "2h 00m" },
+  { id: "aqa-8525-2", board: "AQA", subject: "Computer Science", code: "8525/2", paper: "Computing concepts", date: "2027-05-19", session: "PM", duration: "1h 45m" },
+  { id: "aqa-8700-1", board: "AQA", subject: "English Language", code: "8700/1", paper: "Paper 1: Explorations in creative reading and writing", date: "2027-05-24", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8700-2", board: "AQA", subject: "English Language", code: "8700/2", paper: "Paper 2: Writers' viewpoints and perspectives", date: "2027-06-08", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8702-1", board: "AQA", subject: "English Literature", code: "8702/1", paper: "Paper 1: Shakespeare and the 19th century novel", date: "2027-05-12", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8702-2", board: "AQA", subject: "English Literature", code: "8702/2", paper: "Paper 2: Modern texts and poetry", date: "2027-05-19", session: "AM", duration: "2h 15m" },
+  { id: "aqa-8652-1", board: "AQA", subject: "French", code: "8652/LF/LH/RF/RH", paper: "Listening & Reading", date: "2027-05-26", session: "AM", duration: "35m-1h" },
+  { id: "aqa-8652-2", board: "AQA", subject: "French", code: "8652/WF/WH", paper: "Writing", date: "2027-06-08", session: "PM", duration: "1h 10m / 1h 15m" },
+  { id: "aqa-8035-1", board: "AQA", subject: "Geography", code: "8035/1", paper: "Paper 1: Living with the physical environment", date: "2027-05-18", session: "AM", duration: "1h 30m" },
+  { id: "aqa-8035-2", board: "AQA", subject: "Geography", code: "8035/2", paper: "Paper 2: Challenges in the human environment", date: "2027-05-26", session: "PM", duration: "1h 30m" },
+  { id: "aqa-8035-3", board: "AQA", subject: "Geography", code: "8035/3", paper: "Paper 3: Geographical applications", date: "2027-06-10", session: "PM", duration: "1h 30m" },
+  { id: "aqa-8145-1", board: "AQA", subject: "History", code: "8145/1A-1B", paper: "Paper 1: Understanding the modern world", date: "2027-05-20", session: "AM", duration: "2h 00m" },
+  { id: "aqa-8145-2", board: "AQA", subject: "History", code: "8145/2A-2B", paper: "Paper 2: Shaping the nation", date: "2027-05-28", session: "AM", duration: "2h 00m" },
+  { id: "aqa-8300-1", board: "AQA", subject: "Mathematics", code: "8300/1F & 1H", paper: "Paper 1 (Non-Calculator) (F & H)", date: "2027-05-14", session: "AM", duration: "1h 30m" },
+  { id: "aqa-8300-2", board: "AQA", subject: "Mathematics", code: "8300/2F & 2H", paper: "Paper 2 (Calculator) (F & H)", date: "2027-05-27", session: "AM", duration: "1h 30m" },
+  { id: "aqa-8300-3", board: "AQA", subject: "Mathematics", code: "8300/3F & 3H", paper: "Paper 3 (Calculator) (F & H)", date: "2027-06-14", session: "AM", duration: "1h 30m" },
+  { id: "aqa-8463-1", board: "AQA", subject: "Physics", code: "8463/1F & 1H", paper: "Physics Paper 1 (F & H)", date: "2027-05-25", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8463-2", board: "AQA", subject: "Physics", code: "8463/2F & 2H", paper: "Physics Paper 2 (F & H)", date: "2027-06-18", session: "AM", duration: "1h 45m" },
+  { id: "aqa-8182-1", board: "AQA", subject: "Psychology", code: "8182/1", paper: "Psychology Paper 1", date: "2027-05-10", session: "PM", duration: "1h 45m" },
+  { id: "aqa-8182-2", board: "AQA", subject: "Psychology", code: "8182/2", paper: "Psychology Paper 2", date: "2027-05-17", session: "PM", duration: "1h 45m" },
+  { id: "aqa-8692-1", board: "AQA", subject: "Spanish", code: "8692/LF/LH/RF/RH", paper: "Listening & Reading", date: "2027-06-09", session: "AM", duration: "35m-1h" },
+  { id: "aqa-8692-2", board: "AQA", subject: "Spanish", code: "8692/WF/WH", paper: "Writing", date: "2027-06-16", session: "PM", duration: "1h 10m / 1h 15m" },
+
+  // Pearson Edexcel
+  { id: "edx-1bi0-1", board: "Edexcel", subject: "Biology", code: "1BI0 1F & 1H", paper: "Paper 1 (Foundation & Higher)", date: "2027-05-11", session: "AM", duration: "1h 45m" },
+  { id: "edx-1bi0-2", board: "Edexcel", subject: "Biology", code: "1BI0 2F & 2H", paper: "Paper 2 (Foundation & Higher)", date: "2027-06-10", session: "AM", duration: "1h 45m" },
+  { id: "edx-1bs0-1", board: "Edexcel", subject: "Business", code: "1BS0 01", paper: "Paper 1: Investigating Small Business", date: "2027-05-12", session: "PM", duration: "1h 45m" },
+  { id: "edx-1bs0-2", board: "Edexcel", subject: "Business", code: "1BS0 02", paper: "Paper 2: Building a Business", date: "2027-05-21", session: "PM", duration: "1h 45m" },
+  { id: "edx-1ch0-1", board: "Edexcel", subject: "Chemistry", code: "1CH0 1F & 1H", paper: "Paper 1 (Foundation & Higher)", date: "2027-05-17", session: "AM", duration: "1h 45m" },
+  { id: "edx-1ch0-2", board: "Edexcel", subject: "Chemistry", code: "1CH0 2F & 2H", paper: "Paper 2 (Foundation & Higher)", date: "2027-06-15", session: "AM", duration: "1h 45m" },
+  { id: "edx-1sc0-1b", board: "Edexcel", subject: "Combined Science", code: "1SC0 1BF & 1BH", paper: "Paper 1: Biology 1 (F & H)", date: "2027-05-11", session: "AM", duration: "1h 10m" },
+  { id: "edx-1sc0-1c", board: "Edexcel", subject: "Combined Science", code: "1SC0 1CF & 1CH", paper: "Paper 2: Chemistry 1 (F & H)", date: "2027-05-17", session: "AM", duration: "1h 10m" },
+  { id: "edx-1sc0-1p", board: "Edexcel", subject: "Combined Science", code: "1SC0 1PF & 1PH", paper: "Paper 3: Physics 1 (F & H)", date: "2027-05-25", session: "AM", duration: "1h 10m" },
+  { id: "edx-1sc0-2b", board: "Edexcel", subject: "Combined Science", code: "1SC0 2BF & 2BH", paper: "Paper 4: Biology 2 (F & H)", date: "2027-06-10", session: "AM", duration: "1h 10m" },
+  { id: "edx-1sc0-2c", board: "Edexcel", subject: "Combined Science", code: "1SC0 2CF & 2CH", paper: "Paper 5: Chemistry 2 (F & H)", date: "2027-06-15", session: "AM", duration: "1h 10m" },
+  { id: "edx-1sc0-2p", board: "Edexcel", subject: "Combined Science", code: "1SC0 2PF & 2PH", paper: "Paper 6: Physics 2 (F & H)", date: "2027-06-18", session: "AM", duration: "1h 10m" },
+  { id: "edx-1cp2-1", board: "Edexcel", subject: "Computer Science", code: "1CP2 01", paper: "Paper 1: Principles of Computer Science", date: "2027-05-10", session: "AM", duration: "1h 30m" },
+  { id: "edx-1cp2-2", board: "Edexcel", subject: "Computer Science", code: "1CP2 02", paper: "Paper 2: Application of Computational Thinking", date: "2027-05-19", session: "PM", duration: "2h 00m" },
+  { id: "edx-1en0-1", board: "Edexcel", subject: "English Language", code: "1EN0 01", paper: "Paper 1: Fiction and Imaginative Writing", date: "2027-05-24", session: "AM", duration: "1h 45m" },
+  { id: "edx-1en0-2", board: "Edexcel", subject: "English Language", code: "1EN0 02", paper: "Paper 2: Non-Fiction and Transactional Writing", date: "2027-06-08", session: "AM", duration: "2h 05m" },
+  { id: "edx-1et0-1", board: "Edexcel", subject: "English Literature", code: "1ET0 01", paper: "Paper 1: Shakespeare and Post-1914 Literature", date: "2027-05-12", session: "AM", duration: "1h 45m" },
+  { id: "edx-1et0-2", board: "Edexcel", subject: "English Literature", code: "1ET0 02", paper: "Paper 2: 19th Century Novel & Poetry", date: "2027-05-19", session: "AM", duration: "2h 15m" },
+  { id: "edx-1fr1-2", board: "Edexcel", subject: "French", code: "1FR1 2F & 2H", paper: "Paper 2: Listening (F & H)", date: "2027-05-26", session: "AM", duration: "45m / 1h" },
+  { id: "edx-1fr1-3", board: "Edexcel", subject: "French", code: "1FR1 3F & 3H", paper: "Paper 3: Reading (F & H)", date: "2027-06-08", session: "PM", duration: "45m / 1h" },
+  { id: "edx-1fr1-4", board: "Edexcel", subject: "French", code: "1FR1 4F & 4H", paper: "Paper 4: Writing (F & H)", date: "2027-06-14", session: "PM", duration: "1h 15m / 1h 20m" },
+  { id: "edx-1ga0-1", board: "Edexcel", subject: "Geography A", code: "1GA0 01", paper: "Paper 1: The Physical Environment", date: "2027-05-18", session: "AM", duration: "1h 45m" },
+  { id: "edx-1ga0-2", board: "Edexcel", subject: "Geography A", code: "1GA0 02", paper: "Paper 2: The Human Environment", date: "2027-05-26", session: "PM", duration: "1h 30m" },
+  { id: "edx-1ga0-3", board: "Edexcel", subject: "Geography A", code: "1GA0 03", paper: "Paper 3: Geographical Investigations", date: "2027-06-10", session: "PM", duration: "1h 30m" },
+  { id: "edx-1hi0-1", board: "Edexcel", subject: "History", code: "1HI0 10-13", paper: "Paper 1: Thematic study & historic environment", date: "2027-05-20", session: "AM", duration: "1h 20m" },
+  { id: "edx-1hi0-2", board: "Edexcel", subject: "History", code: "1HI0 2A-2W", paper: "Paper 2: Period study & British depth study", date: "2027-05-28", session: "AM", duration: "1h 50m" },
+  { id: "edx-1hi0-3", board: "Edexcel", subject: "History", code: "1HI0 30-33", paper: "Paper 3: Modern depth study", date: "2027-06-09", session: "PM", duration: "1h 30m" },
+  { id: "edx-1ma1-1", board: "Edexcel", subject: "Mathematics", code: "1MA1 1F & 1H", paper: "Paper 1 (Non-Calculator) (F & H)", date: "2027-05-14", session: "AM", duration: "1h 30m" },
+  { id: "edx-1ma1-2", board: "Edexcel", subject: "Mathematics", code: "1MA1 2F & 2H", paper: "Paper 2 (Calculator) (F & H)", date: "2027-05-27", session: "AM", duration: "1h 30m" },
+  { id: "edx-1ma1-3", board: "Edexcel", subject: "Mathematics", code: "1MA1 3F & 3H", paper: "Paper 3 (Calculator) (F & H)", date: "2027-06-14", session: "AM", duration: "1h 30m" },
+  { id: "edx-1ph0-1", board: "Edexcel", subject: "Physics", code: "1PH0 1F & 1H", paper: "Paper 1 (Foundation & Higher)", date: "2027-05-25", session: "AM", duration: "1h 45m" },
+  { id: "edx-1ph0-2", board: "Edexcel", subject: "Physics", code: "1PH0 2F & 2H", paper: "Paper 2 (Foundation & Higher)", date: "2027-06-18", session: "AM", duration: "1h 45m" },
+  { id: "edx-1sp1-2", board: "Edexcel", subject: "Spanish", code: "1SP1 2F & 2H", paper: "Paper 2: Listening (F & H)", date: "2027-06-09", session: "AM", duration: "45m / 1h" },
+  { id: "edx-1sp1-3", board: "Edexcel", subject: "Spanish", code: "1SP1 3F & 3H", paper: "Paper 3: Reading (F & H)", date: "2027-06-16", session: "PM", duration: "45m / 1h" },
+  { id: "edx-1sp1-4", board: "Edexcel", subject: "Spanish", code: "1SP1 4F & 4H", paper: "Paper 4: Writing (F & H)", date: "2027-06-17", session: "PM", duration: "1h 15m / 1h 20m" }
+];
+
+export const MATHS_REVISION_BANK = [
+  {
+    id: "edexcel-maths",
+    label: "Edexcel Maths (1MA1)",
+    notes: [
+      { title: "Surds & Indices", body: "Rationalise denominators by multiplying top and bottom by √b or (a ∓ √b). Use a^(-n) = 1/a^n and a^(m/n) = (ⁿ√a)^m." },
+      { title: "Quadratics & Functions", body: "Complete the square: x² + bx + c = (x + b/2)² - (b/2)² + c. For inverse f⁻¹(x), set y = f(x), swap x and y, and solve for y." },
+      { title: "Trig & Vectors", body: "Sine rule a/sin A = b/sin B, cosine rule a² = b² + c² - 2bc cos A, area = ½ab sin C. Parallel vectors are scalar multiples." }
+    ],
+    questions: [
+      { id: "em1", prompt: "Simplify by rationalising: (6 + √12) / √3 (4 marks)", answer: "√3(6 + 2√3)/3 = (6√3 + 6)/3 = 2√3 + 2." },
+      { id: "em2", prompt: "Line AB joins (2, -1) and (6, 7). Find the perpendicular bisector equation. (5 marks)", answer: "m_AB = 2 → m_perp = -1/2; midpoint = (4, 3); 3 = -1/2(4) + c → c = 5 → y = -0.5x + 5." }
+    ]
+  },
+  {
+    id: "aqa-maths",
+    label: "AQA Maths (8300)",
+    notes: [
+      { title: "Quadratic Sequences", body: "Second difference = 2a; first term = a + b + c; difference between 1st and 2nd term = 3a + b." },
+      { title: "Histograms & Probability", body: "Frequency = Frequency Density × Class Width. Conditional probability: P(A ∩ B) = P(A|B) × P(B)." },
+      { title: "Circle Tangents", body: "Circle x² + y² = r² has radius perpendicular to the tangent at (x₁, y₁)." }
+    ],
+    questions: [
+      { id: "am1", prompt: "Find the nth term of 5, 12, 23, 38, 57, ... (4 marks)", answer: "2nd diff = 4 → a = 2 (2n²). Remaining 3, 4, 5, 6, 7 → n + 2. Answer: 2n² + n + 2." },
+      { id: "am2", prompt: "£4,500 invested for 4 years at 3.2% compound interest. Find total interest earned. (4 marks)", answer: "4500 × 1.032⁴ = £5104.25 → interest = £604.25." }
+    ]
+  },
+  {
+    id: "igcse-edexcel-maths",
+    label: "iGCSE Edexcel Maths (4MA1 / 4WM1)",
+    notes: [
+      { title: "Calculus (Differentiation)", body: "d/dx(axⁿ) = anxⁿ⁻¹. Set dy/dx = 0 for stationary points. v = ds/dt and a = dv/dt." },
+      { title: "Set Notation", body: "ℰ = universal, A ∩ B = intersection, A ∪ B = union, A' = complement. n(A ∪ B) = n(A) + n(B) - n(A ∩ B)." },
+      { title: "Arithmetic Series", body: "uₙ = a + (n - 1)d; Sₙ = (n/2)[2a + (n - 1)d]." }
+    ],
+    questions: [
+      { id: "im1", prompt: "Find stationary points of y = 2x³ - 9x² + 12x + 4. (5 marks)", answer: "dy/dx = 6x² - 18x + 12 = 0 → x = 1, 2 → points at (1, 9) and (2, 8)." },
+      { id: "im2", prompt: "Arithmetic series: 4th term = 17, 10th term = 41. Find sum of first 20 terms. (4 marks)", answer: "6d = 24 → d = 4, a = 5. S₂₀ = 10[10 + 76] = 860." }
+    ]
+  }
+];
