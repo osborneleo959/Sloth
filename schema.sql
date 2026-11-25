@@ -15,6 +15,8 @@ create table if not exists public.profiles (
 );
 alter table public.profiles add column if not exists year int check (year between 9 and 13);
 alter table public.profiles add column if not exists subjects text[] not null default '{}';
+alter table public.profiles add column if not exists qualification text;
+alter table public.profiles add column if not exists subject_boards jsonb not null default '{}'::jsonb;
 create unique index if not exists profiles_name_lower on public.profiles (lower(display_name));
 
 create table if not exists public.daily_scores (
