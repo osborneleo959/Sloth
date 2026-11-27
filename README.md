@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/35530297/README.md)
+[README.md](https://github.com/user-attachments/files/35530757/README.md)
 # ReviseRush server
 
 ## Run locally
@@ -50,3 +50,12 @@ topic options depend on the route chosen by the student, so that library needs a
 route-selection step. The Stage 3 seed provides topic structures, not complete notes and
 exam questions for every topic. Add original material to `revision_notes` and
 `exam_questions` as the library is expanded.
+
+
+## Stage 4 – expanded game bank and Maths revision
+
+Stage 4 expands the Name It! game bank with Maths (including iGCSE and A-level-labelled rounds), Combined Science, the remaining GCSE subjects previously listed, and A-level subject/topic rounds. The game bank is a topic-and-answer prompt bank; qualification is shown in topic labels so GCSE and A-level rounds can be distinguished.
+
+The revision library seed is `stage4-seed.sql`. Run it in the Supabase SQL editor after the existing Stage 2 schema (and the Stage 3 seed if you have not already run it). It is idempotent. It adds Pearson Edexcel International GCSE Mathematics A (4MA1) topics under GCSE → Maths → Edexcel International, plus Edexcel A-level Mathematics topic notes and original practice questions. Students select GCSE Maths and the Edexcel International board to access the iGCSE notes.
+
+The uploaded iGCSE specification is Pearson Edexcel International GCSE Mathematics Specification A (4MA1), Issue 2. The A-level Edexcel Maths topics follow the supplied 9MA0 specification. The additional game prompts are broad topic coverage and are not a substitute for specification-mapped revision notes; subject-specific revision libraries will be expanded as specifications are supplied.
