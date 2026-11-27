@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/35430584/README.md)
+[README.md](https://github.com/user-attachments/files/35530297/README.md)
 # ReviseRush server
 
 ## Run locally
@@ -29,3 +29,24 @@ The revision area now supports:
 Run the updated `schema.sql` in Supabase after deploying this version. It is designed to be re-run: it creates the revision tables, adds starter topics and content, and does not remove existing accounts, profiles or game scores. The first sample library contains GCSE AQA Biology (Cell biology), GCSE AQA Maths (Fractions, decimals and percentages), and A-level AQA Biology (Biological molecules). Other subjects and boards will display a clear message until their topic content is added. These starter questions are original practice questions, not copied past-paper questions.
 
 Revision content is stored in Supabase tables (`revision_topics`, `revision_notes`, `exam_questions`). Confidence ratings and exam attempts are saved per student. All access is made by the server using the existing Supabase service key; do not put that key in frontend code or GitHub.
+
+
+## Stage 3: specification-aware revision setup
+
+Run `stage3-seed.sql` in Supabase SQL Editor after the existing Stage 2 `schema.sql`.
+The seed is idempotent. It adds GCSE AQA/Edexcel Maths, AQA GCSE Combined Science Trilogy,
+and AQA/Edexcel A-level Maths topic structures, plus original starter notes and practice
+questions for selected first topics.
+
+The board selector is now qualification- and subject-specific. It currently offers only
+the specification-backed combinations in this project: GCSE AQA/Edexcel Maths, AQA
+Combined Science, AQA/Edexcel Geography and Business Studies, Edexcel History, AQA French
+and RS; A-level AQA/Edexcel Maths and Edexcel History. Subjects without a supplied
+specification remain selectable but show that their specification is pending.
+
+International GCSE Mathematics (4MA1) is not mixed into UK GCSE Maths; it needs a separate
+International GCSE qualification route. A-level History is recognised as Edexcel, but its
+topic options depend on the route chosen by the student, so that library needs a separate
+route-selection step. The Stage 3 seed provides topic structures, not complete notes and
+exam questions for every topic. Add original material to `revision_notes` and
+`exam_questions` as the library is expanded.
