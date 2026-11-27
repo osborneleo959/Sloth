@@ -69,7 +69,7 @@ select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const LOGO='<svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="ReviseRush logo"><rect width="64" height="64" rx="16" fill="var(--g)"/><rect x="9" y="13" width="46" height="31" rx="9" fill="#fff"/><path d="M19 43v11l12-11z" fill="#fff"/><path d="M21 29l8 8 14-17" fill="none" stroke="var(--g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="51" cy="12" r="8" fill="var(--sun)"/></svg>';
-let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},needsProfile=false,sess=null,me=null,cfgSrv={accounts:false},meta=null,curriculum=null,examBoards=['AQA','Pearson Edexcel','OCR','Eduqas','WJEC','CCEA'],mode='in',msgA='',dsub=null,dbd={},lbp='daily',lbs=null,lbb=null,activeSubject='',activeTopic='',revisionBoards={},cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
+let ws=null,s=null,off=0,err='',mt=null,view='menu',sel=null,act=null,board={},needsProfile=false,sess=null,me=null,cfgSrv={accounts:false},meta=null,curriculum=null,examBoards=['AQA','Pearson Edexcel','OCR','Eduqas','WJEC','CCEA'],subjectBoards={},mode='in',msgA='',dsub=null,dbd={},lbp='daily',lbs=null,lbb=null,activeSubject='',activeTopic='',revisionBoards={},cfg={lives:3,turn:20,round:60,rounds:5,skips:2,need:5};
 const send=o=>ws&&ws.readyState===1&&ws.send(JSON.stringify(o));
 const isHost=()=>s.host===s.you;
 
@@ -94,7 +94,7 @@ async function api(path,body,auth){
   const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error||'Something went wrong.');e.code=j.code;throw e}return j}
 async function loadMe(){me=null;needsProfile=false;if(!sess)return;try{me=await api('/api/me',null,true)}catch(e){me=null;if(e.code==='no_profile')needsProfile=true}}
 async function loadMeta(){if(!meta){try{meta=await api('/api/subjects')}catch{meta=[]}}}
-async function loadCurriculum(){if(!curriculum){try{const j=await api('/api/curriculum');curriculum=j.curriculum;examBoards=j.examBoards||examBoards}catch{curriculum={GCSE:['Maths','English Language','English Literature','Combined Science','Biology','Chemistry','Physics','Geography','History','French','Spanish','Computer Science','Business Studies','PE','RS','Music'],'A-level':['Maths','English Literature','English Language','Chemistry','Biology','Physics','Psychology','History','Geography','Politics','Economics','French','Spanish','Business','Sociology']}}}}
+async function loadCurriculum(){if(!curriculum){try{const j=await api('/api/curriculum');curriculum=j.curriculum;examBoards=j.examBoards||examBoards;subjectBoards=j.subjectBoards||{}}catch{curriculum={GCSE:['Maths','English Language','English Literature','Combined Science','Biology','Chemistry','Physics','Geography','History','French','Spanish','Computer Science','Business Studies','PE','RS','Music'],'A-level':['Maths','English Literature','English Language','Chemistry','Biology','Physics','Psychology','History','Geography','Politics','Economics','French','Spanish','Business','Sociology']};subjectBoards={}}}}
 const qualForYear=y=>[9,10,11].includes(+y)?'GCSE':[12,13].includes(+y)?'A-level':'';
 async function boot(){try{sess=JSON.parse(localStorage.getItem('rr_sess')||'null')}catch{sess=null}
   try{cfgSrv=await api('/api/config')}catch{}
@@ -166,7 +166,13 @@ function home(){
 function yearSelect(v){return `<select id="yr" aria-label="Year group" style="width:100%"><option value="">Choose your year</option>${[9,10,11,12,13].map(y=>`<option value="${y}" ${+v===y?'selected':''}>Year ${y} · ${y<=11?'GCSE':'A-level'}</option>`).join('')}</select>`}
 function subjectBoxes(sel, savedBoards={}){
   if(!curriculum)return '<p class="mut">Loading subjects…</p>';
-  return Object.entries(curriculum).map(([qual,list])=>`<div class="subject-group" data-subject-group="${qual}"><div class="subject-group-title">${qual} subjects</div>${list.map(subject=>`<div class="subject-choice"><label><input type="checkbox" data-sj data-qual="${qual}" value="${esc(subject)}" ${sel.includes(subject)?'checked':''}> ${esc(subject)}</label><select data-board-for="${esc(subject)}" aria-label="${esc(subject)} exam board">${examBoards.map(b=>`<option value="${esc(b)}" ${(savedBoards[subject]||'AQA')===b?'selected':''}>${esc(b)}</option>`).join('')}</select></div>`).join('')}</div>`).join('');
+  return Object.entries(curriculum).map(([qual,list])=>`<div class="subject-group" data-subject-group="${qual}"><div class="subject-group-title">${qual} subjects</div>${list.map(subject=>{
+    const available=(subjectBoards&&subjectBoards[qual]&&subjectBoards[qual][subject])||[];
+    const saved=savedBoards[subject]==='Pearson Edexcel'?'Edexcel':savedBoards[subject];
+    const chosen=available.includes(saved)?saved:(available.length===1?available[0]:'');
+    const options=available.length?available.map(b=>`<option value="${esc(b)}" ${chosen===b?'selected':''}>${b==='Edexcel'?'Pearson Edexcel':esc(b)}</option>`).join(''):'<option value="">Specification not added yet</option>';
+    return `<div class="subject-choice"><label><input type="checkbox" data-sj data-qual="${qual}" value="${esc(subject)}" ${sel.includes(subject)?'checked':''}> ${esc(subject)}</label><select data-board-for="${esc(subject)}" aria-label="${esc(subject)} exam board" ${available.length?'':'disabled'}>${options}</select></div>`;
+  }).join('')}</div>`).join('');
 }
 function syncSubjectGroups(){const y=$('yr')&&$('yr').value,q=qualForYear(y);app.querySelectorAll('[data-subject-group]').forEach(g=>g.style.display=g.dataset.subjectGroup===q?'block':'none')}
 const picked=()=>{const year=+$('yr').value||null,q=qualForYear(year),checked=[...app.querySelectorAll('[data-sj]:checked')].filter(c=>c.dataset.qual===q);const subjects=checked.map(c=>c.value),subjectBoards={};subjects.forEach(subject=>{const b=[...app.querySelectorAll("[data-board-for]")].find(e=>e.dataset.boardFor===subject);if(b)subjectBoards[subject]=b.value});return {year,subjects,subjectBoards}};
@@ -252,12 +258,15 @@ function confidenceLabel(v){return v==='confident'?'Confident':v==='somewhat'?'S
 function confidenceClass(v){return v==='confident'?'confident':v==='somewhat'?'somewhat':v==='unsure'?'unsure':'none'}
 function subjectView(){
   if(!me){view='auth';mode='in';return home()}
-  const subject=activeSubject,boardName=(me.subjectBoards||{})[subject]||revisionBoards[subject]||'AQA';
-  app.innerHTML=`<button class="back" id="bk">← My revision hub</button><div class="eyebrow">${esc(me.qualification||'Your subject')}</div><h1>${esc(subject)}</h1><p class="mut">Choose a topic, study the notes and record how confident you feel.</p>
-  <div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><b>Exam board</b><select id="revBoard" aria-label="Exam board">${examBoards.map(b=>`<option value="${esc(b)}" ${b===boardName?'selected':''}>${esc(b)}</option>`).join('')}</select></div><p class="mut" style="margin-top:8px">Your topic progress is saved to your account.</p></div>
-  <div id="topicList" class="card"><p class="mut">Loading your topics…</p></div>
+  const subject=activeSubject,qual=me.qualification||'GCSE',available=(subjectBoards[qual]||{})[subject]||[];
+  const savedBoard=(me.subjectBoards||{})[subject]==='Pearson Edexcel'?'Edexcel':(me.subjectBoards||{})[subject];
+  const boardName=savedBoard||revisionBoards[subject]||(available.length===1?available[0]:'');
+  app.innerHTML=`<button class="back" id="bk">← My revision hub</button><div class="eyebrow">${esc(qual)}</div><h1>${esc(subject)}</h1><p class="mut">Choose a topic, study the notes and record how confident you feel.</p>
+  <div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><b>Exam board</b><select id="revBoard" aria-label="Exam board" ${available.length?'':'disabled'}>${available.length?available.map(b=>`<option value="${esc(b)}" ${b===boardName?'selected':''}>${b==='Edexcel'?'Pearson Edexcel':esc(b)}</option>`).join(''):'<option>Specification not added yet</option>'}</select></div><p class="mut" style="margin-top:8px">Your topic progress is saved to your account.</p></div>
+  <div id="topicList" class="card"><p class="mut">${available.length?'Loading your topics…':'We have not added a specification for this subject and qualification yet. You can still keep it in your account; revision content will appear when its specification is added.'}</p></div>
   <div class="card"><h2>Confidence key</h2><div class="progress-legend"><span>🟢 Confident</span><span>🟡 Sort of confident</span><span>🔴 Not sure</span></div></div>`;
   $('bk').onclick=()=>{view='revision';home()};
+  if(!available.length)return;
   $('revBoard').onchange=()=>{revisionBoards[subject]=$('revBoard').value;subjectView()};
   api(`/api/revision/topics?subject=${encodeURIComponent(subject)}&board=${encodeURIComponent(boardName)}`,null,true).then(j=>{
     if(view!=='subject'||activeSubject!==subject)return;
