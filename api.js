@@ -11,13 +11,29 @@ const CURRICULUM = {
   'A-level': ['Maths','English Literature','English Language','Chemistry','Biology','Physics','Psychology','History','Geography','Politics','Economics','French','Spanish','Business','Sociology']
 };
 const EXAM_BOARDS = ['AQA','Pearson Edexcel','OCR','Eduqas','WJEC','CCEA'];
+// Only offer subject/qualification board combinations for which specification material
+// has been supplied. Other subjects remain selectable while their specification is pending.
+const SUBJECT_BOARDS = {
+  GCSE: {
+    'Maths': ['AQA','Edexcel'], 'Combined Science': ['AQA'],
+    'Geography': ['AQA','Edexcel'], 'History': ['Edexcel'],
+    'French': ['AQA'], 'Business Studies': ['AQA','Edexcel'], 'RS': ['AQA']
+  },
+  'A-level': { 'Maths': ['AQA','Edexcel'], 'History': ['Edexcel'] }
+};
+const boardsFor = (qualification, subject) => (SUBJECT_BOARDS[qualification] || {})[subject] || [];
 const cleanYS = b => {
   const year = Number(b.year), qualification = [9,10,11].includes(year) ? 'GCSE' : [12,13].includes(year) ? 'A-level' : null;
   const allowed = qualification ? CURRICULUM[qualification] : [];
   const subs = Array.isArray(b.subjects) ? [...new Set(b.subjects.map(String))].filter(s => allowed.includes(s)) : [];
   const rawBoards = b.subjectBoards && typeof b.subjectBoards === 'object' && !Array.isArray(b.subjectBoards) ? b.subjectBoards : {};
   const subjectBoards = {};
-  for (const subject of subs) if (EXAM_BOARDS.includes(rawBoards[subject])) subjectBoards[subject] = rawBoards[subject];
+  for (const subject of subs) {
+    const available = boardsFor(qualification, subject);
+    const saved = rawBoards[subject] === 'Pearson Edexcel' ? 'Edexcel' : rawBoards[subject];
+    if (available.includes(saved)) subjectBoards[subject] = saved;
+    else if (available.length === 1) subjectBoards[subject] = available[0];
+  }
   return { year: qualification ? year : null, qualification, subjects: subs, subjectBoards };
 };
 const authId = req => db.userFromToken((req.headers.authorization || '').replace(/^Bearer /i, ''));
@@ -27,7 +43,7 @@ module.exports = async function api(req, res) {
   try {
     if (p === '/api/config') return out(res, 200, { accounts: db.enabled() });
     if (p === '/api/subjects') return out(res, 200, subjects());
-    if (p === '/api/curriculum') return out(res, 200, { curriculum: CURRICULUM, examBoards: EXAM_BOARDS });
+    if (p === '/api/curriculum') return out(res, 200, { curriculum: CURRICULUM, examBoards: EXAM_BOARDS, subjectBoards: SUBJECT_BOARDS });
     if (p === '/api/diag') { if (limited(ip, 'diag', 20)) return out(res, 429, { error: 'Slow down.' }); return out(res, 200, { accounts: db.enabled(), ...(await db.diag()) }); }
     if (!db.enabled()) return out(res, 503, { error: 'Accounts are not set up on this server yet.' });
 
